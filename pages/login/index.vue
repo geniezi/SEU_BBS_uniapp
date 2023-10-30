@@ -75,13 +75,12 @@
 								}
 							})
 							.then(response => {
-								uni.hideLoading();
-								uni.$u.toast('验证码已发送');
-
 								setTimeout(() => {
 									// 通知验证码组件内部开始倒计时
 									this.$refs.uCode.start();
 								}, 6000);
+								uni.hideLoading();
+								uni.$u.toast('验证码已发送');
 							})
 							.catch(error => {
 								uni.hideLoading();

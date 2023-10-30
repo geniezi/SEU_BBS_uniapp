@@ -68,7 +68,7 @@
 								url: '/get_code',
 								method: "POST",
 								data: {
-									"phone": "18858594737"
+									"phone": this.phoneNumber
 								}
 							})
 							.then(response => {
@@ -98,12 +98,16 @@
 			login() {
 				
 				
-				this.$myRequest({
+				
+				
+				if (this.canLogin) {
+					//跳转主界面 传参
+					this.$myRequest({
 						url: '/login',
 						method: "POST",
 						data: {
-							"phone": "18858594737",
-							"code": "246167"
+							"phone": this.phoneNumber,
+							"code": this.verificationCode
 						}
 					})
 					.then(response => {
@@ -112,10 +116,6 @@
 					.catch(error => {
 				
 					});
-				
-				
-				if (this.canLogin) {
-					//跳转主界面 传参
 					uni.$u.toast('登录成功');
 				} else {
 					if (this.phoneNumber.length !== 11) {

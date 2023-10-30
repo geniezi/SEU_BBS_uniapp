@@ -16,11 +16,10 @@ export const myRequest = (options) => {
 			data: options.data || {},
 			// 请求成功
 			success: (res) => {
+				console.log(res)
 				// 此判断可根据自己需要更改
-				if (res.data.code !== 500) {
-					return uni.showToast({
-						title: '获取数据失败！'
-					})
+				if (res.data.code !== 200) {
+					reject(res)
 				}
 				resolve(res)
 			},

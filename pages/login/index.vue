@@ -75,11 +75,11 @@
 								}
 							})
 							.then(response => {
-								setTimeout(() => {
-									// 通知验证码组件内部开始倒计时
-									this.$refs.uCode.start();
-								}, 6000);
+								// setTimeout(() => {
+								// 	// 通知验证码组件内部开始倒计时
+								// }, 0);
 								uni.hideLoading();
+								this.$refs.uCode.start();
 								uni.$u.toast('验证码已发送');
 							})
 							.catch(error => {
@@ -119,7 +119,7 @@
 								//显示持续时间为 2秒
 								duration: 1000
 							})
-							
+
 						})
 						.catch(error => {
 							if (error.data.code == 500) {

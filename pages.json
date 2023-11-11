@@ -6,6 +6,16 @@
 	
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+		    "path" : "pages/index/index",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "首页",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+		,
+		{
 		    "path" : "pages/login/index",
 		    "style" :                                                                                    
 		    {
@@ -16,21 +26,12 @@
 		}
 		,
 		{
-			"path": "pages/index/index",
+			"path": "pages/module1/index",
 			"style": {
 				"navigationBarTitleText": "uni-app"
 			}
 		}
 	    ,{
-            "path" : "pages/module1/index",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
             "path" : "pages/module2/index",
             "style" :                                                                                    
             {
@@ -48,12 +49,60 @@
             }
             
         }
+        ,
+		{
+            "path" : "pages/module4/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
-		"navigationBarTextStyle": "black",
+		"navigationBarTextStyle": "#F8F8FF",
 		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
+		"navigationBarBackgroundColor": "#00b331",
 		"backgroundColor": "#F8F8F8"
 	},
-	"uniIdRouter": {}
+	"uniIdRouter": {},
+	"tabBar": { // 这里就是配置tabbar的地方
+			"color": "#8a8a8a", // 导航栏字体颜色
+			"selectedColor": "#00b331", // 选中后字体的颜色
+			"borderStyle": "black", // 底部的border颜色，只能是“black”或者“white”
+			"backgroundColor": "#ffffff", // 底部背景颜色
+			"list": [
+				{
+					"pagePath": "pages/index/index", // 页面路径
+					"text": "首页", // 底部导航文字,
+					"iconPath": "static/logo.png", // 没选中前的图标路径
+					"selectedIconPath": "static/logo.png" // 选中后的图标路径
+				},
+				{
+					"pagePath": "pages/module1/index",
+					"text": "消息",
+					"iconPath": "static/logo.png",
+					"selectedIconPath": "static/logo.png"
+				},
+				{
+					"pagePath": "pages/module2/index",
+					"text": "发帖",
+					"iconPath": "static/logo.png",
+					"selectedIconPath": "static/logo.png"
+				},
+				{
+					"pagePath": "pages/module3/index",
+					"text": "组队",
+					"iconPath": "static/logo.png",
+					"selectedIconPath": "static/logo.png"
+				},
+				{
+					"pagePath": "pages/module4/index",
+					"text": "我的",
+					"iconPath": "static/logo.png",
+					"selectedIconPath": "static/logo.png"
+				}
+			]
+		}
 }

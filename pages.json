@@ -78,37 +78,39 @@
 				{
 					"pagePath": "pages/index/index", // 页面路径
 					"text": "首页", // 底部导航文字
-					"iconfont":{
-						"text":"\ue868",
-						"selectedText":"\ue868",
-						"fontsize":"10px",
-						"color":"#e6e6e6",
-						"selectedColor":"#00b331"
-						}
+					"iconPath": "static/icons/home.png",
+					"selectedIconPath": "static/icons/home-fill.png"
+					// "iconfont":{
+					// 	"text":"\ue868",
+					// 	"selectedText":"\ue868",
+					// 	"fontsize":"10px",
+					// 	"color":"#e6e6e6",
+					// 	"selectedColor":"#00b331"
+					// 	}
 				},
 				{
 					"pagePath": "pages/module1/index",
 					"text": "消息",
-					"iconPath": "static/logo.png",
-					"selectedIconPath": "static/logo.png"
+					"iconPath": "static/icons/message-comments.png",
+					"selectedIconPath": "static/icons/message-comments-fill.png"
 				},
 				{
 					"pagePath": "pages/module2/index",
 					"text": "发帖",
-					"iconPath": "static/logo.png",
-					"selectedIconPath": "static/logo.png"
+					"iconPath": "static/icons/add-btn.png",
+					"selectedIconPath": "static/icons/add-btn-fill.png"
 				},
 				{
 					"pagePath": "pages/module3/index",
 					"text": "组队",
-					"iconPath": "static/logo.png",
-					"selectedIconPath": "static/logo.png"
+					"iconPath": "static/icons/customer-group.png",
+					"selectedIconPath": "static/icons/customer-group-fill.png"
 				},
 				{
 					"pagePath": "pages/module4/index",
 					"text": "我的",
-					"iconPath": "static/logo.png",
-					"selectedIconPath": "static/logo.png"
+					"iconPath": "static/icons/customer.png",
+					"selectedIconPath": "static/icons/customer-fill.png"
 				}
 			]
 		}

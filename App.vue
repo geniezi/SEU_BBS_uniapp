@@ -1,5 +1,6 @@
 <style lang="scss">
 	@import "@/uni_modules/uview-ui/index.scss";
+	@import url("./static/icons/iconfont.css");
 </style>
 <script>
 	export default {

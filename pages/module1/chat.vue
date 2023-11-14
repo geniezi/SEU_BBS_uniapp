@@ -34,7 +34,7 @@ export default {
     return {
       chatPartnerName: '张三',
       messages: [
-        { id: 1, text: '你好', time: '2023年11月14日 10:00:00', isMyMessage: false },
+        { id: 1, text: '你好123', time: '2023年11月14日 10:00:00', isMyMessage: false },
         { id: 2, text: '你好，有什么可以帮助你的吗12312312312312312312312312？', time: '2023年11月14日 10:01:00', isMyMessage: true },
         // 其他消息
       ]

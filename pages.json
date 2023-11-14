@@ -28,10 +28,21 @@
 		{
 			"path": "pages/module1/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "消息"
 			}
 		}
-	    ,{
+	    ,
+		
+		{
+		    "path" : "pages/module1/chat",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "消息",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+		,{
             "path" : "pages/module2/index",
             "style" :                                                                                    
             {

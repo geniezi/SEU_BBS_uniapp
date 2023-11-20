@@ -68,7 +68,7 @@
 							title: '正在获取验证码'
 						})
 						this.$myRequest({
-								url: '/get_code',
+								url: '/login/get_code',
 								method: "POST",
 								data: {
 									"phone": this.phoneNumber
@@ -104,7 +104,7 @@
 				if (this.canLogin) {
 					//跳转主界面 传参
 					this.$myRequest({
-							url: '/login',
+							url: '/login/login',
 							method: "POST",
 							data: {
 								"phone": this.phoneNumber,

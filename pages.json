@@ -6,16 +6,6 @@
 	
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-		    "path" : "pages/index/index",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "首页",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		}
-		,
-		{
 		    "path" : "pages/login/index",
 		    "style" :                                                                                    
 		    {
@@ -25,6 +15,28 @@
 		    
 		}
 		,
+		{
+		    "path" :"pages/homePage/index",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "首页",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+		,
+		{
+		    "path" :"components/home_Page/briefPost" ,//
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "首页测试",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+		,
+		
+		
 		{
 			"path": "pages/module1/index",
 			"style": {
@@ -76,7 +88,7 @@
 
 			"list": [
 				{
-					"pagePath": "pages/index/index", // 页面路径
+					"pagePath": "pages/homePage/index", // 页面路径
 					"text": "首页", // 底部导航文字
 					"iconPath": "static/icons/home.png",
 					"selectedIconPath": "static/icons/home-fill.png"

@@ -68,7 +68,7 @@
 							title: '正在获取验证码'
 						})
 						this.$myRequest({
-								url: '/get_code',
+								url: '/seu/bbs/login/get_code',
 								method: "POST",
 								data: {
 									"phone": this.phoneNumber
@@ -104,7 +104,7 @@
 				if (this.canLogin) {
 					//跳转主界面 传参
 					this.$myRequest({
-							url: '/login',
+							url: '/seu/bbs/login/login',
 							method: "POST",
 							data: {
 								"phone": this.phoneNumber,
@@ -118,7 +118,10 @@
 								icon: 'success',
 								//显示持续时间为 2秒
 								duration: 1000
-							})
+							}),
+							uni.switchTab({
+							      url: '/pages/homePage/index'
+							    });
 
 						})
 						.catch(error => {

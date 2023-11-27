@@ -1,30 +1,32 @@
 <template>
-	<div class="chat-container">
-		<div class="top-bar">
+	<view class="chat-container">
+		<view class="top-bar">
 			<p class="chat-partner-name">{{ chatPartnerName }}</p>
-		</div>
-		<div class="message-container">
-			<div v-for="message in messages" :key="message.id" class="message">
+		</view>
+		<view class="message-container">
+			<scroll-view class="scroll-view" scroll-y="true" ref="scrollView">
+			<view v-for="message in messages" :key="message.id" class="message">
 				<p class="message-time">{{ message.sendTime }}</p>
-				<div v-if=isMyMessage(message.senderId) class="my-message">
-					<div class="message-bubble green-background">
+				<view v-if=isMyMessage(message.senderId) class="my-message">
+					<view class="message-bubble green-background">
 						{{ message.content }}
-					</div>
+					</view>
 					<img class="avatar-right" :src="myAvatar" alt="My Avatar" />
-				</div>
-				<div v-else class="other-message">
+				</view>
+				<view v-else class="other-message">
 					<img class="avatar-left" :src="chatPartnerAvatar" alt="Partner Avatar" />
-					<div class="message-bubble grey-background">
+					<view class="message-bubble grey-background">
 						{{ message.content }}
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="input-container">
+					</view>
+				</view>
+			</view>
+			</scroll-view>
+		</view>
+		<view class="input-container">
 			<input type="text" class="message-input" placeholder="输入消息..." v-model="messageInput"/>
 			<button class="send-button" @click="sendMessage">发送</button>
-		</div>
-	</div>
+		</view>
+	</view>
 </template>
 
 <script>
@@ -32,6 +34,29 @@
 		created
 	} from '../../uni_modules/uview-ui/libs/mixin/mixin';
 	export default {
+
+mounted() {
+  this.$nextTick(() => {
+    uni.createSelectorQuery()
+      .in(this)
+      .select('.chat-container') // 替换成你的组件类名或选择器
+      .boundingClientRect(data => {
+        // 确保组件已经加载完毕后再设置滚动位置
+        if (data) {
+          const query = uni.createSelectorQuery().in(this)
+          query.selectViewport().scrollOffset()
+          query.exec(res => {
+            const scrollHeight = data.height // 获取组件高度
+            const scrollTop = data.top + scrollHeight // 计算滚动位置
+            uni.pageScrollTo({
+              scrollTop: scrollTop
+            })
+          })
+        }
+      })
+      .exec()
+  })
+},
 
 		data() {
 			return {
@@ -52,18 +77,7 @@
 			};
 		},
 		
-		  onReady() {
-		    uni.nextTick(() => {
-		      uni.createSelectorQuery()
-		        .select('.message-container')
-		        .boundingClientRect(data => {
-		          uni.pageScrollTo({
-		            scrollTop: data.height // 滚动到页面底部
-		          });
-		        })
-		        .exec();
-		    });
-		  },
+
 
 		//点击进入聊天窗口后，分页查询聊天记录,预加载名称、头像等资源
 		created() {

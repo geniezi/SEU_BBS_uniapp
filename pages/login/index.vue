@@ -82,15 +82,15 @@
 								this.$refs.uCode.start();
 								uni.$u.toast('验证码已发送');
 							})
-							.catch(error => {
-								uni.hideLoading();
-								if (error.data.code == 500) {
-									if (error.data.message == 'Invalid phone number') {
-										uni.$u.toast('请输入正确格式的手机号');
-										return;
-									}
-								}
-							});
+							// .catch(error => {
+							// 	uni.hideLoading();
+							// 	if (error.data.code == 500) {
+							// 		if (error.data.message == 'Invalid phone number') {
+							// 			uni.$u.toast('请输入正确格式的手机号');
+							// 			return;
+							// 		}
+							// 	}
+							// });
 
 
 					} else {

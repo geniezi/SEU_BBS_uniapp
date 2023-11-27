@@ -1,5 +1,5 @@
 // 请求服务器地址
-const baseURL = 'http://47.115.225.161:38088/seu/bbs'
+const baseURL = 'http://47.113.230.37:30088/seu/bbs'
 // 向外暴露一个方法 myRequest
 export const myRequest = (options) => {
 	//加载loading

@@ -122,15 +122,9 @@
 
  goToChat(userId) {
       // 跳转到聊天界面，userId为用户ID
-	  uni.showToast({
-	  	title: '登录成功',
-	  	//将值设置为 success 或者直接不用写icon这个参数
-	  	icon: 'success',
-	  	//显示持续时间为 2秒
-	  	duration: 1000
-	  })
-      // this.$router.push(`/pages/module1/chat/${userId}`);
-	  this.$router.push(`/pages/module1/chat`);
+	  uni.navigateTo({
+	  			    url: '/pages/module1/chat'
+	  			});
     }
 
 		}

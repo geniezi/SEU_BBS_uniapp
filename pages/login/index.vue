@@ -119,7 +119,7 @@
 								//显示持续时间为 2秒
 								duration: 1000,
 							})
-							uni.setStorage({key:'login_token',data:response.data.data})
+							uni.setStorageSync('Authentication',response.data.data)
 							//login的token存入本地
 							console.log(response.data.data)//打印token测试
 

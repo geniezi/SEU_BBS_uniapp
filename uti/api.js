@@ -19,10 +19,12 @@ export const myRequest = (options) => {
 			// 请求成功
 			success: (res) => {
 				console.log(res)
+				
 				// 此判断可根据自己需要更改
 				if (res.data.code !== 200) {
 					reject(res)
 				}
+				
 				resolve(res)
 			},
 			// 请求失败

@@ -33,8 +33,8 @@
 			return {
 				messages: [
 				        {
-				          avatar: "https://web-booking.oss-cn-hangzhou.aliyuncs.com/hotel_image/00000025-6d17-4784-af53-62d7b178f605.jpg",
-				          sender: "cmh",
+				          avatar: "/static/avatar1.jpg",
+				          sender: "18858590000",
 				          text: "Hello!",
 				          time: "10:00 AM"
 				        },
@@ -44,72 +44,7 @@
 				          text: "Hi there!",
 				          time: "10:05 AM"
 				        },
-						{
-						  avatar: "/static/avatar1.jpg",
-						  sender: "cmh",
-						  text: "Hello!",
-						  time: "10:00 AM"
-						},
-						{
-						  avatar: "/static/avatar2.jpg",
-						  sender: "gzy",
-						  text: "Hi there!",
-						  time: "10:05 AM"
-						},
-						{
-						  avatar: "/static/avatar1.jpg",
-						  sender: "cmh",
-						  text: "Hello!",
-						  time: "10:00 AM"
-						},
-						{
-						  avatar: "/static/avatar2.jpg",
-						  sender: "gzy",
-						  text: "Hi there!",
-						  time: "10:05 AM"
-						},
-						{
-						  avatar: "/static/avatar1.jpg",
-						  sender: "cmh",
-						  text: "Hello!",
-						  time: "10:00 AM"
-						},
-						{
-						  avatar: "/static/avatar2.jpg",
-						  sender: "gzy",
-						  text: "Hi there!",
-						  time: "10:05 AM"
-						},
-						{
-						  avatar: "/static/avatar1.jpg",
-						  sender: "cmh",
-						  text: "Hello!",
-						  time: "10:00 AM"
-						},
-						{
-						  avatar: "/static/avatar2.jpg",
-						  sender: "gzy",
-						  text: "Hi there!",
-						  time: "10:05 AM"
-						},
-						{
-						  avatar: "/static/avatar1.jpg",
-						  sender: "cmh",
-						  text: "Hello!",
-						  time: "10:00 AM"
-						},
-						{
-						  avatar: "/static/avatar2.jpg",
-						  sender: "gzy",
-						  text: "Hi there!",
-						  time: "10:05 AM"
-						},
-						{
-						  avatar: "/static/avatar1.jpg",
-						  sender: "cmh",
-						  text: "Hello!",
-						  time: "10:00 AM"
-						},
+						
 				        // Add more messages as needed
 					]	
 						

@@ -113,23 +113,18 @@
 						})
 						.then(response => {
 							uni.showToast({
-								title: '登录成功',
-								//将值设置为 success 或者直接不用写icon这个参数
-								icon: 'success',
-								//显示持续时间为 2秒
-<<<<<<< HEAD
-								duration: 1000
-							}),
-							uni.switchTab({
-							      url: '/pages/homePage/index'
-							    });
-=======
-								duration: 1000,
-							})
-							uni.setStorageSync('Authentication',response.data.data)
+									title: '登录成功',
+									//将值设置为 success 或者直接不用写icon这个参数
+									icon: 'success',
+									//显示持续时间为 2秒
+									duration: 1000
+								}),
+								uni.setStorageSync('Authentication', response.data.data)
 							//login的token存入本地
-							console.log(response.data.data)//打印token测试
->>>>>>> ec780080c1f19bbebc1b6db21bda6dabfc0e229b
+							console.log(response.data.data) //打印token测试
+							uni.switchTab({
+								url: '/pages/homePage/index'
+							});
 
 						})
 						.catch(error => {

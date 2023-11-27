@@ -117,8 +117,11 @@
 								//将值设置为 success 或者直接不用写icon这个参数
 								icon: 'success',
 								//显示持续时间为 2秒
-								duration: 1000
+								duration: 1000,
 							})
+							uni.setStorage({key:'login_token',data:response.data.data})
+							//login的token存入本地
+							console.log(response.data.data)//打印token测试
 
 						})
 						.catch(error => {

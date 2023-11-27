@@ -41,11 +41,30 @@ export default {
     };
   },
   methods: {
-  
+		sendMessage(){
+			console.log('test1')
+            this.$myRequest({
+			header: {
+				'Authentication':uni.getStorageSync('Authentication')
+				}, 
+			url:  '/chat/send',
+			method: 'POST',
+			data: {
+				"receiverId":1728297677709512704,
+				"content":'testMessage',
+				"picUrl":''
+				},
+			success: (res) => {
+				console.log("send succ")	       		
+				} 
+			}); 
+		}
+		
+		},
 
   
   		}
-};
+
 </script>
 
 <style>

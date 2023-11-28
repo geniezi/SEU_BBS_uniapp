@@ -121,61 +121,62 @@
 								}),
 								uni.setStorageSync('Authentication', response.data.data)
 							//login的token存入本地
-<<<<<<< HEAD
-							console.log(response.data.data)//打印token测试
-							uni.switchTab(
-								{   
-								url:'/pages/index/index',
-								success:()=> {
-										console.log(1);
-										},
-								fail: (res) => {
-								console.log('navigate failed',res);
-							}})
-							})
-=======
-							console.log(response.data.data) //打印token
-							uni.switchTab({
-								url: '/pages/homePage/index'
-							});
 
-						})
->>>>>>> 972751782e3815a7c3b9d8a93c02e96b20e2e91d
-						.catch(error => {
-							if (error.data.code == 500) {
-								if (error.data.message == 'Invalid phone number') {
-									uni.$u.toast('请输入正确格式的手机号');
-									return;
+							console.log(response.data.data) //打印token测试
+							uni.switchTab({
+								url: '/pages/index/index',
+								success: () => {
+									console.log(1);
+								},
+								fail: (res) => {
+									console.log('navigate failed', res);
 								}
-								if (error.data.message == 'Invalid code') {
-									uni.$u.toast('请输入正确格式的验证码');
-									return;
-								}
-								if (error.data.message == 'Login failed') {
-									uni.$u.toast('登录失败，请检查手机号与验证码');
-									return;
-								}
-							}
-						});
-				} else {
-					if (this.phoneNumber.length !== 11) {
+							})
+						}),
+
+						console.log(response.data.data) //打印token
+					uni.switchTab({
+						url: '/pages/homePage/index'
+					});
+
+				})
+
+			.catch(error => {
+				if (error.data.code == 500) {
+					if (error.data.message == 'Invalid phone number') {
 						uni.$u.toast('请输入正确格式的手机号');
 						return;
 					}
-
-					if (this.verificationCode.length !== 6) {
+					if (error.data.message == 'Invalid code') {
 						uni.$u.toast('请输入正确格式的验证码');
 						return;
 					}
-
-					if (!this.isChecked.length) {
-						uni.$u.toast('请先阅读并同意用户协议及隐私条款');
+					if (error.data.message == 'Login failed') {
+						uni.$u.toast('登录失败，请检查手机号与验证码');
 						return;
-
 					}
 				}
+			});
+		}
+		else {
+			if (this.phoneNumber.length !== 11) {
+				uni.$u.toast('请输入正确格式的手机号');
+				return;
+			}
+
+			if (this.verificationCode.length !== 6) {
+				uni.$u.toast('请输入正确格式的验证码');
+				return;
+			}
+
+			if (!this.isChecked.length) {
+				uni.$u.toast('请先阅读并同意用户协议及隐私条款');
+				return;
+
 			}
 		}
+	}
+	}
 	}
 </script>
 

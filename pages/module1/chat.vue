@@ -1,11 +1,11 @@
 <template>
 	<view class="chat-container">
-		
+
 		<view class="top-bar">
 			<p class="chat-partner-name">{{ chatPartnerName }}</p>
 		</view>
-		<view class="message-container"> 
-		
+		<view class="message-container">
+
 			<view v-for="message in messages" :key="message.id" class="message">
 				<p class="message-time">{{ message.sendTime }}</p>
 				<view v-if=isMyMessage(message.senderId) class="my-message">
@@ -24,7 +24,7 @@
 		</view>
 
 		<view class="input-container">
-			<input type="text" class="message-input" placeholder="输入消息..." v-model="messageInput"/>
+			<input type="text" class="message-input" placeholder="输入消息..." v-model="messageInput" />
 			<button class="send-button" @click="sendMessage">发送</button>
 		</view>
 	</view>
@@ -36,24 +36,24 @@
 	} from '../../uni_modules/uview-ui/libs/mixin/mixin';
 	export default {
 
-mounted() {
-// this.scrollToBottom()
-  // this.$nextTick(() => {
-  //     const query = uni.createSelectorQuery().in(this)
-  //     query.selectViewport().scrollOffset()
-  //     query.exec(res => {
-  //       uni.pageScrollTo({
-  //         scrollTop: res[0].scrollHeight // 页面总高度
-  //       })
-  //     })
-  //   })
-  // console.log("mouted")
-},
+		mounted() {
+			// this.scrollToBottom()
+			// this.$nextTick(() => {
+			//     const query = uni.createSelectorQuery().in(this)
+			//     query.selectViewport().scrollOffset()
+			//     query.exec(res => {
+			//       uni.pageScrollTo({
+			//         scrollTop: res[0].scrollHeight // 页面总高度
+			//       })
+			//     })
+			//   })
+			// console.log("mouted")
+		},
 
 		data() {
 			return {
-				
-				messageInput:'',
+
+				messageInput: '',
 				chatPartnerID: '1728297677709512704',
 				myID: '1729121929987756032',
 				chatPartnerName: '张三',
@@ -69,7 +69,7 @@ mounted() {
 				]
 			};
 		},
-		
+
 
 
 		//点击进入聊天窗口后，分页查询聊天记录,预加载名称、头像等资源
@@ -120,42 +120,42 @@ mounted() {
 					console.log("接受record成功")
 				});
 
-			 
+
 
 
 		},
 
 		methods: {
 			scrollToBottom() {
-			    uni.pageScrollTo({
-			      scrollTop: 9999, // 设置一个足够大的数值，确保能够滚动到底部
-			      duration: 300 // 可选，滚动动画的时长，单位为毫秒，默认为300ms
-			    });
-			  },
+				uni.pageScrollTo({
+					scrollTop: 9999, // 设置一个足够大的数值，确保能够滚动到底部
+					duration: 300 // 可选，滚动动画的时长，单位为毫秒，默认为300ms
+				});
+			},
 
 			sendMessage() {
 				console.log('test1')
 				this.$myRequest({
-					header: {
-						'Authentication': uni.getStorageSync('Authentication')
-					},
-					url: '/chat/send',
-					method: 'POST',
-					data: {
-						"receiverId": this.chatPartnerID,
-						"content": this.messageInput,
-						"picUrl": ''
-					},
-					success: (res) => {
+						header: {
+							'Authentication': uni.getStorageSync('Authentication')
+						},
+						url: '/chat/send',
+						method: 'POST',
+						data: {
+							"receiverId": this.chatPartnerID,
+							"content": this.messageInput,
+							"picUrl": ''
+						}
+					})
+					.then(res => {
 						console.log("send succ")
-					}
-				});
-				
-				uni.reLaunch({
-				    url: '/pages/module1/chat'
-				})
-				
-				
+						uni.reLaunch({
+							url: '/pages/module1/chat'
+						})
+					});
+
+
+
 			},
 
 			isMyMessage(id) {
@@ -164,16 +164,16 @@ mounted() {
 				else
 					return false
 			},
-			
-			getMyAvatar(){
-				
-			},
-			
-			getChatPartnerAvater(){
-				
+
+			getMyAvatar() {
+
 			},
 
-		
+			getChatPartnerAvater() {
+
+			},
+
+
 
 		},
 

@@ -44,7 +44,51 @@
 				          text: "Hi there!",
 				          time: "10:05 AM"
 				        },
-						
+						{
+						  avatar: "/static/avatar1.jpg",
+						  sender: "18858590000",
+						  text: "Hello!",
+						  time: "10:00 AM"
+						},
+						{
+						  avatar: "/static/avatar2.jpg",
+						  sender: "gzy",
+						  text: "Hi there!",
+						  time: "10:05 AM"
+						},{
+				          avatar: "/static/avatar1.jpg",
+				          sender: "18858590000",
+				          text: "Hello!",
+				          time: "10:00 AM"
+				        },
+				        {
+				          avatar: "/static/avatar2.jpg",
+				          sender: "gzy",
+				          text: "Hi there!",
+				          time: "10:05 AM"
+				        },{
+				          avatar: "/static/avatar1.jpg",
+				          sender: "18858590000",
+				          text: "Hello!",
+				          time: "10:00 AM"
+				        },
+				        {
+				          avatar: "/static/avatar2.jpg",
+				          sender: "gzy",
+				          text: "Hi there!",
+				          time: "10:05 AM"
+				        },{
+				          avatar: "/static/avatar1.jpg",
+				          sender: "18858590000",
+				          text: "Hello!",
+				          time: "10:00 AM"
+				        },
+				        {
+				          avatar: "/static/avatar2.jpg",
+				          sender: "gzy",
+				          text: "Hi there!",
+				          time: "10:05 AM"
+				        },
 				        // Add more messages as needed
 					]	
 						
@@ -53,6 +97,20 @@
 		onLoad() {
 
 		},
+		
+		mounted() {
+		  this.$nextTick(() => {
+		      const query = uni.createSelectorQuery().in(this)
+		      query.selectViewport().scrollOffset()
+		      query.exec(res => {
+		        uni.pageScrollTo({
+		          scrollTop: res[0].scrollHeight // 页面总高度
+		        })
+		      })
+		    })
+		  console.log("mouted")
+		},
+		
 		methods: {
 
  goToChat(userId) {

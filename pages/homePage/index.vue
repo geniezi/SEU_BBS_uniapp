@@ -56,7 +56,7 @@
 			},
 			getPosts() {
 				this.$myRequest({
-						url: '/post/pagePost?page=' + this.page + '&size=5&section=1&queryTime=' + this.currentTime,
+						url: '/post/pagePost?page=' + this.page + '&size=5&section=0&queryTime=' + this.currentTime,
 						method: "GET",
 					})
 					.then(response => {

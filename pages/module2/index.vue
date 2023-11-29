@@ -1,40 +1,56 @@
 <template>
 	<view>
-		
-		<view class="editor-wrapper" style="background-color: #F8F8F8;">
-					<editor id="editor" class="ql-container" @focus="handleFocus" @blur="handleBlur" @input="handleInput"
+		<view class="plr">
+						<textarea v-model="message" maxlength="1000" placeholder="输入内容（最多1000字）" class="w100" style="height: 450rpx;" />
+						</view>
+<view class="item-box flex flex-wrap u-m-l-36 u-m-r-8">
+				<view class="item upload u-m-t-20 relative" v-for="(item,i) in imgarr" :key="i" v-show="imgarr.length!=0">
+					<image :src="item.img1" v-if=""></image>
+					<image @click="del(i)" src="../../static/del_image.png" class="absolute" style="width: 32rpx;height: 32rpx;top: 5rpx;right: 5rpx;" v-if=""></image>
+				</view>
+				<view class="item upload u-m-t-20" @click="getimg" v-show="imgarr.length < 9">
+					<image src="../../static/upload_image.png" v-if=""></image>
+				</view>
+			</view>
+
+<!-- 		<view class="editor-wrapper" style="background-color: #F8F8F8;">
+					<editor id="editor" class="ql-container"  @focus="handleFocus" @blur="handleBlur" @input="handleInput"
 						placeholder="开始输入..." showImgSize showImgToolbar showImgResize @statuschange="onStatusChange"
 						:read-only="readOnly" @ready="onEditorReady">
 					</editor>
-				</view>
+				</view> -->
 		 
 				<view class="bottom_opert bottom_safe" :style="{ bottom: bottomHeight }">
-					<div class="text_info">
-						{{ textLength > 0 ? textLength+"/100000" : "最多10万字" }}
-					</div>
-					<view class="more_opt">
-						<view class="more_item" @click="handleChooseCate">
-							{{
+<!-- 					<div class="text_info" style="float: right;color: #8a8a8a;font-size: 5%;display: flex;">
+						{{ textLength > 0 ? textLength+"/1000" : "最多1000字" }}
+					</div> -->
+					<!-- <view class="more_opt">
+						<view class="more_item" @click="handleChooseCate">{{
 		            resultCateListult.length == 0
 		              ? "选择分类"
 		              : `已选择${resultCateListult.length}个分类`
 		          }}
-						</view>
-						<view class="more_item" @click="handleChooseAvil">
+						</view> -->
+						<!-- <view class="more_item" @click="handleChooseAvil">
 							{{ resultVailInfo.resultName ? resultVailInfo.resultName : "谁可看" }}
-						</view>
-					</view>
-					<view class="tool-bar">
-						<!-- <view class="bottom_item" @click="handleFontOptShows"> 文字 </view> -->
+						</view> -->
+					<!-- </view> -->
+					
+					<!-- <view class="tool-bar">
+						<view class="bottom_item" @click="handleFontOptShows"> 文字 </view>
 						<view class="bottom_item" @click="handeleUploadImg"> 上传图片 </view>
 						<view class="bottom_item" @click="handleUndo"> 撤销 </view>
 		 
 						<view class="bottom_item" @click="handeleRedu"> 恢复 </view>
-					</view>
+					</view> -->
+					<picker @change="bindPickerChange" :value="SectionIndex" :range="Sectionarray" range-key="name">
+								<view style="padding: 20rpx;background-color: #F8F8F8;">发布板块：{{ Sectionarray[SectionIndex].name }}</view>
+					</picker>
+					<button size="default" type="default" 
+						style="margin-top: 20px;width: 283px;height: 40px;background-color: #2D983A;color: #FFFFFF;border: none;border-radius: 5px;font-size: 16px;text-align: center;line-height: 40px;cursor: pointer;" 
+						hover-class="is-hover">发布帖子</button>
 				</view>
-				<picker @change="bindPickerChange" :value="SectionIndex" :range="Sectionarray" range-key="name">
-							<view style="padding: 20rpx;background-color: #F8F8F8;">发布板块：{{ Sectionarray[SectionIndex].name }}</view>
-				</picker>
+
 				<!-- 	<u-picker :show="fontshow" :columns="fontList" keyName="label" :defaultIndex="defaultIndex"
 					@confirm="hadleFontConfirm" @cancel="fontshow = false"> -->
 				<!-- 字体类处理 -->
@@ -60,10 +76,65 @@
 				fontshow:false,
 				Sectionarray: [{ name: '所有帖子' }, { name: '二手交易' }, { name: '组队' }, { name: '身边趣事' }, { name: '时事新闻' }],
 				SectionIndex: 0,
-				
+				bottomHeight:'',
+				message:'',
+				imgarr:[],
+				address:'请选择',
+				longitude:'',
+				latitude:'',
 			}
 		},
+		onNavigationBarButtonTap(){
+					if(!this.message.trim()){
+						uni.showToast({
+							title:'请输入文字内容',
+							icon:'none'
+						})
+					}else if(this.imgarr.length==0){
+						uni.showToast({
+							title:'请上传图片',
+							icon:'none'
+						})
+					}else{
+						let img=[]
+						this.imgarr.forEach(item=>{
+							img.push(item.img2)
+						})
+						this.$http('/api/dynamic/addDynamic',{
+							content:this.message,
+							img:img.join(','),
+							lng:this.longitude,
+							lat:this.latitude
+						},"POST").then(data=>{
+							uni.navigateBack()
+							setTimeout(()=>{
+								uni.showToast({
+									title:'发布成功',
+								})
+							},100)
+						})
+					}
+				},
 		methods: {
+			getimg(){
+							upload(9-this.imgarr.length).then((arr)=>{
+								console.log(arr)
+								this.imgarr.push(...arr)
+							})
+						},
+						del(i){
+							this.imgarr.splice(i,1)
+						},
+						getAddress(){
+							var _this = this;
+							uni.chooseLocation({
+							    success: function (res) {
+										_this.address = res.address
+										_this.longitude = res.longitude
+										_this.latitude = res.latitude
+							    }
+							});
+						},
 			bindPickerChange: function(e) {
 						this.SectionIndex = e.detail.value;
 					},
@@ -339,15 +410,15 @@
 		mounted(){
 		uni.getSystemInfo({
 						success: (res) => {
-							this.bottomHeight = res.safeAreaInsets.bottom + 40 + "px";
+							this.bottomHeight = res.safeAreaInsets.bottom + 30 + "rpx";
 						},
 					});
 					uni.onKeyboardHeightChange((obj) => {
 						let height = obj.height;
 						if (height == 0) {
-							height += 80;
+							height += 160;
 						}
-						this.bottomHeight = height + "px";
+						this.bottomHeight = height + "rpx";
 					});
 					this.getTagList();
 		},
@@ -399,12 +470,42 @@
 	}
 </script>
 
-<style>
+<style lang="scss" scoped>
 .tool-bar{
-	height: 300rpx;
+	height: 100rpx;
 	background-color: #cde;
 	display: flex;
 	flex-direction:row;
 	justify-content: center;
 }
+.is-hover {
+	color: rgba(255, 255, 255, 0.6);
+	background-color: #179b16;
+	border-color: #179b16;
+  }
+/deep/.u-field{
+		padding: 0 !important;
+	}
+	.upload {
+		image{
+			width: 200rpx;
+			height: 200rpx;
+		}
+	}
+	.item {
+		border-radius: 60rpx;
+		margin-right: 28rpx;
+		width: calc((100% - 28rpx * 3) / 3);
+		image {
+			width: 100%;
+			height: 200rpx;
+			border-radius: 10rpx;
+		}
+	}
+	
+	// 给最外层的盒子添加伪元素，列不满则左对齐
+	.item-box::after {
+		content: "";
+		flex: auto;
+	}
 </style>

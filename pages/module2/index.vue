@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="plr">
-						<textarea v-model="message" maxlength="1000" placeholder="输入内容（最多1000字）" class="w100" style="height: 450rpx;" />
+						<textarea value="editorCtx" v-model="message" maxlength="1000" placeholder="输入内容（最多1000字）" class="w100" style="height: 450rpx;" />
 						</view>
 <view class="item-box flex flex-wrap u-m-l-36 u-m-r-8">
 				<view class="item upload u-m-t-20 relative" v-for="(item,i) in imgarr" :key="i" v-show="imgarr.length!=0">
@@ -11,6 +11,7 @@
 				<view class="item upload u-m-t-20" @click="getimg" v-show="imgarr.length < 9">
 					<image src="../../static/upload_image.png" v-if=""></image>
 				</view>
+				
 			</view>
 
 <!-- 		<view class="editor-wrapper" style="background-color: #F8F8F8;">
@@ -20,7 +21,8 @@
 					</editor>
 				</view> -->
 		 
-				<view class="bottom_opert bottom_safe" :style="{ bottom: bottomHeight }">
+<!-- 				<view class="bottom_opert bottom_safe" :style="{ bottom: bottomHeight }">
+				</view> -->
 <!-- 					<div class="text_info" style="float: right;color: #8a8a8a;font-size: 5%;display: flex;">
 						{{ textLength > 0 ? textLength+"/1000" : "最多1000字" }}
 					</div> -->
@@ -43,9 +45,20 @@
 		 
 						<view class="bottom_item" @click="handeleRedu"> 恢复 </view>
 					</view> -->
+				<view class="existing_label">
+									<view class="u-page__tag-item" v-for="(item, index) in allTags" :key="index">
+										<u-tag shape="circle"  :text="item.name" :bgColor="item.checked ? '#00ff7f':'#FFFFFF'" :color="item.checked ? '#FFFFFF':'#00b331'"  :name="index"
+											@click="chooseTag(index,item)" borderColor='#00ff7f'   :closable='tagClosable'
+											@close="closelabelTag">
+										</u-tag>
+									</view>
+								</view>
+
 					<picker @change="bindPickerChange" :value="SectionIndex" :range="Sectionarray" range-key="name">
-								<view style="padding: 20rpx;background-color: #F8F8F8;">发布板块：{{ Sectionarray[SectionIndex].name }}</view>
+								<view style="padding: 20rpx;background-color: #F8F8F8;color: #2D983A;">发布板块：&#32;&#32;&#32;&#32;{{ Sectionarray[SectionIndex].name }}</view>
 					</picker>
+					
+					
 					<button size="default" type="default" 
 						style="margin-top: 20px;width: 283px;height: 40px;background-color: #2D983A;color: #FFFFFF;border: none;border-radius: 5px;font-size: 16px;text-align: center;line-height: 40px;cursor: pointer;" 
 						hover-class="is-hover">发布帖子</button>
@@ -54,15 +67,16 @@
 				<!-- 	<u-picker :show="fontshow" :columns="fontList" keyName="label" :defaultIndex="defaultIndex"
 					@confirm="hadleFontConfirm" @cancel="fontshow = false"> -->
 				<!-- 字体类处理 -->
-				<u-popup safeAreaInsetBottom :show="fontshow" mode="bottom" @close="fontListClose">
+
+<!-- 				<u-popup safeAreaInsetBottom :show="fontshow" mode="bottom" @close="fontListClose">
 					<div class="content" round>
 						<div class="content_item" v-for="(item,index) in fontList" :class="{activeItem:item.id ==currentId }"
 							@click="hadleFontConfirm(item)">
 							{{item.label}}
 						</div>
 					</div>
-				</u-popup>
-	</view>
+				</u-popup> -->
+	
 </template>
 
 <script>
@@ -82,6 +96,25 @@
 				address:'请选择',
 				longitude:'',
 				latitude:'',
+				allTags:[
+									{
+										name:'开心',
+										checked: false
+									},
+									{
+										name:'玉玉了',
+										checked: false
+									},
+									{
+										name:'愉悦',
+										checked: false
+									},
+									{
+										name:'I ♥ SEU',
+										checked: false
+									},
+								],
+			tag:[],
 			}
 		},
 		onNavigationBarButtonTap(){
@@ -116,13 +149,31 @@
 					}
 				},
 		methods: {
+			chooseTag(index,item) {
+						this.allTags[index].checked = !this.allTags[index].checked
+						let data = this.allTags
+						let arr = []
+						data.forEach(item=>{
+							if(item.checked){
+								arr.push({
+									//这里是根据接口的要求截取的一些字段，如果你不需要筛选可以直接push(item)
+									id: item.id,
+									name: item.name
+								})
+							}
+						})
+						this.tag = arr
+						console.log(this.tag)
+						//this.form.patient.allergy = JSON.stringify(this.allergy)
+					},
+
 			getimg(){
 							upload(9-this.imgarr.length).then((arr)=>{
 								console.log(arr)
 								this.imgarr.push(...arr)
 							})
 						},
-						del(i){
+			del(i){
 							this.imgarr.splice(i,1)
 						},
 						getAddress(){
@@ -508,4 +559,59 @@
 		content: "";
 		flex: auto;
 	}
+	.existing_label {
+				width: 620rpx;
+				margin-top: 10px;
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				align-content: space-between;
+				flex-wrap: wrap;
+				.u-page__tag-item {
+					margin-top: 8px;
+					// background: rgba(41, 41, 69, 0.05);
+					margin-right: 0rpx;
+				}
+				// .u-page__tag-item:nth-child(3n){
+				// 	margin-right: 0;
+				// }
+				.u-tag u-tag--circle u-tag--primary--plain u-tag--medium{
+					margin-right: 0px!important;
+				}
+				/deep/{
+					.u-tag--primary{
+						border-radius: 50px;
+						background-color:rgba(41, 41, 69, 0.05);
+						border-color: #00b331!important;
+						// border-image:linear-gradient(to right,rgba(93, 164, 247, 1), rgba(50, 133, 228, 1))1!important;
+					}
+					.u-tag-wrapper {
+						// background:  rgba(41, 41, 69, 0.05);
+						border-radius: 50px;
+					}
+					.u-tag u-tag--circle u-tag--primary u-tag--medium {
+						background-color:rgba(41, 41, 69, 0.05);
+					}
+					.u-tag--medium{
+						padding: 0 15px;
+						background:  rgba(41, 41, 69, 0.05);
+					}
+					.u-tag__close--medium{
+						border: 1px solid rgba(122, 122, 140, 1);
+						background:  #FFFFFF !important;
+					}
+					.u-tag__close{
+						// background-color: #FFFFFF!important;
+						top:12px;
+						right: 18px;
+					}
+					.u-icon__icon{
+						color:rgba(122, 122, 140, 1)!important;
+					}
+					// .u-tag u-tag--circle u-tag--primary--plain u-tag--medium {
+					// 	background: red;
+					// }
+				}
+			}
+		
 </style>

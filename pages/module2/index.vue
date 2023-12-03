@@ -1,9 +1,9 @@
 <template>
 	<view>
 		<view class="plr">
-						<textarea value="editorCtx" v-model="message" maxlength="1000" placeholder="输入内容（最多1000字）" class="w100" style="height: 450rpx;" />
-						</view>
-<view class="item-box flex flex-wrap u-m-l-36 u-m-r-8">
+						<textarea value="editorCtx" v-model="message" maxlength="1000" placeholder="输入内容（最多1000字）" class="w100" style="height: 430rpx;" />
+		</view>
+		<view class="item-box flex flex-wrap u-m-l-36 u-m-r-8">
 				<view class="item upload u-m-t-20 relative" v-for="(item,i) in imgarr" :key="i" v-show="imgarr.length!=0">
 					<image :src="item.img1" v-if=""></image>
 					<image @click="del(i)" src="../../static/del_image.png" class="absolute" style="width: 32rpx;height: 32rpx;top: 5rpx;right: 5rpx;" v-if=""></image>
@@ -12,7 +12,7 @@
 					<image src="../../static/upload_image.png" v-if=""></image>
 				</view>
 				
-			</view>
+		</view>
 
 <!-- 		<view class="editor-wrapper" style="background-color: #F8F8F8;">
 					<editor id="editor" class="ql-container"  @focus="handleFocus" @blur="handleBlur" @input="handleInput"
@@ -51,8 +51,20 @@
 											@click="chooseTag(index,item)" borderColor='#00ff7f'   :closable='tagClosable'
 											@close="closelabelTag">
 										</u-tag>
+										
+									</view>
+									<view class="u-page__tag-item" v-for="(item, index) in Tags" :key="index">
+										<u-tag shape="circle"  :text="item.name" :bgColor="item.checked ? '#00ff7f':'#FFFFFF'" :color="item.checked ? '#FFFFFF':'#00b331'"  :name="index"
+											@click="addTag()" borderColor='#00ff7f'   :closable='tagClosable'
+											@close="closelabelTag" style="width: 4rpx;">
+										</u-tag>
+										<modal v-if="areaShow" title="新增标签" confirm-text="保存" cancel-text="取消" @cancel="cancelAdd" @confirm="confirmAdd">
+										<input type="text" v-model="areaTxt" placeholder="限填8个字" class="intxt" maxlength="8" />
+										</modal>
 									</view>
 								</view>
+
+						
 
 					<picker @change="bindPickerChange" :value="SectionIndex" :range="Sectionarray" range-key="name">
 								<view style="padding: 20rpx;background-color: #F8F8F8;color: #2D983A;">发布板块：&#32;&#32;&#32;&#32;{{ Sectionarray[SectionIndex].name }}</view>
@@ -76,7 +88,7 @@
 						</div>
 					</div>
 				</u-popup> -->
-	
+	</view>
 </template>
 
 <script>
@@ -114,7 +126,15 @@
 										checked: false
 									},
 								],
+			Tags:[
+								{
+									name:'+',
+									checked: false
+								},
+							],
 			tag:[],
+			areaShow:false,
+			areaTxt:'',
 			}
 		},
 		onNavigationBarButtonTap(){
@@ -149,6 +169,67 @@
 					}
 				},
 		methods: {
+			cancelAdd(){
+						this.areaShow = false
+						this.areaTxt=''
+					},
+			confirmAdd(){
+						if(this.areaTxt == ''){
+												uni.showModal({
+																
+																content: '输入不能为空',
+																showCancel: false,
+																confirmText: '确定'
+															});
+												this.areaShow=false
+												// this.areaTxt=''
+
+											}
+											else {
+												// 输入值点击保存 判断标签是否存在，不存在在走 新建标签的流程
+												console.log('选择的标签是:',this.areaTxt)
+												let isSame = 0
+												this.allTags.map((item, index) => {
+													item.name == this.areaTxt ? isSame++ : ''
+												})
+												// if isSame==0则标签不存在要新建标签
+												if(isSame != 0) {
+													//存在
+													console.log('存在')
+													uni.showModal({
+																	
+																	content: '该标签已存在',
+																	showCancel: false,
+																	confirmText: '确定'
+																});
+													this.areaShow=false
+													this.areaTxt=''
+												}else {
+													// 不存在
+													
+													console.log('不存在')
+													let list = []
+													list = uni.getStorageSync('allTags')
+													console.log(list)
+													let a={'name':this.areaTxt, 'checked':false}
+													console.log(a)
+													// list.push(a)
+													// uni.setStorage({
+													// 		key:'allTags',
+													// 		data:{    //存的数据可以是很多条
+													// 		'name': list.name,
+													// 		'checked':list.checked
+													// }
+													// 	})	
+													this.allTags.push(a)
+													console.log(this.allTags)
+						
+						this.areaShow = false
+						this.areaTxt=''
+						}
+						}
+					},
+			
 			chooseTag(index,item) {
 						this.allTags[index].checked = !this.allTags[index].checked
 						let data = this.allTags
@@ -157,7 +238,6 @@
 							if(item.checked){
 								arr.push({
 									//这里是根据接口的要求截取的一些字段，如果你不需要筛选可以直接push(item)
-									id: item.id,
 									name: item.name
 								})
 							}
@@ -166,12 +246,47 @@
 						console.log(this.tag)
 						//this.form.patient.allergy = JSON.stringify(this.allergy)
 					},
+			addTag(){
+				// uni.showModal({
+				//         title: '请添加标签',
+				//         content: '',
+				//         editable:true,//是否显示输入框
+				// 		placeholderText:'',//输入框提示内容
+				//         confirmText: '确认',
+				// 		maxlength:'8',
+				//         cancelText: '取消',
+				//         success: (res) => {
+				//           if (res.confirm) {
+				//             console.log('输入的内容：', res.content);
+				//           }
+				//         } 
+				//       });
+				this.areaShow=true
+			},
 
 			getimg(){
-							upload(9-this.imgarr.length).then((arr)=>{
-								console.log(arr)
-								this.imgarr.push(...arr)
-							})
+							// 从相册选择6张图
+							uni.chooseImage({
+							    count: 9,
+							    sizeType: ['original', 'compressed'],
+							    sourceType: ['album'],
+							    success: function(res) {
+							        // 预览图片
+							        uni.previewImage({
+							            urls: res.tempFilePaths,
+							            longPressActions: {
+							                itemList: ['发送给朋友', '保存图片', '收藏'],
+							                success: function(data) {
+							                    console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+							                },
+							                fail: function(err) {
+							                    console.log(err.errMsg);
+							                }
+							            }
+							        });
+							    }
+							    });
+
 						},
 			del(i){
 							this.imgarr.splice(i,1)
@@ -471,7 +586,7 @@
 						}
 						this.bottomHeight = height + "rpx";
 					});
-					this.getTagList();
+					// this.getTagList();
 		},
 		fontList: [
 							//文字样式

@@ -3,9 +3,9 @@
 		<view class="plr">
 						<textarea value="editorCtx" v-model="message" maxlength="1000" placeholder="输入内容（最多1000字）" class="w100" style="height: 430rpx;" />
 		</view>
-		<view class="item-box flex flex-wrap u-m-l-36 u-m-r-8">
-				<view class="item upload u-m-t-20 relative" v-for="(item,i) in imgarr" :key="i" v-show="imgarr.length!=0">
-					<image :src="item.img1" v-if=""></image>
+		<view class="item-box flex flex-wrap u-m-l-36 u-m-r-10">
+				<view class="item upload u-m-t-20 relative" v-for="item in imgarr" :key="i" v-show="imgarr.length!=0">
+					<image :src="item" v-if="" mode="widthFix"></image>
 					<image @click="del(i)" src="../../static/del_image.png" class="absolute" style="width: 32rpx;height: 32rpx;top: 5rpx;right: 5rpx;" v-if=""></image>
 				</view>
 				<view class="item upload u-m-t-20" @click="getimg" v-show="imgarr.length < 9">
@@ -92,8 +92,11 @@
 </template>
 
 <script>
-
+	import {pathToBase64} from '../../js_sdk/mmmm-image-tools/index.js'
 	export default {
+		// created() {
+		//   this.imgarr = [];
+		// },
 		data() {
 			return {
 				textLength:0,
@@ -105,6 +108,7 @@
 				bottomHeight:'',
 				message:'',
 				imgarr:[],
+				resarr:[],
 				address:'请选择',
 				longitude:'',
 				latitude:'',
@@ -208,9 +212,9 @@
 													// 不存在
 													
 													console.log('不存在')
-													let list = []
-													list = uni.getStorageSync('allTags')
-													console.log(list)
+													// let list = []
+													// list = uni.getStorageSync('allTags')
+													// console.log(list)
 													let a={'name':this.areaTxt, 'checked':false}
 													console.log(a)
 													// list.push(a)
@@ -263,33 +267,69 @@
 				//       });
 				this.areaShow=true
 			},
-
 			getimg(){
-							// 从相册选择6张图
+							// 从相册选择9张图
+							var _this = this;
 							uni.chooseImage({
 							    count: 9,
 							    sizeType: ['original', 'compressed'],
 							    sourceType: ['album'],
-							    success: function(res) {
+							    success: res=>{
 							        // 预览图片
-							        uni.previewImage({
-							            urls: res.tempFilePaths,
-							            longPressActions: {
-							                itemList: ['发送给朋友', '保存图片', '收藏'],
-							                success: function(data) {
-							                    console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
-							                },
-							                fail: function(err) {
-							                    console.log(err.errMsg);
-							                }
-							            }
-							        });
+							        // uni.previewImage({
+							        //     urls: res.tempFilePaths,
+							        //     longPressActions: {
+							        //         itemList: ['发送给朋友', '保存图片', '收藏'],
+							        //         success: function(data) {
+							        //             console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+							        //         },
+							        //         fail: function(err) {
+							        //             console.log(err.errMsg);
+							        //         }
+							        //     }
+							        // });
+									// uni.showLoading({
+									// 				title:'加载中...'
+									// 			});
+									this.resarr=res.tempFilePaths
+									// uni.getImageInfo({
+									// 							src: res.tempFilePaths[i],
+									// 							success: (path) => {
+									// 								pathToBase64(path.path).then(base64 => {
+									// 										// console.log("base64="+base64); // 这就是转为base64格式的图片
+									// 										// console.log(typeof base64)
+									// 										if(this.imgarr === undefined) {
+									// 										  this.imgarr = []
+									// 										}
+									// 										this.imgarr.push(base64)
+									// 										console.log(this.imgarr.length)
+									// 										// console.log("1111"+this.imgarr)	
+									// 										// uni.hideLoading()
+									// 									})
+									// 									.catch(error => {
+									// 										console.error(error)
+									// 									})
+									// 							},
+																
+									// 						})
+									
+								// this.$forceUpdate();
+									console.log(this.resarr.length)
+									for (let i = 0; i < this.resarr.length; i++) {  
+										let data=this.resarr[i]
+											this.imgarr.push(data)
+										}
+									console.log(this.imgarr.length)
+								
 							    }
 							    });
+
+								
 
 						},
 			del(i){
 							this.imgarr.splice(i,1)
+							console.log(this.imgarr.length)
 						},
 						getAddress(){
 							var _this = this;

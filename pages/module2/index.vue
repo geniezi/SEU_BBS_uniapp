@@ -262,6 +262,7 @@
 							duration: 1000,
 						})
 						console.log(response.data.data) //打印token测试
+							
 							uni.switchTab({
 								url: '/pages/homePage/index',
 								success: () => {
@@ -370,10 +371,10 @@
 				let arr = []
 				data.forEach(item => {
 					if (item.checked) {
-						arr.push({
+						arr.push(
 							//这里是根据接口的要求截取的一些字段，如果你不需要筛选可以直接push(item)
-							name: item.name
-						})
+							 item.name
+						)
 					}
 				})
 				this.tag = arr

@@ -127,6 +127,7 @@
 				SectionIndex: 0,
 				bottomHeight: '',
 				message: '',
+				result:'',
 				imgarr: [],
 				uploadimg:[],
 				resarr: [],
@@ -214,35 +215,15 @@
 				//         }
 				//     }
 				// });
-				console.log(this.message.length)
-				console.log(this.title.length)
-				if(this.canPost){
-				if(this.imgarr.length!=0){
-				for (let i = 0; i < this.imgarr.length; i++) {
-				uni.uploadFile({
-					url: 'http://47.113.230.37:30088/seu/bbs/upload/post', //仅为示例，非真实的接口地址
-					filePath: this.imgarr[i],
-					name: 'file',
-					// formData: {
-					// 	'user': 'test'
-					// },
-					header: {
-						'Authentication': uni.getStorageSync('Authentication')
-					},
-					success: (res) => {
-						console.log(res.data);
-						if (res.data.code == 200) {
-							console.log('文件上传成功')
-							console.log(res.data.data)
-							this.uploadimg.push(res.data.data)
-						}
-					}
-				});
-				}
-				}
+				// console.log(this.message.length)
+				// console.log(this.title.length)
+			if(this.canPost){
 				this.$myRequest({
 						url: '/post/add',
 						method: "POST",
+						header: {
+							'Authentication': uni.getStorageSync('Authentication')
+						},
 						data: {
 							"postParam": {
 							        "title": this.title,
@@ -254,14 +235,15 @@
 						}
 					})
 					.then(response => {
+						console.log("uploadv "+this.uploadimg)
 						uni.showToast({
 							title: '发帖成功',
 							//将值设置为 success 或者直接不用写icon这个参数
 							icon: 'success',
 							//显示持续时间为 2秒
-							duration: 1000,
+							duration: 2000,
 						})
-						console.log(response.data.data) //打印token测试
+						// console.log(response.data.data) //打印token测试
 							
 							uni.switchTab({
 								url: '/pages/homePage/index',
@@ -274,7 +256,7 @@
 							})
 						})
 				}
-				else{
+			else{
 					if (this.title.length == 0) {
 						uni.$u.toast('标题不能为空');
 						return;
@@ -299,7 +281,7 @@
 
 				// 		}),
 				// uni.setStorageSync('Authentication', response.data.data)
-				console.log('文件上传成功')
+				// console.log('文件上传成功')
 			},
 			cancelAdd() {
 				this.areaShow = false
@@ -445,12 +427,37 @@
 						// 						})
 
 						// this.$forceUpdate();
-						console.log(this.resarr.length)
-						for (let i = 0; i < this.resarr.length; i++) {
+						// console.log(this.resarr.length)
+						for ( let i=0;i<this.resarr.length;i++) {
 							let data = this.resarr[i]
+							console.log(data)
 							this.imgarr.push(data)
+							uni.uploadFile({
+								url: 'http://47.113.230.37:30088/seu/bbs/upload/post', //仅为示例，非真实的接口地址
+								filePath: data,
+								name: 'file',
+								// formData: {
+								// 	'user': 'test'
+								// },
+								header: {
+									'Authentication': uni.getStorageSync('Authentication')
+								},
+								success: (res) => {
+									let result =JSON.parse(res.data) ;
+									console.log(result)
+									if (result.code == 200) {
+										console.log('文件上传成功')
+										console.log("1111"+result.data)
+										this.uploadimg.push(result.data)
+										// console.log("upload "+this.uploadimg)
+									}
+									else{
+										console.log('文件上传不成功')
+									}
+								}
+							});
 						}
-						console.log(this.imgarr.length)
+						
 
 					}
 				});
@@ -460,7 +467,8 @@
 			},
 			del(i) {
 				this.imgarr.splice(i, 1)
-				console.log(this.imgarr.length)
+				this.uploadimg.splice(i,1)
+				// console.log(this.imgarr.length)
 			},
 			getAddress() {
 				var _this = this;

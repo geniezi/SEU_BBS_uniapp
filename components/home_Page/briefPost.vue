@@ -68,7 +68,8 @@
 
 <script>
 	export default {
-		props:['nickName','postTime','iconUrl','content','image','tags'],
+		props:['nickName','postTime','iconUrl','content','image','tags',
+		'postId','userId','title','likes','dislikes','visits'],
 		/*props: {
 			
 			nickName: //昵称

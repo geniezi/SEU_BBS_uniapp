@@ -25,16 +25,7 @@
 		    
 		}
 		,
-		{
-		    "path" :"components/home_Page/briefPost" ,//
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "首页测试",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		}
-		,
+		
 		
 		
 		{

@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<u-button class="refreshButton" text="123" @click="onScrollToUpper" size="mini">轻触刷新</u-button>
+		<u-button class="refreshButton" text="123" @click="onScrollToUpper" size="mini">轻触重置</u-button>
   
 		<briefPost v-for="(post, index) in posts" :key="index" :nickName="post.userInfoVO.username"
 			:postTime="post.postTime" :iconUrl="post.userInfoVO.iconUrl" :content="post.content"
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-	import briefPost from '@/components/home_Page/briefPost.vue';
+	import briefPost from '@/pages/homePage/briefPost.vue';
 
 	export default {
 		components: {

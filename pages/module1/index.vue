@@ -1,124 +1,119 @@
 <template>
-<view>
-	
-<!-- 	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view class="text-area">
-			<text class="title">{{title}}</text>
+	<view>
+		<u-button class="refreshButton" text="123" @click="onScrollToUpper" size="mini">轻触刷新</u-button>
+		<view class="message-list">
+			<view v-for="(message, index) in messages" :key="index" class="message-item" @click="goToChat(1)">
+				<view class="avatar">
+					<img :src=searchSenderAvatar(message.opposeId) alt="Avatar">
+				</view>
+				<view class="content">
+					<view class="sender">{{ searchSenderName(message.opposeId) }}</view>
+					<view class="text">{{ message.content }}</view>
+					<view class="time">{{ message.sendTime }}</view>
+				</view>
+
+
+			</view>
 		</view>
-	</view> -->
-	
-	  <view class="message-list">
-		  
-	    <view v-for="(message, index) in messages" :key="index" class="message-item" @click="goToChat(1)">
-	      <view class="avatar">
-	        <img :src="message.avatar" alt="Avatar">
-	      </view>
-	      <view class="content">
-	        <view class="sender">{{ message.sender }}</view>
-	        <view class="text">{{ message.text }}</view>
-	        <view class="time">{{ message.time }}</view>
-	      </view>
-		  
-		  
-	    </view>
-	  </view>
-	  
-</view>
+
+	</view>
 </template>
 
 <script>
 	export default {
+		created() {
+			this.$myRequest({
+					header: {
+						'Authentication': uni.getStorageSync('Authentication')
+					},
+					url: '/chat/pagePeople',
+					method: 'GET',
+					data: {
+						"page": 0,
+						"size": 20,
+					},
+				})
+				.then(res => {
+					console.log("chat people search succ")
+					this.messages = res.data.data.records;
+				});
+
+		},
+
+
 		data() {
 			return {
-				messages: [
-				        {
-				          avatar: "/static/avatar1.jpg",
-				          sender: "18858590000",
-				          text: "Hello!",
-				          time: "10:00 AM"
-				        },
-				        {
-				          avatar: "/static/avatar2.jpg",
-				          sender: "gzy",
-				          text: "Hi there!",
-				          time: "10:05 AM"
-				        },
-						{
-						  avatar: "/static/avatar1.jpg",
-						  sender: "18858590000",
-						  text: "Hello!",
-						  time: "10:00 AM"
-						},
-						{
-						  avatar: "/static/avatar2.jpg",
-						  sender: "gzy",
-						  text: "Hi there!",
-						  time: "10:05 AM"
-						},{
-				          avatar: "/static/avatar1.jpg",
-				          sender: "18858590000",
-				          text: "Hello!",
-				          time: "10:00 AM"
-				        },
-				        {
-				          avatar: "/static/avatar2.jpg",
-				          sender: "gzy",
-				          text: "Hi there!",
-				          time: "10:05 AM"
-				        },{
-				          avatar: "/static/avatar1.jpg",
-				          sender: "18858590000",
-				          text: "Hello!",
-				          time: "10:00 AM"
-				        },
-				        {
-				          avatar: "/static/avatar2.jpg",
-				          sender: "gzy",
-				          text: "Hi there!",
-				          time: "10:05 AM"
-				        },{
-				          avatar: "/static/avatar1.jpg",
-				          sender: "18858590000",
-				          text: "Hello!",
-				          time: "10:00 AM"
-				        },
-				        {
-				          avatar: "/static/avatar2.jpg",
-				          sender: "gzy",
-				          text: "Hi there!",
-				          time: "10:05 AM"
-				        },
-				        // Add more messages as needed
-					]	
-						
-}
+				messages: [{
+					opposeId: "",
+					content: "",
+					picId: 0,
+					isUnread: false,
+					sendTime: "",
+				}],
+			}
 		},
 		onLoad() {
 
 		},
-		
-		mounted() {
-		  this.$nextTick(() => {
-		      const query = uni.createSelectorQuery().in(this)
-		      query.selectViewport().scrollOffset()
-		      query.exec(res => {
-		        uni.pageScrollTo({
-		          scrollTop: res[0].scrollHeight // 页面总高度
-		        })
-		      })
-		    })
-		  console.log("mouted")
-		},
-		
-		methods: {
 
- goToChat(userId) {
-      // 跳转到聊天界面，userId为用户ID
-	  uni.navigateTo({
-	  			    url: '/pages/module1/chat'
-	  			});
-    }
+		mounted() {
+
+			this.$nextTick(() => {
+				const query = uni.createSelectorQuery().in(this)
+				query.selectViewport().scrollOffset()
+				query.exec(res => {
+					uni.pageScrollTo({
+						scrollTop: res[0].scrollHeight // 页面总高度
+					})
+				})
+			})
+			console.log("mouted")
+		},
+
+		methods: {
+			onScrollToUpper(){
+			uni.reLaunch({
+				url: '/pages/module1/index'
+			})
+			},
+			
+			
+			searchSenderName(senderid) {
+				this.$myRequest({
+						header: {
+							'Authentication': uni.getStorageSync('Authentication')
+						},
+						url: '/user/getNI/' + senderid,
+						method: 'GET',
+					})
+					.then(response => {
+						console.log("chatParter name search succ")
+						return response.data.data.username;
+					});
+			},
+
+			searchSenderAvatar(senderid) {
+				this.$myRequest({
+						header: {
+							'Authentication': uni.getStorageSync('Authentication')
+						},
+						url: '/user/getNI/' + senderid,
+						method: 'GET',
+					})
+					.then(response => { 
+						console.log("chatParter avatar search succ")
+						return response.data.data.iconUrl;
+					});
+			},
+
+
+			
+			goToChat(userId) {
+				// 跳转到聊天界面，userId为用户ID
+				uni.navigateTo({
+					url: '/pages/module1/chat'
+				});
+			}
 
 		}
 	}
@@ -150,44 +145,42 @@
 		font-size: 36rpx;
 		color: #8f8f94;
 	}
-	
-	.message-list {
-	  /* Add your styles here */
-	}
-	
-	.message-item {
-	  display: flex;
-	  align-items: center;
-	  padding: 10px;
-	  /* Add your styles here */
-	}
-	
-	.avatar img {
-	  width: 50px;
-	  height: 50px;
-	  border-radius: 50%;
-	  /* Add your styles here */
-	}
-	
-	.content {
-	  margin-left: 10px;
-	  /* Add your styles here */
-	}
-	
-	.sender {
-	  font-weight: bold;
-	  /* Add your styles here */
-	}
-	
-	.text {
-	  /* Add your styles here */
-	}
-	
-	.time {
-	  font-size: 12px;
-	  color: gray;
-	  /* Add your styles here */
-	}
-	
 
+	.message-list {
+		/* Add your styles here */
+	}
+
+	.message-item {
+		display: flex;
+		align-items: center;
+		padding: 10px;
+		/* Add your styles here */
+	}
+
+	.avatar img {
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		/* Add your styles here */
+	}
+
+	.content {
+		margin-left: 10px;
+		/* Add your styles here */
+	}
+
+	.sender {
+		font-weight: bold;
+		/* Add your styles here */
+	}
+
+	.text {
+		/* Add your styles here */
+	}
+
+	.time {
+		font-size: 12px;
+		color: gray;
+		/* Add your styles here */
+	}
 </style>

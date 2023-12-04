@@ -120,10 +120,11 @@
 								duration: 1000,
 							})
 							uni.setStorageSync('Authentication', response.data.data)
-							//login的token存入本地
-							console.log(response.data.data) //打印token测试
+							// //login的token存入本地
+							// console.log(response.data.data)//打印token测试
+							
 							uni.switchTab({
-								url: '/pages/index/index',
+								url: '/pages/homePage/index',
 								success: () => {
 									console.log(1);
 								},

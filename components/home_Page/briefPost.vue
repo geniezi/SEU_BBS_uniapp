@@ -3,11 +3,10 @@
 		<!--基本信息-->
 		<view class="post-header">
 			<!-- 头像 昵称 时间 -->
-			<u-image :src="iconUrl" width="40px" height="40px"
-				shape="circle"></u-image> <!--:src="avatarUrl"-->
+			<u-image :src="iconUrl" width="40px" height="40px" shape="circle"></u-image> <!--:src="avatarUrl"-->
 			<text class="nickname">{{ nickName }}</text> <!--{{ nickname }}  xlnx-x+C-->
 			<text class="post-time">{{ postTime }}</text> <!---->
-			
+
 			<!-- 举报按钮-->
 			<view class="report-container">
 				<u-popup :show="show" mode="bottom" @close="close" @open="open">
@@ -20,24 +19,25 @@
 			</view>
 		</view>
 
-		<!-- 帖子内容 -->
-		<view class="post-content">{{ content }}</view> <!--{{ content }}-->
+		<view @click="goToDetail">
+			<!-- 帖子内容 -->
+			<view class="post-content">{{ content }}</view> <!--{{ content }}-->
 
-		<!-- 帖子配图 -->
-		<view class="post-images">
-			<!-- 多张图 -->
-			<!--<u-image v-for="(image, index) in images" :key="index" :src="image"></u-image>-->
-			<u-image :src="image" width="160px" height="130px"></u-image>
-		</view>
+			<!-- 帖子配图 -->
+			<view class="post-images" v-if="image !== '' && image !== null">
+				<!-- 多张图 -->
+				<!--<u-image v-for="(image, index) in images" :key="index" :src="image"></u-image>-->
+				<u-image :src="image" width="160px" height="130px"></u-image>
+			</view>
 
-		<!-- 标签 -->
-		<view class="post-tags">
-			
-			<u-tag v-for="tag in tags" :key="tag" :text="tag" 
-			bgColor="#f1f1f1" size="mini" icon="tags" plain borderColor="white"></u-tag>
-			<!--{{ category }} -->
+			<!-- 标签 -->
+			<view class="post-tags">
+
+				<u-tag v-for="tag in tags" :key="tag" :text="tag" bgColor="#f1f1f1" size="mini" icon="tags" plain
+					borderColor="white"></u-tag>
+				<!--{{ category }} -->
+			</view>
 		</view>
-		
 
 		<!-- 点赞收藏评论-->
 		<view class="post-actions">
@@ -51,25 +51,26 @@
 				<view class="count">{{ collectCount }}</view>
 			</view>
 
-			<view class="action-item" ><!--@click="commentPost"-->
+			<view class="action-item"><!--@click="commentPost"-->
 				<u-popup :show="commentShow" mode="bottom" @close="closeComment" @open="openComment">
-				  <view>
-					<u-textarea v-model="commentContent" placeholder="请输入内容" ></u-textarea>
-				    <u-button icon="share-square" @click="sendComment">发送</u-button>
-				  </view>
+					<view>
+						<u-textarea v-model="commentContent" placeholder="请输入内容"></u-textarea>
+						<u-button icon="share-square" @click="sendComment">发送</u-button>
+					</view>
 				</u-popup>
 				<u-icon name="chat" size="20px" @click="commentShow = true"></u-icon>
 				<view class="count">{{ commentCount }}</view>
 			</view>
 		</view>
 	</view>
-	
+
 </template>
 
 <script>
 	export default {
-		props:['nickName','postTime','iconUrl','content','image','tags',
-		'postId','userId','title','likes','dislikes','visits'],
+		props: ['nickName', 'postTime', 'iconUrl', 'content', 'image', 'tags',
+			'postId', 'userId', 'title', 'likes', 'dislikes', 'visits'
+		],
 		/*props: {
 			
 			nickName: //昵称
@@ -128,21 +129,16 @@
 			return {
 				// showDropdownMenu: false, // 控制下拉菜单的显示状态
 				//isPopupVisible: false,
-			
+
 				show: false,
 				isLiked: false,
-				value1:'',
+				value1: '',
 				likeCount: 0,
 				isCollected: false,
 				collectCount: 0,
 				commentCount: 0,
 				commentShow: false,
 				commentContent: ''
-				// likeIcon: 'likeIconUrl',
-				// likedIcon: 'likedIconUrl',
-				// collectIcon: 'collectIconUrl',
-				// collectedIcon: 'collectedIconUrl',
-				// commentIcon: 'commentIconUrl'
 			};
 		},
 		methods: {
@@ -154,12 +150,11 @@
 				// console.log('close');
 			},
 			openComment() {
-			    //this.commentShow = true;
-			  },
-			  closeComment() {
-			    this.commentShow = false;
-			  },
-			  
+				//this.commentShow = true;
+			},
+			closeComment() {
+				this.commentShow = false;
+			},
 			reportPost() {
 				// 处理举报帖子
 				//this.isPopupVisible = false;
@@ -196,18 +191,50 @@
 				//this.commentCount++;
 			},
 			sendComment() {
-			    // 完成评论的逻辑
-				this.commentCount++;
-				this.closeComment();
-			    uni.$u.toast('回帖已发送');
-			    this.commentContent = '';
-			    //this.commentShow = false;
-			  }
+				// 完成评论的逻辑
+				this.$myRequest({
+						header: {
+							'Authentication': uni.getStorageSync('Authentication')
+						},
+						url: '/comment/add',
+						method: "POST",
+						data: {
+							"postId": this.postId,
+							"commentId": 0,
+							"content": this.commentContent
+						}
+					})
+					.then(response => {
+						this.commentCount++;
+						this.closeComment();
+						uni.$u.toast('回帖已发送');
+						this.commentContent = '';
+						//this.commentShow = false;
+					})
+					.catch(error => {
+						if (error.data.code == 500) {
+							uni.$u.toast('评论失败');
+							return;
+						}
+					});
+			},
+			goToDetail() {
+				uni.switchTab({
+					url: '/pages/module1/index', //路径要改，传postId
+					success: () => {
+						console.log(1);
+						uni.$u.toast('跳转至详情页' + this.postId);
+					},
+					fail: (res) => {
+						console.log('navigate failed', res);
+					}
+				})
+			}
 		}
 	};
 </script>
 
-<style >
+<style>
 	.brief-post {
 		padding: 10px;
 		background-color: #fff;
@@ -283,6 +310,4 @@
 		color: #999;
 		margin-left: 5px;
 	}
-	
-	
 </style>

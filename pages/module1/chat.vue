@@ -35,6 +35,60 @@
 		created
 	} from '../../uni_modules/uview-ui/libs/mixin/mixin';
 	export default {
+		
+		//新页面接收后：
+		onLoad(option) {
+		    this.chatPartnerID = option.id  ; // 字符串转对象
+			console.log(option.id)
+		    console.log(this.chatPartnerID)
+			console.log(typeof(this.chatPartnerID))
+			
+			console.log("test created")
+			console.log(this.chatPartnerID)
+			this.$myRequest({
+					header: {
+						'Authentication': uni.getStorageSync('Authentication')
+					},
+					url: '/user/getNI/' + this.chatPartnerID,
+					method: 'GET',
+				})
+				.then(response => {
+					console.log("chatParter search succ")
+					this.chatPartnerName = response.data.data.username;
+					this.chatPartnerAvatar = response.data.data.iconUrl;
+				});
+			
+			
+			this.$myRequest({
+					header: {
+						'Authentication': uni.getStorageSync('Authentication')
+					},
+					url: '/user/getNI/' + this.myID,
+					method: 'GET',
+				})
+				.then(res => {
+					console.log("myinfo search succ")
+					this.myAvatar = res.data.data.iconUrl;
+				});
+			
+			this.$myRequest({
+					header: {
+						'Authentication': uni.getStorageSync('Authentication')
+					},
+					url: '/chat/pageMessage',
+					method: 'GET',
+					data: {
+						"page": 0,
+						"size": 10,
+						"id": this.chatPartnerID
+					},
+				})
+				.then(res => {
+					console.log("chat record search succ")
+					this.messages = res.data.data.records.reverse();
+					console.log("接受record成功")
+				});
+		},
 
 		mounted() {
 			// this.scrollToBottom()
@@ -54,7 +108,7 @@
 			return {
 
 				messageInput: '',
-				chatPartnerID: '1728297677709512704',
+				chatPartnerID: '',
 				myID: '1729121929987756032',
 				chatPartnerName: '张三',
 				chatPartnerAvatar: '',
@@ -73,57 +127,57 @@
 
 
 		//点击进入聊天窗口后，分页查询聊天记录,预加载名称、头像等资源
-		created() {
-			console.log("test created")
-
-			this.$myRequest({
-					header: {
-						'Authentication': uni.getStorageSync('Authentication')
-					},
-					url: '/user/getNI/' + this.chatPartnerID,
-					method: 'GET',
-				})
-				.then(response => {
-					console.log("chatParter search succ")
-					this.chatPartnerName = response.data.data.username;
-					this.chatPartnerAvatar = response.data.data.iconUrl;
-				});
-
-
-			this.$myRequest({
-					header: {
-						'Authentication': uni.getStorageSync('Authentication')
-					},
-					url: '/user/getNI/' + this.myID,
-					method: 'GET',
-				})
-				.then(res => {
-					console.log("myinfo search succ")
-					this.myAvatar = res.data.data.iconUrl;
-				});
-
-			this.$myRequest({
-					header: {
-						'Authentication': uni.getStorageSync('Authentication')
-					},
-					url: '/chat/pageMessage',
-					method: 'GET',
-					data: {
-						"page": 0,
-						"size": 10,
-						"id": this.chatPartnerID
-					},
-				})
-				.then(res => {
-					console.log("chat record search succ")
-					this.messages = res.data.data.records.reverse();
-					console.log("接受record成功")
-				});
+		// created() {
+		// 	console.log("test created")
+		// 	console.log(this.chatPartnerID)
+		// 	this.$myRequest({
+		// 			header: {
+		// 				'Authentication': uni.getStorageSync('Authentication')
+		// 			},
+		// 			url: '/user/getNI/' + this.chatPartnerID,
+		// 			method: 'GET',
+		// 		})
+		// 		.then(response => {
+		// 			console.log("chatParter search succ")
+		// 			this.chatPartnerName = response.data.data.username;
+		// 			this.chatPartnerAvatar = response.data.data.iconUrl;
+		// 		});
 
 
+		// 	this.$myRequest({
+		// 			header: {
+		// 				'Authentication': uni.getStorageSync('Authentication')
+		// 			},
+		// 			url: '/user/getNI/' + this.myID,
+		// 			method: 'GET',
+		// 		})
+		// 		.then(res => {
+		// 			console.log("myinfo search succ")
+		// 			this.myAvatar = res.data.data.iconUrl;
+		// 		});
+
+		// 	this.$myRequest({
+		// 			header: {
+		// 				'Authentication': uni.getStorageSync('Authentication')
+		// 			},
+		// 			url: '/chat/pageMessage',
+		// 			method: 'GET',
+		// 			data: {
+		// 				"page": 0,
+		// 				"size": 10,
+		// 				"id": this.chatPartnerID
+		// 			},
+		// 		})
+		// 		.then(res => {
+		// 			console.log("chat record search succ")
+		// 			this.messages = res.data.data.records.reverse();
+		// 			console.log("接受record成功")
+		// 		});
 
 
-		},
+
+
+		// },
 
 		methods: {
 			scrollToBottom() {

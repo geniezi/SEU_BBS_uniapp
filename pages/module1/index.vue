@@ -2,12 +2,15 @@
 	<view>
 		<u-button class="refreshButton" text="123" @click="onScrollToUpper" size="mini">轻触刷新</u-button>
 		<view class="message-list">
-			<view v-for="(message, index) in messages" :key="index" class="message-item" @click="goToChat(1)">
-				<view class="avatar">
-					<img :src=searchSenderAvatar(message.opposeId) alt="Avatar">
+			<view v-for="(message, index) in messages" :key="index" class="message-item" @click="goToChat(message.opposeId)"
+			>
+			<img class="avatar":src='avatar' v-if="searchSenderName(message.opposeId)" alt="Avatar">
+				<!-- searchSenderName(message.opposeId) -->
+				<view class="avatar" >
+				<img class="avatar":src='avatar' alt="Avatar">
 				</view>
 				<view class="content">
-					<view class="sender">{{ searchSenderName(message.opposeId) }}</view>
+					<view class="sender">{{ username }}</view>
 					<view class="text">{{ message.content }}</view>
 					<view class="time">{{ message.sendTime }}</view>
 				</view>
@@ -43,6 +46,9 @@
 
 		data() {
 			return {
+				avatar:'',
+				username:'',
+				
 				messages: [{
 					opposeId: "",
 					content: "",
@@ -77,6 +83,11 @@
 			})
 			},
 			
+			test(ccc){
+				console.log(123)
+				console.log(ccc)
+			},
+			
 			
 			searchSenderName(senderid) {
 				this.$myRequest({
@@ -87,8 +98,15 @@
 						method: 'GET',
 					})
 					.then(response => {
-						console.log("chatParter name search succ")
-						return response.data.data.username;
+						// console.log("chatParter name search succ")
+						// console.log(response.data.data.username)
+						// console.log(typeof(response.data.data.username))
+						// return response.data.data.username
+						
+						this.avatar=response.data.data.iconUrl
+						this.username=response.data.data.username
+						console.log(response.data.data.iconUrl)
+						return true
 					});
 			},
 
@@ -111,8 +129,10 @@
 			goToChat(userId) {
 				// 跳转到聊天界面，userId为用户ID
 				uni.navigateTo({
-					url: '/pages/module1/chat'
+					url: '/pages/module1/chat?id='+encodeURIComponent(userId),
+					
 				});
+				console.log(userId)
 			}
 
 		}

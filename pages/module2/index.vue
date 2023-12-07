@@ -8,11 +8,14 @@
 				style="height: 430rpx;" />
 		</view>
 		<view class="item-box flex flex-wrap u-m-l-36 u-m-r-10">
-			<view class="item upload u-m-t-20 relative" v-for="item in imgarr" :key="i" v-show="imgarr.length!=0">
-				<image :src="item" v-if="" mode="widthFix"></image>
+			<!-- <view class="item upload u-m-t-20 relative" > -->
+			<view class="item upload u-m-t-20 relative"  v-for="(item,i) in imgarr" :key="i" v-show="imgarr.length!=0">
+			
+				<image :src="item" v-if="" mode="widthFix"  @click="preview(i)"></image>
 				<image @click="del(i)" src="../../static/del_image.png" class="absolute"
 					style="width: 32rpx;height: 32rpx;top: 5rpx;right: 5rpx;" v-if=""></image>
 			</view>
+			<!-- </view> -->
 			<view class="item upload u-m-t-20" @click="getimg" v-show="imgarr.length < 9">
 				<image src="../../static/upload_image.png" v-if=""></image>
 			</view>
@@ -198,6 +201,24 @@
 			}
 		},
 		methods: {
+			preview(i){
+				console.log("11111")
+				console.log(i)
+				// 预览图片
+				uni.previewImage({
+				    urls: this.imgarr,
+					current:i,
+				    longPressActions: {
+				        itemList: [ '保存图片'],
+				        success: function(data) {
+				            console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+				        },
+				        fail: function(err) {
+				            console.log(err.errMsg);
+				        }
+				    }
+				});
+			},
 			post() {
 				// uni.uploadFile({
 				//     url:" http://47.113.230.37:30088/seu/bbs/upload/post",     // 后端api接口
@@ -466,6 +487,7 @@
 
 			},
 			del(i) {
+				console.log(i)
 				this.imgarr.splice(i, 1)
 				this.uploadimg.splice(i,1)
 				// console.log(this.imgarr.length)

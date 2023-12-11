@@ -39,15 +39,20 @@
 			</view>
 		</view>
 
-		<!-- 点赞收藏评论-->
+		<!-- 点赞、点踩、收藏、评论-->
 		<view class="post-actions">
 			<view class="action-item" @click="likePost">
-				<u-icon :name="isLiked ? 'thumb-up-fill' : 'thumb-up'" size="22px"></u-icon>
+				<u-icon :name="isLikedState ? 'thumb-up-fill' : 'thumb-up'" size="22px"></u-icon>
 				<view class="count">{{ likeCount }}</view>
 			</view>
 
+			<view class="action-item" @click="dislikePost">
+				<u-icon :name="isDislikedState ? 'thumb-down-fill' : 'thumb-down'" size="22px"></u-icon>
+				<view class="count">{{ dislikeCount }}</view>
+			</view>
+
 			<view class="action-item" @click="collectPost">
-				<u-icon :name="isCollected ? 'star-fill' : 'star'" size="20px"></u-icon>
+				<u-icon :name="isCollectedState ? 'star-fill' : 'star'" size="20px"></u-icon>
 				<view class="count">{{ collectCount }}</view>
 			</view>
 
@@ -68,75 +73,22 @@
 
 <script>
 	export default {
-		props: ['nickName', 'postTime', 'iconUrl', 'content', 'image', 'tags',
-			'postId', 'userId', 'title', 'likes', 'dislikes', 'visits'
+		props: ['nickName','iconUrl', 'userId', 
+			'postId',  'title', 'postTime', 'content', 'image', 'tags','section',
+			'likes', 'dislikes', 'collections','comments','isLiked',"isDisliked","isCollected"
 		],
-		/*props: {
-			
-			nickName: //昵称
-			{
-				type: String,
-				required: true
-			},
-			/*avatarUrl: //头像
-			{
-				type: String,
-				required: true
-			},
-			postTime: //发帖时间
-			{
-				type: String,
-				required: true
-			},
-			content: {
-				type: String,
-				required: true
-			},
-			/*images: {
-				type: Array,
-				default: () => []
-			},
-			
-			
-			images: {
-				type: String,
-				required: true
-			},
-			category: {
-				type: String,
-				required: true
-			},
-			likeCount: {
-				type: Number,
-				required: true
-			},
-			collectCount: {
-				type: Number,
-				required: true
-			},
-			isLiked: {
-				type: Boolean,
-				required: true
-			},
-			isCollected: {
-				type: Boolean,
-				required: true
-			}
-			
-		},
-		*/
 		data() {
 			return {
-				// showDropdownMenu: false, // 控制下拉菜单的显示状态
-				//isPopupVisible: false,
-
 				show: false,
-				isLiked: false,
-				value1: '',
-				likeCount: 0,
-				isCollected: false,
-				collectCount: 0,
-				commentCount: 0,
+				
+				isLikedState: this.isLiked,
+				isDislikedState: this.isDisliked,
+				isCollectedState: this.isCollected,
+				likeCount: this.likes,
+				dislikeCount: this.dislikes,
+				collectCount: this.collections,
+				commentCount: this.comments,
+				
 				commentShow: false,
 				commentContent: ''
 			};
@@ -162,33 +114,167 @@
 				uni.$u.toast('举报成功');
 			},
 			likePost() {
-				// 帖子点赞逻辑
-				if (this.isLiked) {
+				if (this.isLikedState) {
 					// 取消点赞
-					this.isLiked = false;
-					this.likeCount--;
+					this.$myRequest({
+							header: {
+								'Authentication': uni.getStorageSync('Authentication')
+							},
+							url: '/post/interact',
+							method: "POST",
+							data: {
+								"interaType": 1, //0点赞；1取消点赞；2点踩；3取消点踩；4收藏；5取消收藏
+								"postId": this.postId, //不为空
+								"commentId": "0" //互动帖子时传0，互动帖子时传值
+							}
+						})
+						.then(response => {
+							this.isLikedState = false;
+							this.likeCount--;
+						})
+						.catch(error => {
+							if (error.data.code == 500) {
+								uni.$u.toast(error.data.message);
+								return;
+							}
+						});
 				} else {
 					// 点赞
-					this.isLiked = true;
-					this.likeCount++;
+					this.$myRequest({
+							header: {
+								'Authentication': uni.getStorageSync('Authentication')
+							},
+							url: '/post/interact',
+							method: "POST",
+							data: {
+								"interaType": 0, //0点赞；1取消点赞；2点踩；3取消点踩；4收藏；5取消收藏
+								"postId": this.postId, //不为空
+								"commentId": "0" //互动帖子时传0，互动帖子时传值
+							}
+						})
+						.then(response => {
+							this.isLikedState = true;
+							this.likeCount++;
+							if(this.isDislikedState){
+								this.isDislikedState = false;//点赞成功自动取消点踩状态
+								this.dislikeCount--;
+							}
+						})
+						.catch(error => {
+							if (error.data.code == 500) {
+								uni.$u.toast(error.data.message);
+								return;
+							}
+						});
+				}
+			},
+			dislikePost() {
+				// 帖子点踩逻辑
+				if (this.isDislikedState) {
+					// 取消点踩
+					this.$myRequest({
+							header: {
+								'Authentication': uni.getStorageSync('Authentication')
+							},
+							url: '/post/interact',
+							method: "POST",
+							data: {
+								"interaType": 3, //0点赞；1取消点赞；2点踩；3取消点踩；4收藏；5取消收藏
+								"postId": this.postId, //不为空
+								"commentId": "0" //互动帖子时传0，互动帖子时传值
+							}
+						})
+						.then(response => {
+							this.isDislikedState = false;
+							this.dislikeCount--;
+						})
+						.catch(error => {
+							if (error.data.code == 500) {
+								uni.$u.toast(error.data.message);
+								return;
+							}
+						});
+				} else {
+					// 点踩
+					this.$myRequest({
+							header: {
+								'Authentication': uni.getStorageSync('Authentication')
+							},
+							url: '/post/interact',
+							method: "POST",
+							data: {
+								"interaType": 2, //0点赞；1取消点赞；2点踩；3取消点踩；4收藏；5取消收藏
+								"postId": this.postId, //不为空
+								"commentId": "0" //互动帖子时传0，互动帖子时传值
+							}
+						})
+						.then(response => {
+							this.isDislikedState = true;
+							this.dislikeCount++;
+							if(this.isLikedState){
+								this.isLikedState = false;//点踩成功自动取消点赞状态
+								this.likeCount--;
+							}
+						})
+						.catch(error => {
+							if (error.data.code == 500) {
+								uni.$u.toast(error.data.message);
+								return;
+							}
+						});
 				}
 			},
 			collectPost() {
 				// 帖子收藏逻辑
-				if (this.isCollected) {
+				if (this.isCollectedState) {
 					// 取消收藏
-					this.isCollected = false;
-					this.collectCount--;
+					this.$myRequest({
+							header: {
+								'Authentication': uni.getStorageSync('Authentication')
+							},
+							url: '/post/interact',
+							method: "POST",
+							data: {
+								"interaType": 5, //0点赞；1取消点赞；2点踩；3取消点踩；4收藏；5取消收藏
+								"postId": this.postId, //不为空
+								"commentId": "0" //互动帖子时传0，互动帖子时传值
+							}
+						})
+						.then(response => {
+							this.isCollectedState = false;
+							this.collectCount--;
+						})
+						.catch(error => {
+							if (error.data.code == 500) {
+								uni.$u.toast(error.data.message);
+								return;
+							}
+						});
 				} else {
 					// 收藏
-					this.isCollected = true;
-					this.collectCount++;
+					this.$myRequest({
+							header: {
+								'Authentication': uni.getStorageSync('Authentication')
+							},
+							url: '/post/interact',
+							method: "POST",
+							data: {
+								"interaType": 4, //0点赞；1取消点赞；2点踩；3取消点踩；4收藏；5取消收藏
+								"postId": this.postId, //不为空
+								"commentId": "0" //互动帖子时传0，互动帖子时传值
+							}
+						})
+						.then(response => {
+							this.isCollectedState = true;
+							this.collectCount++;
+						})
+						.catch(error => {
+							if (error.data.code == 500) {
+								uni.$u.toast(error.data.message);
+								return;
+							}
+						});
 				}
-			},
-			commentPost() {
-				// 弹出评论输入框
-				// 实现逻辑略
-				//this.commentCount++;
 			},
 			sendComment() {
 				// 完成评论的逻辑
@@ -289,7 +375,7 @@
 		margin-bottom: 10px;
 		margin-left: 55px;
 		width: 80px;
-		font-size: 14px;
+		font-size: 12px;
 		display: flex;
 	}
 
@@ -302,7 +388,7 @@
 	.action-item {
 		display: flex;
 		align-items: center;
-		margin-right: 50px;
+		margin-right: 28px;
 	}
 
 	.count {

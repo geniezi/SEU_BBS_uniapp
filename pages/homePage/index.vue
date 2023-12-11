@@ -2,10 +2,24 @@
 	<view>
 		<u-button class="refreshButton" text="123" @click="onScrollToUpper" size="mini">轻触重置</u-button>
   
-		<briefPost v-for="(post, index) in posts" :key="index" :nickName="post.userInfoVO.username"
-			:postTime="post.postTime" :iconUrl="post.userInfoVO.iconUrl" :content="post.content"
-			:image="post.mediaList[0]" :tags="post.tagList" :postId="post.id" :userId="post.userId" :title="post.title"
-			:likes="post.likes" :dislikes="post.dislikes" :visits="post.visits"></briefPost>
+		<briefPost v-for="(post, index) in posts" :key="index" 
+		:nickName="post.userInfoVO.username"
+		:postTime="post.postTime" 
+		:iconUrl="post.userInfoVO.iconUrl" 
+		:content="post.content"
+		:image="post.mediaList[0]" 
+		:tags="post.tagList" 
+		:postId="post.id" 
+		:userId="post.userId" 
+		:title="post.title"
+		:section="post.section"
+		:likes="post.likes" 
+		:dislikes="post.dislikes" 
+		:collections="post.collections"
+		:comments="post.comments"
+		:isLiked="post.isLiked"
+		:isDisliked="post.isDisliked"
+		:isCollected="post.isCollected"></briefPost>
 
 		<u-loadmore :status="status" />
 		<u-back-top :scroll-top="scrollTop"></u-back-top>

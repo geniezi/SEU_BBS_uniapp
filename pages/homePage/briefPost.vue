@@ -137,6 +137,11 @@
 								uni.$u.toast(error.data.message);
 								return;
 							}
+							
+							if(error.data.code == 401){
+								this.goToLogin();
+								return;
+							}
 						});
 				} else {
 					// 点赞
@@ -163,6 +168,11 @@
 						.catch(error => {
 							if (error.data.code == 500) {
 								uni.$u.toast(error.data.message);
+								return;
+							}
+							
+							if(error.data.status == 401){
+								this.goToLogin();
 								return;
 							}
 						});
@@ -193,6 +203,11 @@
 								uni.$u.toast(error.data.message);
 								return;
 							}
+							
+							if(error.data.status == 401){
+								this.goToLogin();
+								return;
+							}
 						});
 				} else {
 					// 点踩
@@ -219,6 +234,11 @@
 						.catch(error => {
 							if (error.data.code == 500) {
 								uni.$u.toast(error.data.message);
+								return;
+							}
+							
+							if(error.data.status == 401){
+								this.goToLogin();
 								return;
 							}
 						});
@@ -249,6 +269,11 @@
 								uni.$u.toast(error.data.message);
 								return;
 							}
+							
+							if(error.data.status == 401){
+								this.goToLogin();
+								return;
+							}
 						});
 				} else {
 					// 收藏
@@ -271,6 +296,11 @@
 						.catch(error => {
 							if (error.data.code == 500) {
 								uni.$u.toast(error.data.message);
+								return;
+							}
+							
+							if(error.data.status == 401){
+								this.goToLogin();
 								return;
 							}
 						});
@@ -299,7 +329,12 @@
 					})
 					.catch(error => {
 						if (error.data.code == 500) {
-							uni.$u.toast('评论失败');
+							uni.$u.toast(error.data.message);
+							return;
+						}
+						
+						if(error.data.status == 401){
+							this.goToLogin();
 							return;
 						}
 					});
@@ -315,7 +350,19 @@
 						console.log('navigate failed', res);
 					}
 				})
+			},
+			goToLogin() {
+				uni.switchTab({
+					url: '/pages/login/index', 
+					success: () => {
+						uni.$u.toast('请登录后操作');
+					},
+					fail: (res) => {
+						console.log('navigate failed', res);
+					}
+				})
 			}
+			
 		}
 	};
 </script>

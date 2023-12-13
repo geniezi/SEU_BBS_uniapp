@@ -4,8 +4,8 @@
 		<view class="top-bar">
 			<p class="chat-partner-name">{{ chatPartnerName }}</p>
 		</view>
-		<view class="message-container">
-
+		<view class="message-container" ref="chatConnntainer">
+<uni-scroll-view ref="chatContainer" :scroll-top="scrollTop" >
 			<view v-for="message in messages" :key="message.id" class="message">
 				<p class="message-time">{{ message.sendTime }}</p>
 				<view v-if=isMyMessage(message.senderId) class="my-message">
@@ -21,6 +21,7 @@
 					</view>
 				</view>
 			</view>
+  </uni-scroll-view>
 		</view>
 
 		<view class="input-container">
@@ -63,7 +64,7 @@
 					header: {
 						'Authentication': uni.getStorageSync('Authentication')
 					},
-					url: '/user/getNI/' + this.myID,
+					url: '/user/getNI/' + 0,
 					method: 'GET',
 				})
 				.then(res => {
@@ -88,24 +89,24 @@
 					this.messages = res.data.data.records.reverse();
 					console.log("接受record成功")
 				});
+				
+				
+				this.scrollToBottom();
+				console.log("onload succ")
 		},
 
 		mounted() {
-			// this.scrollToBottom()
-			// this.$nextTick(() => {
-			//     const query = uni.createSelectorQuery().in(this)
-			//     query.selectViewport().scrollOffset()
-			//     query.exec(res => {
-			//       uni.pageScrollTo({
-			//         scrollTop: res[0].scrollHeight // 页面总高度
-			//       })
-			//     })
-			//   })
-			// console.log("mouted")
+			this.$nextTick(() => {
+			      this.scrollToBottom();
+			    });
+			console.log("mounted succ")
 		},
 
 		data() {
 			return {
+				
+				scrollIntoView: '', // 滚动到的位置
+				scrollTop: 9999, // 滚动条位置
 
 				messageInput: '',
 				chatPartnerID: '',
@@ -180,12 +181,27 @@
 		// },
 
 		methods: {
+			
 			scrollToBottom() {
-				uni.pageScrollTo({
-					scrollTop: 9999, // 设置一个足够大的数值，确保能够滚动到底部
-					duration: 300 // 可选，滚动动画的时长，单位为毫秒，默认为300ms
-				});
-			},
+			      const duration = 300; // 滚动持续时间，以毫秒为单位
+			            const selector = '.message-container'; // 替换为你的聊天容器的选择器
+			            
+			            uni.createSelectorQuery()
+			              .select(selector)
+			              .boundingClientRect(rect => {
+			                if (rect) {
+			                  const scrollTop = rect.height; // 容器的高度
+							  console.log("ScrollBottom Succ121"+scrollTop)
+			                  uni.pageScrollTo({
+			                    scrollTop,
+			                    duration
+			                  });
+			                }
+			              })
+			              .exec();
+						  setTimeout(() => {
+				  console.log("ScrollBottom Succ11") }, 100);
+			    },
 
 			sendMessage() {
 				console.log('test1')
@@ -203,12 +219,13 @@
 					})
 					.then(res => {
 						console.log("send succ")
-						uni.reLaunch({
-							url: '/pages/module1/chat'
-						})
+						uni.navigateTo({
+							url: '/pages/module1/chat?id='+encodeURIComponent(this.chatPartnerID),
+							
+						});
 					});
 
-
+			this.scrollToBottom();
 
 			},
 

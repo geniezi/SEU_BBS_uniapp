@@ -340,16 +340,16 @@
 					});
 			},
 			goToDetail() {
-				uni.switchTab({
-					url: '/pages/module1/index', //路径要改，传postId
-					success: () => {
-						console.log(1);
-						uni.$u.toast('跳转至详情页' + this.postId);
-					},
-					fail: (res) => {
-						console.log('navigate failed', res);
-					}
-				})
+				// uni.switchTab({
+				// 	url: '/pages/module1/index', //路径要改，传postId
+				// 	success: () => {
+				// 		console.log(1);
+				// 		uni.$u.toast('跳转至详情页' + this.postId);
+				// 	},
+				// 	fail: (res) => {
+				// 		console.log('navigate failed', res);
+				// 	}
+				// })
 			},
 			goToLogin() {
 				uni.switchTab({

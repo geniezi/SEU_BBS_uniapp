@@ -50,7 +50,7 @@
 		data() {
 			return {
 				posts: [], // 从后端获取的发帖数据
-				page: 0,
+				page: 1,
 				currentTime: '',
 				status: "loading", // 初始状态为loading
 				scrollTop: 0,

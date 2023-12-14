@@ -19,7 +19,8 @@
 		:comments="post.comments"
 		:isLiked="post.isLiked"
 		:isDisliked="post.isDisliked"
-		:isCollected="post.isCollected"></briefPost>
+		:isCollected="post.isCollected"
+		:urls="post.mediaList"></briefPost>
 
 		<u-loadmore :status="status" />
 		<u-back-top :scroll-top="scrollTop"></u-back-top>

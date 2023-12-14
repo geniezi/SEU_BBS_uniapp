@@ -3,10 +3,10 @@
 		<!--基本信息-->
 		<view class="post-header">
 			<!-- 头像 昵称 时间 -->
-			<u-image :src="iconUrl" width="40px" height="40px" shape="circle"></u-image> <!--:src="avatarUrl"-->
-			<text class="nickname">{{ nickName }}</text> <!--{{ nickname }}  xlnx-x+C-->
+			<u-image :src="iconUrl" width="40px" height="40px" shape="circle" @click="goToUserHomePage(userId)"></u-image> <!--:src="avatarUrl"-->
+			<text class="nickname" @click="goToUserHomePage(userId)">{{ nickName }}</text> <!--{{ nickname }}  xlnx-x+C-->
 			<text class="post-time">{{ postTime }}</text> <!---->
-
+			
 			<!-- 举报按钮-->
 			<view class="report-container">
 				<u-popup :show="show" mode="bottom" @close="close" @open="open">
@@ -19,23 +19,22 @@
 			</view>
 		</view>
 
-		<view @click="goToDetail">
+		<view @click="goToDetail(postId)">
 			<!-- 帖子内容 -->
 			<view class="post-content">{{ content }}</view> <!--{{ content }}-->
 
 			<!-- 帖子配图 -->
-			<view class="post-images" v-if="image !== '' && image !== null">
+			<view class="post-images" v-if="image !== '' && image !== null" @click.stop>
 				<!-- 多张图 -->
 				<!--<u-image v-for="(image, index) in images" :key="index" :src="image"></u-image>-->
-				<u-image :src="image" width="160px" height="130px"></u-image>
+				<!-- <u-image :src="image" width="160px" height="130px"></u-image> -->
+				<u-album :urls="urls"></u-album>
 			</view>
 
 			<!-- 标签 -->
 			<view class="post-tags">
-
 				<u-tag v-for="tag in tags" :key="tag" :text="tag" bgColor="#f1f1f1" size="mini" icon="tags" plain
 					borderColor="white"></u-tag>
-				<!--{{ category }} -->
 			</view>
 		</view>
 
@@ -56,7 +55,7 @@
 				<view class="count">{{ collectCount }}</view>
 			</view>
 
-			<view class="action-item"><!--@click="commentPost"-->
+			<view class="action-item">
 				<u-popup :show="commentShow" mode="bottom" @close="closeComment" @open="openComment">
 					<view>
 						<u-textarea v-model="commentContent" placeholder="请输入内容"></u-textarea>
@@ -73,7 +72,7 @@
 
 <script>
 	export default {
-		props: ['nickName','iconUrl', 'userId', 
+		props: ['nickName','iconUrl', 'userId', 'urls',
 			'postId',  'title', 'postTime', 'content', 'image', 'tags','section',
 			'likes', 'dislikes', 'collections','comments','isLiked',"isDisliked","isCollected"
 		],
@@ -90,7 +89,8 @@
 				commentCount: this.comments,
 				
 				commentShow: false,
-				commentContent: ''
+				commentContent: '',
+				
 			};
 		},
 		methods: {
@@ -339,17 +339,11 @@
 						}
 					});
 			},
-			goToDetail() {
-				// uni.switchTab({
-				// 	url: '/pages/module1/index', //路径要改，传postId
-				// 	success: () => {
-				// 		console.log(1);
-				// 		uni.$u.toast('跳转至详情页' + this.postId);
-				// 	},
-				// 	fail: (res) => {
-				// 		console.log('navigate failed', res);
-				// 	}
-				// })
+			goToDetail(postId) {
+				// uni.navigateTo({
+				// 	url: '/pages/personalCenter/userHomePage?id='+encodeURIComponent(postId),//路径要改
+				// });
+				//uni.$u.toast('跳转帖子详情'+postId);
 			},
 			goToLogin() {
 				uni.switchTab({
@@ -361,13 +355,28 @@
 						console.log('navigate failed', res);
 					}
 				})
+				//login从tabbar取出后用
+				// uni.navigateTo({
+				// 	url: '/pages/login/index',
+				// 	success: () => {
+				// 		uni.$u.toast('请登录后操作');
+				// 	},
+				// 	fail: (res) => {
+				// 		console.log('navigate failed', res);
+				// 	}
+				// });
+			},
+			goToUserHomePage(userId){
+				uni.navigateTo({
+					url: '/pages/personalCenter/userHomePage?id='+encodeURIComponent(userId)
+				});
 			}
 			
 		}
 	};
 </script>
 
-<style>
+<style lang="scss" scoped>
 	.brief-post {
 		padding: 10px;
 		background-color: #fff;

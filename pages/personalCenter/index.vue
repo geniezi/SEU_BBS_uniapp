@@ -11,20 +11,22 @@
 
 		<!-- 关注、粉丝、编辑个人资料、退出登录按钮 -->
 		<view class="rowLayout">
-			<view class="itemLayout" @click="goToFollowPage">
+			<view class="itemLayout" @click="goToFollowingPage(userId)">
 				<text class="count">{{followCount}}</text>
 				<text class="label">关注</text>
 			</view>
-			<view class="itemLayout" @click="goToFansPage">
+			<view class="itemLayout" @click="goToFansPage(userId)">
 				<text class="count">{{fansCount}}</text>
 				<text class="label">粉丝</text>
 			</view>
 
-			<view class="itemButtonLayout_1">
-				<u-button type="info" shape="circle" text="编辑资料" @click="goToEditPage"></u-button>
-			</view>
-			<view class="itemButtonLayout_2">
-				<u-button type="info" shape="circle" icon="arrow-leftward" @click="logout"></u-button>
+			<view class="buttonContainer">
+				<view class="itemButtonLayout_1">
+					<u-button type="info" shape="circle" text="编辑资料" @click="goToEditPage(userId)"></u-button>
+				</view>
+				<view class="itemButtonLayout_2">
+					<u-button type="info" shape="circle" icon="arrow-leftward" @click="logout"></u-button>
+				</view>
 			</view>
 		</view>
 
@@ -78,38 +80,38 @@
 				}, {
 					name: '足迹'
 				}],
-				list: [{
-						name: 'photo',
-						title: '图片'
-					},
-					{
-						name: 'lock',
-						title: '锁头'
-					},
-					{
-						name: 'star',
-						title: '星星'
-					},
-					{
-						name: 'hourglass',
-						title: '沙漏'
-					},
-					{
-						name: 'home',
-						title: '首页'
-					},
-					{
-						name: 'star',
-						title: '音量'
-					},
-				],
+				// list: [{
+				// 		name: 'photo',
+				// 		title: '图片'
+				// 	},
+				// 	{
+				// 		name: 'lock',
+				// 		title: '锁头'
+				// 	},
+				// 	{
+				// 		name: 'star',
+				// 		title: '星星'
+				// 	},
+				// 	{
+				// 		name: 'hourglass',
+				// 		title: '沙漏'
+				// 	},
+				// 	{
+				// 		name: 'home',
+				// 		title: '首页'
+				// 	},
+				// 	{
+				// 		name: 'star',
+				// 		title: '音量'
+				// 	},
+				// ],
 
 				avatarUrl: '/static/avatar1.jpg',
 				username: '用户名',
 				userId: '用户id',
 				followCount: 10,
 				fansCount: 20,
-				postCount: 30
+				//postCount: 30
 
 			}
 		},
@@ -120,28 +122,19 @@
 			tabChange(index) {
 				console.log('当前选中的选项卡索引：', index);
 			},
-			goToFollowPage() {
-				// Add logic to navigate to the follow page
-				uni.showToast({
-					title: 'Navigating to Follow Page',
-					icon: 'none',
-					duration: 2000,
+			goToFollowingPage(userId) {
+				uni.navigateTo({
+					url: '/pages/personalCenter/follow?userId='+encodeURIComponent(userId)
 				});
 			},
-			goToFansPage() {
-				// Add logic to navigate to the fans page
-				uni.showToast({
-					title: 'Navigating to Fans Page',
-					icon: 'none',
-					duration: 2000,
+			goToFansPage(userId) {
+				uni.navigateTo({
+					url: '/pages/personalCenter/fans?userId='+encodeURIComponent(userId)
 				});
 			},
-			goToEditPage() {
-				// Add logic to navigate to the edit page
-				uni.showToast({
-					title: 'Navigating to Edit Page',
-					icon: 'none',
-					duration: 2000,
+			goToEditPage(userId) {
+				uni.navigateTo({
+					url: '/pages/personalCenter/edit?userId='+encodeURIComponent(userId)
 				});
 			},
 			logout() {
@@ -225,13 +218,29 @@
 		margin: 0 40px 0 0;
 	}
 
+	.buttonContainer {
+		display: flex;
+		justify-content: flex-end;
+		align-items: flex-start;
+	}
+
 	.itemButtonLayout_1 {
-		margin: 15px 15px 0 0;
+		width: 80px;
+		margin: 17px 16px 0 0;
 	}
 
 	.itemButtonLayout_2 {
-		margin: 15px 0 0 0;
+		margin-right: 0;
+		margin-top: 17px;
 	}
+
+	// .itemButtonLayout_1 {
+	// 	margin: 15px 15px 0 0;
+	// }
+
+	// .itemButtonLayout_2 {
+	// 	margin: 15px 0 0 0;
+	// }
 
 	.label {
 		font-size: 14px;
@@ -246,25 +255,25 @@
 
 
 
-	.grid {
-		margin-bottom: 20rpx;
-	}
+	// .grid {
+	// 	margin-bottom: 20rpx;
+	// }
 
-	.grid-text {
-		font-size: 14px;
-		color: #909399;
-		padding: 10rpx 0 20rpx 0rpx;
-		/* #ifndef APP-PLUS */
-		box-sizing: border-box;
-		/* #endif */
-	}
+	// .grid-text {
+	// 	font-size: 14px;
+	// 	color: #909399;
+	// 	padding: 10rpx 0 20rpx 0rpx;
+	// 	/* #ifndef APP-PLUS */
+	// 	box-sizing: border-box;
+	// 	/* #endif */
+	// }
 
-	.logout-button {
-		width: 100%;
-		height: 60rpx;
-		background-color: #ff0000;
-		color: #fff;
-		font-size: 28rpx;
-		border-radius: 10rpx;
-	}
+	// .logout-button {
+	// 	width: 100%;
+	// 	height: 60rpx;
+	// 	background-color: #ff0000;
+	// 	color: #fff;
+	// 	font-size: 28rpx;
+	// 	border-radius: 10rpx;
+	// }
 </style>

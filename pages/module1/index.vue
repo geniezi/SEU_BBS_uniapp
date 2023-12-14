@@ -4,17 +4,16 @@
 		<view class="message-list">
 			<view v-for="(message, index) in messages" :key="index" class="message-item" @click="goToChat(message.opposeId)"
 			>
-			<img class="avatar":src='avatar' v-if="searchSenderName(message.opposeId)" alt="Avatar">
+			<!-- <img class="avatar":src='avatar' v-if="searchSenderName(message.opposeId)" alt="Avatar"> -->
 				<!-- searchSenderName(message.opposeId) -->
 				<view class="avatar" >
-				<img class="avatar":src='avatar' alt="Avatar">
+				<img class="avatar":src='getIconUrlById(message.opposeId)' alt="Avatar">
 				</view>
 				<view class="content">
-					<view class="sender">{{ username }}</view>
+					<view class="sender">{{ getUsernameById(message.opposeId)}}</view>
 					<view class="text">{{ message.content }}</view>
 					<view class="time">{{ message.sendTime }}</view>
 				</view>
-
 
 
 			</view>
@@ -26,22 +25,45 @@
 <script>
 	export default {
 		created() {
-			this.$myRequest({
-					header: {
-						'Authentication': uni.getStorageSync('Authentication')
-					},
-					url: '/chat/pagePeople',
-					method: 'GET',
-					data: {
-						"page": 0,
-						"size": 20,
-					},
-				})
-				.then(res => {
-					console.log("chat people search succ")
-					this.messages = res.data.data.records;
-				});
-
+		  this.$myRequest({
+		    header: {
+		      'Authentication': uni.getStorageSync('Authentication')
+		    },
+		    url: '/chat/pagePeople',
+		    method: 'GET',
+		    data: {
+		      "page": 0,
+		      "size": 20,
+		    },
+		  })
+		  .then(res => {
+		    console.log("chat people search succ");
+		    this.messages = res.data.data.records;
+		    console.log("received data is");
+		    console.log(this.messages);
+		
+		    // 在这里进行第二个请求，确保在第一个请求完成后执行
+		    const opposeIds = this.messages.map(message => message.opposeId);
+		    console.log(opposeIds);
+		    const urlWithIds = '/user/listNIByIds?id=' + opposeIds.join('&id=');
+		    console.log("url is" + urlWithIds);
+		
+		    return this.$myRequest({
+		      header: {
+		        'Authentication': uni.getStorageSync('Authentication')
+		      },
+		      url: urlWithIds,
+		      method: 'GET'
+		    });
+		  })
+		  .then(response => {
+		    this.ListInfo = response.data.data;
+		    console.log("list search succ1");
+		    console.log(this.ListInfo);
+		  })
+		  .catch(error => {
+		    console.error("Error occurred:", error);
+		  });
 		},
 
 
@@ -50,6 +72,7 @@
 				avatar:'',
 				username:'',
 				
+				ListInfo:[],
 				messages: [{
 					opposeId: "",
 					content: "",
@@ -90,24 +113,47 @@
 			},
 			
 			
-			searchSenderName(senderid) {
+			
+			// 根据 ID 查找 username
+			getUsernameById(id) {
+			  if (this.ListInfo && this.ListInfo[id]) {
+			    return this.ListInfo[id].username;
+			  } else {
+			    return null; // 或者返回一个默认值
+			  }
+			},
+			
+			// 根据 ID 查找 iconUrl
+			getIconUrlById(id) {
+			  if (this.ListInfo && this.ListInfo[id]) {
+			    return this.ListInfo[id].iconUrl;
+			  } else {
+			    return null; // 或者返回一个默认值
+			  }
+			},
+			
+			searchListInfo() {
+				const messages=this.messages;
+				console.log(messages)
+				// 提取 messages 中所有的 opposeId 组成数组
+				const opposeIds = messages.map(message => message.opposeId);
+				console.log(opposeIds)
+				// 将数组转换为包含多个 id 的 URL 形式
+				const urlWithIds = '/user/listNIByIds?id=' + opposeIds.join('&id=');
+				console.log("url is"+urlWithIds)
 				this.$myRequest({
 						header: {
 							'Authentication': uni.getStorageSync('Authentication')
 						},
-						url: '/user/getNI/' + senderid,
+						url: urlWithIds,
 						method: 'GET',
+						
 					})
 					.then(response => {
-						// console.log("chatParter name search succ")
-						// console.log(response.data.data.username)
-						// console.log(typeof(response.data.data.username))
-						// return response.data.data.username
-						
-						this.avatar=response.data.data.iconUrl
-						this.username=response.data.data.username
-						console.log(response.data.data.iconUrl)
-						return true
+
+						this.ListInfo=response.data.data;
+						console.log("list search succ1")
+						console.log(this.ListInfo)
 					});
 			},
 

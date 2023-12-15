@@ -211,7 +211,7 @@
 		color: #FFFFFF;
 		border: none;
 		border-radius: 5px;
-		font-size: 16px;
+		//font-size: 16px;
 		text-align: center;
 		line-height: 40px;
 		cursor: pointer;

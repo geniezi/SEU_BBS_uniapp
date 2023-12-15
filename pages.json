@@ -55,10 +55,10 @@
             
         }
         ,{
-            "path" : "pages/module3/index",
+            "path" : "pages/personalCenter/index",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "个人中心",
                 "enablePullDownRefresh": false
             }
             
@@ -69,6 +69,42 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/personalCenter/follow",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "关注",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/personalCenter/fans",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "粉丝",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/personalCenter/edit",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "编辑资料",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/personalCenter/userHomePage",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "个人主页",
                 "enablePullDownRefresh": false
             }
             
@@ -115,13 +151,13 @@
 					"selectedIconPath": "static/icons/add-btn-fill.png"
 				},
 				{
-					"pagePath": "pages/module3/index",
+					"pagePath": "pages/login/index",
 					"text": "组队",
 					"iconPath": "static/icons/customer-group.png",
 					"selectedIconPath": "static/icons/customer-group-fill.png"
 				},
 				{
-					"pagePath": "pages/login/index",
+					"pagePath": "pages/personalCenter/index",
 					"text": "我的",
 					"iconPath": "static/icons/customer.png",
 					"selectedIconPath": "static/icons/customer-fill.png"

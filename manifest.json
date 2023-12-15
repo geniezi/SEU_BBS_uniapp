@@ -57,7 +57,9 @@
             "postcss" : true,
             "es6" : true
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+		"lazyCodeLoading" : "requiredComponents"
+		
     },
     "mp-alipay" : {
         "usingComponents" : true

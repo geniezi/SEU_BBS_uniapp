@@ -1,17 +1,19 @@
 // 请求服务器地址
-const baseURL = 'http://47.113.230.37:30088/seu/bbs'
+const baseURL = 'http://8.130.39.186:30088/seu/bbs'
 // 向外暴露一个方法 myRequest
 export const myRequest = (options) => {
 	//加载loading
 	uni.showLoading({
-		title:'加载中'
+		title: '加载中'
 	})
 	return new Promise((resolve, reject) => {
 		uni.request({
 			// 开发者服务器接口地址（请求服务器地址 + 具体接口名）
 			url: baseURL + options.url,
 			// 请求头:token
-			header: {'Authentication':uni.getStorageSync('Authentication')},
+			header: {
+				'Authentication': uni.getStorageSync('Authentication')
+			},
 			// 请求方式（若不传，则默认为 GET ）
 			method: options.method || 'GET',
 			// 请求参数（若不传，则默认为 {} ）
@@ -19,12 +21,12 @@ export const myRequest = (options) => {
 			// 请求成功
 			success: (res) => {
 				console.log(res)
-				
+
 				// 此判断可根据自己需要更改
 				if (res.data.code !== 200) {
 					reject(res)
 				}
-				
+
 				resolve(res)
 			},
 			// 请求失败

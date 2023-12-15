@@ -221,7 +221,7 @@
 			},
 			post() {
 				// uni.uploadFile({
-				//     url:" http://47.113.230.37:30088/seu/bbs/upload/post",     // 后端api接口
+				//     url:" http://8.130.39.186:30088/seu/bbs/upload/post",     // 后端api接口
 				//     filePath: "../../static/logo.png", // uni.chooseImage函数调用后获取的本地文件路劲
 				//     name:'file',     //后端通过'file'获取上传的文件对象
 				// 	formData: {
@@ -454,7 +454,7 @@
 							console.log(data)
 							this.imgarr.push(data)
 							uni.uploadFile({
-								url: 'http://47.113.230.37:30088/seu/bbs/upload/post', //仅为示例，非真实的接口地址
+								url: 'http://8.130.39.186:30088/seu/bbs/upload/post', //仅为示例，非真实的接口地址
 								filePath: data,
 								name: 'file',
 								// formData: {

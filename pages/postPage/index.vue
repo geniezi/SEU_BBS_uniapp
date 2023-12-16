@@ -392,6 +392,46 @@
 				// 	}
 				// });
 			},
+			sendComment() {
+				// 完成评论的逻辑
+				if(this.commentContent.length!=0)
+				{this.$myRequest({
+						header: {
+							'Authentication': uni.getStorageSync('Authentication')
+						},
+						url: '/comment/add',
+						method: "POST",
+						data: {
+							"postId": this.postId,
+							"commentId": 0,
+							"content": this.commentContent
+						}
+					})
+					.then(response => {
+						this.commentCount++;
+						this.closeComment();
+						uni.$u.toast('回帖已发送');
+						this.commentContent = '';
+						//this.commentShow = false;
+					})
+					.catch(error => {
+						if (error.data.code == 500) {
+							uni.$u.toast(error.data.message);
+							return;
+						}
+						
+						if(error.data.status == 401){
+							this.goToLogin();
+							return;
+						}
+					});
+				}
+				else
+				{
+					uni.$u.toast('评论内容不能为空');
+					return;
+				}
+			},
 		},
 			
 		};

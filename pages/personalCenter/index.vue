@@ -138,17 +138,47 @@
 				});
 			},
 			logout() {
-				// Add logic to perform logout
-				uni.showToast({
-					title: 'Logging out',
-					icon: 'none',
-					duration: 2000,
-				});
-
-				// Example: Redirect to the login page after logout
-				// uni.navigateTo({
-				//   url: '/pages/login/login',
-				// });
+				this.$myRequest({
+						url: '/login/logout',
+						method: "POST",
+						data: {}
+					})
+					.then(response => {
+						uni.showToast({
+							title: '登出成功',
+							//将值设置为 success 或者直接不用写icon这个参数
+							icon: 'success',
+							//显示持续时间为 2秒
+							duration: 1000,
+						})
+						
+						uni.switchTab({
+							url: '/pages/login/index',
+							success: () => {
+								console.log(1);
+							},
+							fail: (res) => {
+								console.log('navigate failed', res);
+							}
+						})
+					
+						// //login从tabbar取出后用
+						// // uni.navigateTo({
+						// // 	url: '/pages/login/index',
+						// // 	success: () => {
+						// // 		uni.$u.toast('请登录后操作');
+						// // 	},
+						// // 	fail: (res) => {
+						// // 		console.log('navigate failed', res);
+						// // 	}
+						// // });
+					})
+					.catch(error => {
+						if (error.data.code == 500) {
+							uni.$u.toast(error.data.message);
+							return;
+						}
+					});
 			},
 			// click(name) {
 			// 	console.log('点击了第'+name+'个');

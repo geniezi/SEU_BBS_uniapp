@@ -3,12 +3,10 @@
 		<!--基本信息-->
 		<view class="post-header">
 			<!-- 头像 昵称 时间 -->
-			<u-image :src="iconUrl" width="40px" height="40px" shape="circle"
-				@click="goToUserHomePage(userId)"></u-image> <!--:src="avatarUrl"-->
-			<text class="nickname" @click="goToUserHomePage(userId)">{{ nickName }}</text>
-			<!--{{ nickname }}  xlnx-x+C-->
+			<u-image :src="iconUrl" width="40px" height="40px" shape="circle" @click="goToUserHomePage(userId)"></u-image> <!--:src="avatarUrl"-->
+			<text class="nickname" @click="goToUserHomePage(userId)">{{ nickName }}</text> <!--{{ nickname }}  xlnx-x+C-->
 			<text class="post-time">{{ postTime }}</text> <!---->
-
+			
 			<!-- 举报按钮-->
 			<view class="report-container">
 				<u-popup :show="show" mode="bottom" @close="close" @open="open">
@@ -74,14 +72,14 @@
 
 <script>
 	export default {
-		props: ['nickName', 'iconUrl', 'userId', 'urls',
-			'postId', 'title', 'postTime', 'content', 'image', 'tags', 'section',
-			'likes', 'dislikes', 'collections', 'comments', 'isLiked', "isDisliked", "isCollected"
+		props: ['nickName','iconUrl', 'userId', 'urls',
+			'postId',  'title', 'postTime', 'content', 'image', 'tags','section',
+			'likes', 'dislikes', 'collections','comments','isLiked',"isDisliked","isCollected"
 		],
 		data() {
 			return {
 				show: false,
-
+				
 				isLikedState: this.isLiked,
 				isDislikedState: this.isDisliked,
 				isCollectedState: this.isCollected,
@@ -89,10 +87,10 @@
 				dislikeCount: this.dislikes,
 				collectCount: this.collections,
 				commentCount: this.comments,
-
+				
 				commentShow: false,
 				commentContent: '',
-
+				
 			};
 		},
 		methods: {
@@ -139,8 +137,8 @@
 								uni.$u.toast(error.data.message);
 								return;
 							}
-
-							if (error.data.code == 401) {
+							
+							if(error.data.code == 401){
 								this.goToLogin();
 								return;
 							}
@@ -162,8 +160,8 @@
 						.then(response => {
 							this.isLikedState = true;
 							this.likeCount++;
-							if (this.isDislikedState) {
-								this.isDislikedState = false; //点赞成功自动取消点踩状态
+							if(this.isDislikedState){
+								this.isDislikedState = false;//点赞成功自动取消点踩状态
 								this.dislikeCount--;
 							}
 						})
@@ -172,8 +170,8 @@
 								uni.$u.toast(error.data.message);
 								return;
 							}
-
-							if (error.data.status == 401) {
+							
+							if(error.data.status == 401){
 								this.goToLogin();
 								return;
 							}
@@ -205,8 +203,8 @@
 								uni.$u.toast(error.data.message);
 								return;
 							}
-
-							if (error.data.status == 401) {
+							
+							if(error.data.status == 401){
 								this.goToLogin();
 								return;
 							}
@@ -228,8 +226,8 @@
 						.then(response => {
 							this.isDislikedState = true;
 							this.dislikeCount++;
-							if (this.isLikedState) {
-								this.isLikedState = false; //点踩成功自动取消点赞状态
+							if(this.isLikedState){
+								this.isLikedState = false;//点踩成功自动取消点赞状态
 								this.likeCount--;
 							}
 						})
@@ -238,8 +236,8 @@
 								uni.$u.toast(error.data.message);
 								return;
 							}
-
-							if (error.data.status == 401) {
+							
+							if(error.data.status == 401){
 								this.goToLogin();
 								return;
 							}
@@ -271,8 +269,8 @@
 								uni.$u.toast(error.data.message);
 								return;
 							}
-
-							if (error.data.status == 401) {
+							
+							if(error.data.status == 401){
 								this.goToLogin();
 								return;
 							}
@@ -300,8 +298,8 @@
 								uni.$u.toast(error.data.message);
 								return;
 							}
-
-							if (error.data.status == 401) {
+							
+							if(error.data.status == 401){
 								this.goToLogin();
 								return;
 							}
@@ -334,22 +332,22 @@
 							uni.$u.toast(error.data.message);
 							return;
 						}
-
-						if (error.data.status == 401) {
+						
+						if(error.data.status == 401){
 							this.goToLogin();
 							return;
 						}
 					});
 			},
 			goToDetail(postId) {
-				// uni.navigateTo({
-				// 	url: '/pages/postPage/index?postId=' + encodeURIComponent(postId), //路径要改
-				// });
-				// uni.$u.toast('跳转帖子详情' + postId);
+				uni.navigateTo({
+					url: '/pages/postPage/index?id='+encodeURIComponent(postId),//路径要改
+				});
+				uni.$u.toast('跳转帖子详情'+postId);
 			},
 			goToLogin() {
 				uni.switchTab({
-					url: '/pages/login/index',
+					url: '/pages/login/index', 
 					success: () => {
 						uni.$u.toast('请登录后操作');
 					},
@@ -368,12 +366,12 @@
 				// 	}
 				// });
 			},
-			goToUserHomePage(userId) {
+			goToUserHomePage(userId){
 				uni.navigateTo({
-					url: '/pages/personalCenter/userHomePage?id=' + encodeURIComponent(userId)
+					url: '/pages/personalCenter/userHomePage?id='+encodeURIComponent(userId)
 				});
 			}
-
+			
 		}
 	};
 </script>
@@ -384,34 +382,7 @@
 		background-color: #fff;
 	}
 
-	// .post-header {
-	// 	display: flex;
-	// 	align-items: center;
-	// }
-
-	// .report-container {
-	// 	position: relative;
-	// }
-
-	// .post-header {
-	//        display: flex;
-	//        justify-content: space-between;
-	//        align-items: center;
-	//    }
-
-	//    .report-container {
-	//        display: flex;
-	//        align-items: center;
-	//    }
-
 	.post-header {
-		display: flex;
-		align-items: center;
-	}
-
-	.report-container {
-		position: absolute;
-		right: 30px;
 		display: flex;
 		align-items: center;
 	}
@@ -434,6 +405,10 @@
 		margin-right: 70px;
 		font-size: 12px;
 		color: #999;
+	}
+
+	.report-container {
+		position: relative;
 	}
 
 	.post-content {

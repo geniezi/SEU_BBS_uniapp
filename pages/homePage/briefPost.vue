@@ -340,10 +340,10 @@
 					});
 			},
 			goToDetail(postId) {
-				// uni.navigateTo({
-				// 	url: '/pages/personalCenter/userHomePage?id='+encodeURIComponent(postId),//路径要改
-				// });
-				//uni.$u.toast('跳转帖子详情'+postId);
+				uni.navigateTo({
+					url: '/pages/postPage/index?postId='+encodeURIComponent(postId),//路径要改
+				});
+				uni.$u.toast('跳转帖子详情'+postId);
 			},
 			goToLogin() {
 				uni.switchTab({

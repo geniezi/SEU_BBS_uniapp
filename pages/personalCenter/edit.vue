@@ -12,9 +12,9 @@
 			</u-input>
 		</view>
 
-		<!-- 手机号 -->
+		<!-- 手机号 （不可更改）-->
 		<view class="form-item">
-			<u-input placeholder="请输入手机号" border="bottom" v-model="phoneNumber"suffixIcon="edit-pen">
+			<u-input placeholder="请输入手机号" border="bottom" v-model="phoneNumber" readonly>
 				<u-text text="手机号" slot="prefix" margin="0 46px 0 0" type="tips"></u-text>
 			</u-input>
 		</view>
@@ -28,7 +28,7 @@
 
 		<!-- 学生证号 -->
 		<view class="form-item">
-			<u-input placeholder="请输入学生证号" border="bottom" v-model="studentId" suffixIcon="edit-pen">
+			<u-input placeholder="请输入学生证号" border="bottom" v-model="studentNumber" suffixIcon="edit-pen">
 				<u-text text="学生证号" slot="prefix" margin="0 33px 0 0" type="tips"></u-text>
 			</u-input>
 		</view>
@@ -60,18 +60,19 @@
 			uni.$u.toast('跳转到' + this.userId + '页面');
 			//console.log(this.userId);
 			// 调接口获取数据
+			this.getAllInfo();
 		},
 
 		data() {
 			return {
 				userId: '', // 路由传入
-				avatarUrl: '/static/avatar1.jpg', // 用户头像地址
-				username: 'yonghu', // 用户名
-				phoneNumber: '13333333333', // 手机号
+				avatarUrl: '', // 用户头像地址
+				username: '', // 用户名
+				phoneNumber: '', // 手机号
 				//userId: '123456', // 用户ID
-				studentId: '09020202', // 学生证号
-				isVerified: true, // 是否认证
-				isMuted: false ,// 是否禁言
+				studentNumber: '', // 学生证号
+				isCredit: false, // 是否认证
+				isForbidden: false ,// 是否禁言
 				verifiedState:'',
 				mutedState:'',
 			};
@@ -86,6 +87,31 @@
 			
 		},
 		methods: {
+			getAllInfo() {
+				this.$myRequest({
+						header: {
+							'Authentication': uni.getStorageSync('Authentication')
+						},
+						url: '/user/getAllInfo/'+0,
+						method: "GET",
+					})
+					.then(response => {
+						//this.userId = response.data.data.id;
+						this.username = response.data.data.username;
+						this.avatarUrl = response.data.data.iconUrl;
+						this.phoneNumber = response.data.data.phone;
+						this.studentNumber = response.data.data.studentNumber;
+						this.isCredit = response.data.data.isCredit;
+						this.isForbidden = response.data.data.isForbidden;
+					})
+					.catch(error => {
+						if (error.data.code == 500) {
+							uni.$u.toast(error.data.message);
+							return;
+						}
+					});
+				
+			},
 			changeAvatar() {
 				// 向后端发请求换头      
 				uni.chooseImage({
@@ -96,25 +122,62 @@
 						// 选择成功，获取临时文件路径
 						const tempFilePaths = res.tempFilePaths;
 						// 将临时文件路径赋值给头像地址
-						this.avatarUrl = tempFilePaths[0];
-					},
-					fail: (err) => {
-						// 选择失败，处理错误
-						console.error('选择图片失败', err);
-					},
+						const tempUrl = tempFilePaths[0];
+						
+						this.$myRequest({
+								header: {
+									'Authentication': uni.getStorageSync('Authentication')
+								},
+								url: '/user/update',
+								method: "PUT",
+								data: {
+									"iconUrl": tempUrl,
+								}
+							})
+							.then(response => {
+								uni.$u.toast('更换成功');
+								this.avatarUrl = tempFilePaths[0];
+							})
+							.catch(error => {
+								if (error.data.code == 500) {
+									uni.$u.toast(error.data.message);
+									return;
+								}
+							});
+					}
 				});
 			},
 			getVerifiedState(){
-				this.verifiedState=this.isVerified ? '已认证' : '未认证';
+				this.verifiedState=this.isCredit ? '已认证' : '未认证';
 			},
 			getMutedState(){
-				this.mutedState=this.isMuted ? '已禁言' : '未禁言';
+				this.mutedState=this.isForbidden ? '已禁言' : '未禁言';
 			},
 			// 保存修改按钮点击事件
 			saveChanges() {
 				// 在这里向后端发送请求提交修改
 				// 请根据实际情况使用 uni-app 的网络请求或其他方法
 				// 例如 uni.request({url: 'your_api_url', data: {...}, method: 'POST'})
+				this.$myRequest({
+						header: {
+							'Authentication': uni.getStorageSync('Authentication')
+						},
+						url: '/user/update',
+						method: "PUT",
+						data: {
+							"username": this.username,
+							"studentNumber": this.studentNumber,
+						}
+					})
+					.then(response => {
+						uni.$u.toast('保存成功');
+					})
+					.catch(error => {
+						if (error.data.code == 500) {
+							uni.$u.toast(error.data.message);
+							return;
+						}
+					});
 			}
 		}
 	};

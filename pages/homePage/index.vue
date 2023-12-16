@@ -88,6 +88,9 @@
 							this.posts = this.posts.concat(newPosts); // 将新数据接在原有数据后面
 							this.status = "loadmore"; // 如果有新数据，状态设为loading
 						}
+						else{
+							this.status = "nomore";
+						}
 					})
 					.catch(error => {
 						if (error.data.code == 500) {

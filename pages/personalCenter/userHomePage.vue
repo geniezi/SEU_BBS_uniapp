@@ -25,7 +25,7 @@
 					<u-button type="info" shape="circle" :text="buttonText" @click="follow"></u-button>
 				</view>
 				<view class="itemButtonLayout_2">
-					<u-button type="info" shape="circle" icon="chat" @click="goToChat"></u-button>
+					<u-button type="info" shape="circle" icon="chat" @click="goToChat(userId)"></u-button>
 				</view>
 			</view>
 		</view>
@@ -46,9 +46,10 @@
 		onLoad(router) {
 		    // query.id 包含页面跳转过来时携带的参数
 		    this.userId = router.id;
-			uni.$u.toast('跳转到'+this.userId);
+			// uni.$u.toast('跳转到'+this.userId);
 		    //console.log(this.userId);
 		    // 调接口
+			this.getUserInfo();
 		  },
 		data() {
 			return {
@@ -56,11 +57,11 @@
 					name: '发帖'
 				}],
 
-				avatarUrl: '/static/avatar1.jpg',
-				username: '用户名',
-				userId: '用户id',
-				followCount: 10,
-				fansCount: 20,
+				avatarUrl: '',
+				username: '',
+				userId: '',
+				followCount: '',
+				fansCount: '',
 				//postsCount: 30,
 				isFollowing: false, //是否关注这个人
 			}
@@ -71,23 +72,86 @@
 			}
 		},
 		methods: {
-			goToChat() {
+			getUserInfo() {
+				this.$myRequest({
+						header: {
+							'Authentication': uni.getStorageSync('Authentication')
+						},
+						url: '/user/getAllInfo/'+this.userId,
+						method: "GET",
+					})
+					.then(response => {
+						//this.userId = response.data.data.id;
+						this.username = response.data.data.username;
+						this.avatarUrl = response.data.data.iconUrl;
+						this.followCount = response.data.data.followings;
+						this.fansCount = response.data.data.followers;
+						this.isFollowing = response.data.data.isFollowed;
+					})
+					.catch(error => {
+						if (error.data.code == 500) {
+							uni.$u.toast(error.data.message);
+							return;
+						}
+					});
+			},
+			goToChat(userId) {
 				// 跳转私聊界面
-				uni.showToast({
-					title: 'Navigating to chat Page',
-					icon: 'none',
-					duration: 2000,
+				uni.navigateTo({
+					url: '/pages/module1/chat?id='+encodeURIComponent(userId),
+					
 				});
 			},
 			follow() {
-				//关注/取消关注
-				setTimeout(() => {
-					this.isFollowing = !this.isFollowing;
-				}, 500);
-				// Example: Redirect to the login page after logout
-				// uni.navigateTo({
-				//   url: '/pages/login/login',
-				// });
+				if(this.isFollowing)//已经关注了，要取消关注
+				{
+					this.$myRequest({
+							url: '/user/unfollow/'+this.userId,
+							method: "POST",
+						})
+						.then(response => {
+							//this.isFollowing = !this.isFollowing;
+							uni.showToast({
+								title: '取关成功',
+								//将值设置为 success 或者直接不用写icon这个参数
+								icon: 'success',
+								//显示持续时间为 2秒
+								duration: 1000,
+							});
+							this.getUserInfo();
+						})
+						.catch(error => {
+							if (error.data.code == 500) {
+								uni.$u.toast(error.data.message);
+								return;
+							}
+						});
+				}
+				else//关注
+				{
+					this.$myRequest({
+							url: '/user/follow/'+this.userId,
+							method: "POST",
+						})
+						.then(response => {
+							//this.isFollowing = !this.isFollowing;
+							uni.showToast({
+								title: '关注成功',
+								//将值设置为 success 或者直接不用写icon这个参数
+								icon: 'success',
+								//显示持续时间为 2秒
+								duration: 1000,
+							});
+							this.getUserInfo();
+							
+						})
+						.catch(error => {
+							if (error.data.code == 500) {
+								uni.$u.toast(error.data.message);
+								return;
+							}
+						});
+				}
 			},
 		}
 	}

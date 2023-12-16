@@ -106,16 +106,47 @@
 				// 	},
 				// ],
 
-				avatarUrl: '/static/avatar1.jpg',
-				username: '用户名',
-				userId: '用户id',
-				followCount: 10,
-				fansCount: 20,
+				avatarUrl: '',
+				username: '',
+				userId: '',
+				followCount: 0,
+				fansCount: 0,
+				// isCredit: false,
+				// isForbidden: false,
 				//postCount: 30
 
 			}
 		},
+		onShow() {
+		    // 在页面显示时发起多个请求
+		    this.getAllInfo();
+		  },
 		methods: {
+			getAllInfo() {
+				this.$myRequest({
+						header: {
+							'Authentication': uni.getStorageSync('Authentication')
+						},
+						url: '/user/getAllInfo/'+0,
+						method: "GET",
+					})
+					.then(response => {
+						this.userId = response.data.data.id;
+						this.username = response.data.data.username;
+						this.avatarUrl = response.data.data.iconUrl;
+						this.followCount = response.data.data.followings;
+						this.fansCount = response.data.data.followers;
+						// this.isCredit = response.data.data.isCredit;
+						// this.isForbidden = response.data.data.isForbidden;
+					})
+					.catch(error => {
+						if (error.data.code == 500) {
+							uni.$u.toast(error.data.message);
+							return;
+						}
+					});
+				
+			},
 			click(item) {
 				console.log('item', item);
 			},
@@ -124,12 +155,12 @@
 			},
 			goToFollowingPage(userId) {
 				uni.navigateTo({
-					url: '/pages/personalCenter/follow?userId='+encodeURIComponent(userId)
+					url: '/pages/personalCenter/follow?userId='+encodeURIComponent(userId)+'&followCount='+this.followCount
 				});
 			},
 			goToFansPage(userId) {
 				uni.navigateTo({
-					url: '/pages/personalCenter/fans?userId='+encodeURIComponent(userId)
+					url: '/pages/personalCenter/fans?userId='+encodeURIComponent(userId)+'&fansCount='+this.fansCount
 				});
 			},
 			goToEditPage(userId) {
@@ -139,29 +170,36 @@
 			},
 			logout() {
 				this.$myRequest({
+					header: {
+						'Authentication': uni.getStorageSync('Authentication')
+					},
 						url: '/login/logout',
 						method: "POST",
 						data: {}
 					})
 					.then(response => {
-						uni.showToast({
-							title: '登出成功',
-							//将值设置为 success 或者直接不用写icon这个参数
-							icon: 'success',
-							//显示持续时间为 2秒
-							duration: 1000,
-						})
-						
 						uni.switchTab({
 							url: '/pages/login/index',
 							success: () => {
-								console.log(1);
+								uni.showToast({
+									title: '登出成功',
+									//将值设置为 success 或者直接不用写icon这个参数
+									icon: 'success',
+									//显示持续时间为 2秒
+									duration: 1000,
+								})
 							},
 							fail: (res) => {
-								console.log('navigate failed', res);
+								uni.showToast({
+									title: '登出失败',
+									//将值设置为 success 或者直接不用写icon这个参数
+									icon: 'fail',
+									//显示持续时间为 2秒
+									duration: 1000,
+								})
+								//console.log('navigate failed', res);
 							}
 						})
-					
 						// //login从tabbar取出后用
 						// // uni.navigateTo({
 						// // 	url: '/pages/login/index',
@@ -172,6 +210,7 @@
 						// // 		console.log('navigate failed', res);
 						// // 	}
 						// // });
+						
 					})
 					.catch(error => {
 						if (error.data.code == 500) {
@@ -180,6 +219,7 @@
 						}
 					});
 			},
+			
 			// click(name) {
 			// 	console.log('点击了第'+name+'个');
 			// 	uni.$u.toast('点击了第'+name+'个');

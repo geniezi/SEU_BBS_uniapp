@@ -110,7 +110,7 @@
 
 				messageInput: '',
 				chatPartnerID: '',
-				myID: '1729121929987756032',
+				myID: '',
 				chatPartnerName: '张三',
 				chatPartnerAvatar: '',
 				myAvatar: '',
@@ -230,10 +230,10 @@
 			},
 
 			isMyMessage(id) {
-				if (id == this.myID)
-					return true
-				else
+				if (id == this.chatPartnerID)
 					return false
+				else
+					return true
 			},
 
 			getMyAvatar() {

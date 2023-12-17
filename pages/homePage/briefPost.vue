@@ -4,10 +4,9 @@
 		<view class="post-header">
 			<!-- 头像 昵称 时间 -->
 			<u-image :src="iconUrl" width="40px" height="40px" shape="circle"
-				@click="goToUserHomePage(userId)"></u-image> <!--:src="avatarUrl"-->
+				@click="goToUserHomePage(userId)"></u-image> 
 			<text class="nickname" @click="goToUserHomePage(userId)">{{ nickName }}</text>
-			<!--{{ nickname }}  xlnx-x+C-->
-			<text class="post-time">{{ postTime }}</text> <!---->
+			<text class="post-time">{{ postTime }}</text> 
 
 			<!-- 举报按钮-->
 			<view class="report-container">
@@ -23,38 +22,37 @@
 
 		<view @click="goToDetail(postId)">
 			<!-- 帖子内容 -->
-			<view class="post-content">{{ content }}</view> <!--{{ content }}-->
+			<view class="post-content">{{ content }}</view> 
 
 			<!-- 帖子配图 -->
 			<view class="post-images" v-if="image !== '' && image !== null" @click.stop>
 				<!-- 多张图 -->
-				<!--<u-image v-for="(image, index) in images" :key="index" :src="image"></u-image>-->
 				<!-- <u-image :src="image" width="160px" height="130px"></u-image> -->
 				<u-album :urls="urls"></u-album>
 			</view>
 
 			<!-- 标签 -->
 			<view class="post-tags">
-				<u-tag v-for="tag in tags" :key="tag" :text="tag" bgColor="#f1f1f1" size="mini" icon="tags" plain
-					borderColor="white"></u-tag>
+				<view v-for="(row, rowIndex) in processedTags" :key="rowIndex" class="tag-row">
+					<u-tag v-for="tag in row" :key="tag" :text="tag" bgColor="#f1f1f1" size="mini" icon="tags" plain
+						borderColor="white">
+					</u-tag>
+				</view>
 			</view>
 		</view>
 
 		<!-- 点赞、点踩、收藏、评论-->
 		<view class="post-actions">
 			<view class="action-item" @click="likePost">
-				<u-icon :name="isLikedState ? 'thumb-up-fill' : 'thumb-up'" size="22px"></u-icon>
-				<view class="count">{{ likeCount }}</view>
+				<u-icon :name="isLikedState ? 'thumb-up-fill' : 'thumb-up'" size="22px" :label="likeCount"></u-icon>
 			</view>
 
 			<view class="action-item" @click="dislikePost">
-				<u-icon :name="isDislikedState ? 'thumb-down-fill' : 'thumb-down'" size="22px"></u-icon>
-				<view class="count">{{ dislikeCount }}</view>
+				<u-icon :name="isDislikedState ? 'thumb-down-fill' : 'thumb-down'" size="22px" :label="dislikeCount"></u-icon>
 			</view>
 
 			<view class="action-item" @click="collectPost">
-				<u-icon :name="isCollectedState ? 'star-fill' : 'star'" size="20px"></u-icon>
-				<view class="count">{{ collectCount }}</view>
+				<u-icon :name="isCollectedState ? 'star-fill' : 'star'" size="20px" :label="collectCount"></u-icon>
 			</view>
 
 			<view class="action-item">
@@ -64,8 +62,7 @@
 						<u-button icon="share-square" @click="sendComment">发送</u-button>
 					</view>
 				</u-popup>
-				<u-icon name="chat" size="20px" @click="commentShow = true"></u-icon>
-				<view class="count">{{ commentCount }}</view>
+				<u-icon name="chat" size="20px" @click="commentShow = true" :label="commentCount"></u-icon>
 			</view>
 		</view>
 	</view>
@@ -94,6 +91,20 @@
 				commentContent: '',
 
 			};
+		},
+		computed: {
+			processedTags() {//切分tag,一行最多3个
+				if (!this.tags) {
+					return [];
+				}
+				const processed = [];
+				const rowSize = 3;
+
+				for (let i = 0; i < this.tags.length; i += rowSize) {
+					processed.push(this.tags.slice(i, i + rowSize));
+				}
+				return processed;
+			}
 		},
 		methods: {
 			open() {
@@ -327,7 +338,6 @@
 						this.closeComment();
 						uni.$u.toast('回帖已发送');
 						this.commentContent = '';
-						//this.commentShow = false;
 					})
 					.catch(error => {
 						if (error.data.code == 500) {
@@ -380,7 +390,7 @@
 
 <style lang="scss" scoped>
 	.brief-post {
-		padding: 10px;
+		padding: 0 10px 20px 10px;
 		background-color: #fff;
 	}
 
@@ -438,6 +448,13 @@
 		width: 80px;
 		font-size: 12px;
 		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.tag-row {
+		display: flex;
+		justify-content: space-between;
+		flex-basis: 100%;
 	}
 
 	.post-actions {

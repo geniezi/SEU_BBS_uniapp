@@ -35,12 +35,13 @@
 				fansList: [],
 				page: 1,
 				status: "loading", // 初始状态为loading
+				size:10,
 			};
 		},
 		methods: {
 			follow(index) {
 				const fans = this.fansList[index];
-				// 调用后端接口进行关注/取消关注操作
+				
 				if(fans.isFollowed)//已经关注了，要取消关注
 				{
 					this.$myRequest({
@@ -51,9 +52,7 @@
 							fans.isFollowed = !fans.isFollowed;
 							uni.showToast({
 								title: '取关成功',
-								//将值设置为 success 或者直接不用写icon这个参数
 								icon: 'success',
-								//显示持续时间为 2秒
 								duration: 1000,
 							});
 						})
@@ -74,9 +73,7 @@
 							fans.isFollowed = !fans.isFollowed;
 							uni.showToast({
 								title: '关注成功',
-								//将值设置为 success 或者直接不用写icon这个参数
 								icon: 'success',
-								//显示持续时间为 2秒
 								duration: 1000,
 							});
 						})
@@ -106,7 +103,7 @@
 						header: {
 							'Authentication': uni.getStorageSync('Authentication')
 						},
-						url: '/user/pageIdolFan?page=' + this.page + '&size=10&type=1&order=time_desc',
+						url: '/user/pageIdolFan?page=' + this.page + '&size='+this.size+'&type=1&order=time_desc',
 						method: "GET",
 					})
 					.then(response => {
@@ -124,9 +121,10 @@
 						}
 					})
 					.catch(error => {
+						this.status = "nomore";
 						if (error.data.code == 500) {
-							this.status = "nomore";
-							uni.$u.toast(error.data.message);
+							//uni.$u.toast(error.data.message);
+							console.log(error.data.message);
 							return;
 						}
 					});
@@ -134,7 +132,6 @@
 			onReachBottom() {
 				this.getFans();
 			},
-			
 		},
 	};
 </script>

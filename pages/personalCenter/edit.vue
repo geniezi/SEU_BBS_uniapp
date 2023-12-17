@@ -55,11 +55,8 @@
 <script>
 	export default {
 		onLoad(router) {
-			// query.id 包含页面跳转过来时携带的参数
 			this.userId = router.userId;
-			uni.$u.toast('跳转到' + this.userId + '页面');
-			//console.log(this.userId);
-			// 调接口获取数据
+
 			this.getAllInfo();
 		},
 
@@ -69,22 +66,20 @@
 				avatarUrl: '', // 用户头像地址
 				username: '', // 用户名
 				phoneNumber: '', // 手机号
-				//userId: '123456', // 用户ID
 				studentNumber: '', // 学生证号
 				isCredit: false, // 是否认证
-				isForbidden: false ,// 是否禁言
-				verifiedState:'',
-				mutedState:'',
+				isForbidden: false, // 是否禁言
+				verifiedState: '',
+				mutedState: '',
 			};
 		},
 		created() {
-		    // 在组件创建时获取 isVerified 数据，并根据其值赋值给 verifiedState
-		    this.getVerifiedState();
+			this.getVerifiedState();
 			this.getMutedState();
-		  },
-		
-		computed:{
-			
+		},
+
+		computed: {
+
 		},
 		methods: {
 			getAllInfo() {
@@ -92,11 +87,10 @@
 						header: {
 							'Authentication': uni.getStorageSync('Authentication')
 						},
-						url: '/user/getAllInfo/'+0,
+						url: '/user/getAllInfo/' + 0,
 						method: "GET",
 					})
 					.then(response => {
-						//this.userId = response.data.data.id;
 						this.username = response.data.data.username;
 						this.avatarUrl = response.data.data.iconUrl;
 						this.phoneNumber = response.data.data.phone;
@@ -110,7 +104,7 @@
 							return;
 						}
 					});
-				
+
 			},
 			changeAvatar() {
 				// 向后端发请求换头      
@@ -123,7 +117,7 @@
 						const tempFilePaths = res.tempFilePaths;
 						// 将临时文件路径赋值给头像地址
 						const tempUrl = tempFilePaths[0];
-						
+
 						this.$myRequest({
 								header: {
 									'Authentication': uni.getStorageSync('Authentication')
@@ -147,17 +141,13 @@
 					}
 				});
 			},
-			getVerifiedState(){
-				this.verifiedState=this.isCredit ? '已认证' : '未认证';
+			getVerifiedState() {
+				this.verifiedState = this.isCredit ? '已认证' : '未认证';
 			},
-			getMutedState(){
-				this.mutedState=this.isForbidden ? '已禁言' : '未禁言';
+			getMutedState() {
+				this.mutedState = this.isForbidden ? '已禁言' : '未禁言';
 			},
-			// 保存修改按钮点击事件
 			saveChanges() {
-				// 在这里向后端发送请求提交修改
-				// 请根据实际情况使用 uni-app 的网络请求或其他方法
-				// 例如 uni.request({url: 'your_api_url', data: {...}, method: 'POST'})
 				this.$myRequest({
 						header: {
 							'Authentication': uni.getStorageSync('Authentication')

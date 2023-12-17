@@ -1,28 +1,29 @@
 <template>
 	<view class="comment-item">
-		<!-- 第一行 -->
+		<!-- 头像、昵称、时间、删除按钮 -->
 		<view class="user-info">
-			<u-image :src="comment.userAvatar" width="40px" height="40px" shape="circle"></u-image>
-			<text class="nickname">{{ comment.userName }}</text>
-			<text class="post-time">{{ comment.postTime }}</text>
-			<u-icon class="deleteIcon" @click="deleteComment" name="trash" size="20px"></u-icon>
+			<u-image :src="myAvatar" width="40px" height="40px" shape="circle"></u-image>
+			<text class="nickname">{{ myUserName }}</text>
+			<text class="post-time">{{ commentTime }}</text>
+			<view class="deleteIcon">
+				<u-icon @click="deleteComment" name="trash" size="20px" color="#999"></u-icon>
+			</view>
 		</view>
 
-		<!-- 第二行 -->
-		<view v-if="comment.replyTo" class="reply-info">
-			<text class="gray-text line-clamp">|@{{ comment.replyTo.userName }}：{{ comment.replyTo.content }}</text>
-			<!-- <text class=></text> -->
+		<!-- 所回复的评论 -->
+		<view v-if="replyTo.mainCommentContent" class="reply-info" @click="goToDetail">
+			<text class="gray-text line-clamp">|@{{ replyTo.mainUserName }}：{{ replyTo.mainCommentContent }}</text>
 		</view>
 
-		<!-- 第三行 -->
-		<view class="comment-content">
-			<text class="content-text line-clamp">{{ comment.content }}</text>
+		<!-- 自己评论的内容 -->
+		<view class="comment-content" @click="goToDetail">
+			<text class="content-text line-clamp">{{ content }}</text>
 		</view>
 
-		<!-- 第四行 -->
-		<view class="main-post">
+		<!-- 评论对应的主贴内容 -->
+		<view class="main-post" @click="goToDetail">
 			<text class="main-post-text line-clamp">
-				<text class="bold-text">主贴：</text>{{ comment.mainPostContent }}
+				<text class="bold-text">主贴：</text>{{ replyTo.mainPostContent }}
 			</text>
 		</view>
 	</view>
@@ -31,42 +32,40 @@
 
 <script>
 	export default {
-		// props: {
-		//   comment: Object, // 评论数据，包含用户头像、昵称、回帖时间等信息
-		// },
+		props: ['myAvatar', 'myUserName', 'content', 'commentTime', 'replyTo', 'postId',
+			'myCommentId', 'userId', 'commentId', 'likes', 'dislikes'
+		],
 		data() {
 			return {
-				// 示例数据，替换成你实际的数据
-				comment: {
-					userAvatar: "/static/avatar1.jpg",
-					userName: "示例昵称",
-					postTime: "示例回帖时间",
-					replyTo: { //被回复的评论
-						userName: "评论用户昵称",
-						content: "评论文字内容啊啊啊啊啊啊啊啊啊啊啊啊",
-					},
-					content: "用户回帖的内容对对对对对对的点点滴滴哒哒哒哒哒哒哒哒哒", //自己的回复
-					mainPostContent: "文字内容对对对对对对的点点滴滴哒哒哒哒哒哒哒哒哒哒哒哒", //主贴内容
-					mainPostId: '',
-				},
 				showEllipsis: false, // 是否显示省略号
-				// userId: '', // 路由传入
-				// avatarUrl: '/static/avatar1.jpg', // 用户头像地址
-				// username: 'yonghu', // 用户名
-				// phoneNumber: '13333333333', // 手机号
-				// //userId: '123456', // 用户ID
-				// studentId: '09020202', // 学生证号
-				// isVerified: true, // 是否认证
-				// isMuted: false ,// 是否禁言
-				// verifiedState:'',
-				// mutedState:'',
 			};
 		},
 		methods: {
 			deleteComment() {
-				// 处理删除评论的逻辑，调用接口等
-				console.log('Delete comment:', this.comment.id);
-				// 假设这里调用了删除接口，并成功删除后可以刷新页面或更新评论列表等
+				this.$myRequest({
+						url: '/comment/delete/' + this.myCommentId,
+						method: "DELETE",
+					})
+					.then(response => {
+						uni.showToast({
+							title: '评论已删除',
+							icon: 'success',
+							duration: 1000,
+						});
+
+						this.$emit('commentDeleted');
+					})
+					.catch(error => {
+						if (error.data.code == 500) {
+							uni.$u.toast(error.data.message);
+							return;
+						}
+					});
+			},
+			goToDetail() {
+				uni.navigateTo({
+					url: '/pages/postPage/index?id=' + encodeURIComponent(this.postId), //路径要改
+				});
 			},
 		},
 	};
@@ -74,33 +73,31 @@
 
 <style lang="scss" scoped>
 	.comment-item {
-		padding: 20px;
-		//border-bottom: 1px solid #eee;//间隔线！！！！！
+		padding: 0 15px 20px 15px;
+		//border-bottom: 1px solid #eee;//间隔线
 	}
 
 	.user-info {
-		// display: flex;
-		// align-items: center;
 		display: flex;
 		align-items: center;
-		//justify-content: space-between; /* 让子元素之间平均分布 */
 	}
 
 	.nickname {
-		margin-left: 20px;
+		margin-left: 10px;
 		font-size: 15px;
 	}
 
 	.post-time {
-		margin-left: 15px;
-		margin-right: 45px;
+		margin-left: 10px;
 		font-size: 13px;
 		color: #999;
 	}
 
 	.deleteIcon {
-		//margin-left: 20px;
-		cursor: pointer;
+		position: absolute;
+		right: 20px;
+		display: flex;
+		align-items: center;
 	}
 
 	.reply-info {
@@ -108,14 +105,8 @@
 		display: flex;
 		align-items: center;
 		color: #999;
-		/* 灰色字体 */
 		font-size: 15px;
 	}
-
-	// .reply-text {
-	//   color: #999;
-
-	// }
 
 	.gray-text,
 	.main-post-text {
@@ -126,7 +117,6 @@
 
 	.line-clamp {
 		-webkit-line-clamp: 1;
-		/* 设置显示的行数 */
 		overflow: hidden;
 	}
 

@@ -33,9 +33,10 @@
 		data() {
 			return {
 				userId: '', // 路由传入
-				followCount:'',
+				followCount: '',
 				followList: [], //后端获得的关注列表
 				page: 1,
+				size: 10,
 				status: "loading", // 初始状态为loading
 			};
 		},
@@ -43,7 +44,6 @@
 			follow(index) {
 				const follow = this.followList[index];
 
-				// 调用后端接口进行关注/取消关注操作
 				if (follow.isFollowing) //已经关注了，要取消关注
 				{
 					this.$myRequest({
@@ -54,9 +54,7 @@
 							follow.isFollowing = !follow.isFollowing;
 							uni.showToast({
 								title: '取关成功',
-								//将值设置为 success 或者直接不用写icon这个参数
 								icon: 'success',
-								//显示持续时间为 2秒
 								duration: 1000,
 							});
 						})
@@ -76,9 +74,7 @@
 							follow.isFollowing = !follow.isFollowing;
 							uni.showToast({
 								title: '关注成功',
-								//将值设置为 success 或者直接不用写icon这个参数
 								icon: 'success',
-								//显示持续时间为 2秒
 								duration: 1000,
 							});
 						})
@@ -108,7 +104,7 @@
 						header: {
 							'Authentication': uni.getStorageSync('Authentication')
 						},
-						url: '/user/pageIdolFan?page=' + this.page + '&size=10&type=0&order=time_desc',
+						url: '/user/pageIdolFan?page=' + this.page + '&size=' + this.size + '&type=0&order=time_desc',
 						method: "GET",
 					})
 					.then(response => {
@@ -122,7 +118,7 @@
 
 						this.followList = this.followList.concat(newFollowsWithIsFollowing); // 将新数据接在原有数据后面
 
-						if (newfollows.length > 0 && newfollows.length == 10) //>0
+						if (newfollows.length > 0 && newfollows.length == this.size) //>0
 						{
 							this.status = "loadmore"; // 还可能有新数据，状态设为loading
 						} else {
@@ -130,9 +126,10 @@
 						}
 					})
 					.catch(error => {
+						this.status = "nomore";
 						if (error.data.code == 500) {
-							this.status = "nomore";
-							uni.$u.toast(error.data.message);
+							//uni.$u.toast(error.data.message);
+							console.log(error.data.message);
 							return;
 						}
 					});

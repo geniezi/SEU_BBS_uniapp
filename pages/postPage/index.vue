@@ -95,6 +95,24 @@
 				<u-icon name="chat" size="20px" @click="commentShow = true"></u-icon>
 				<view class="count">{{ commentCount }}</view>
 			</view>
+		
+		
+		</view>
+		<!-- 评论区 -->
+		<view style="background-color: azure; "> 
+		
+		<text class="nickname" >评论区</text> <!--{{ nickname }}  xlnx-x+C-->
+		
+		<!-- 举报按钮-->
+		<view class="report-container">
+			<u-popup :show="show" mode="bottom" @close="close" @open="open">
+				<view>
+					<u-button @click="reportPost">举报</u-button>
+				</view>
+			</u-popup>
+			<u-icon size="20" name="more-dot-fill" color="#999" @click="show = true">
+			</u-icon>
+		</view>
 		</view>
 	</view>
 </template>

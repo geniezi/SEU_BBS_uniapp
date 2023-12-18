@@ -103,10 +103,43 @@
 			}
 		},
 		onShow() {
-			// 在页面显示时发起多个请求
-			this.getAllInfo();
-			this.getPosts();
+			const isLoggedIn = getApp().globalData.isUserLoggedIn;
+			if (isLoggedIn) {
+				this.getAllInfo();
+				this.getPosts();
+			} else {
+				uni.navigateTo({
+					url: '/pages/login/index',
+				});
+			}
 		},
+		// onLoad() {
+		//     // 确保 this.$page 存在并且 this.$page.meta 不为 undefined
+		//         if (this.$page && this.$page.meta && this.$page.meta.tabBar) {
+		//           // 根据用户登录状态动态修改 tabBar 的配置
+		//           const tabBarList = this.$page.meta.tabBar.list;
+		//           tabBarList[tabBarList.length - 1] = {
+		//             "pagePath": getApp().globalData.isUserLoggedIn ? "pages/personalCenter/index" : "pages/login/index",
+		//             "text": getApp().globalData.isUserLoggedIn ? "我的" : "登录",
+		//             "iconPath": "static/icons/customer.png",
+		//             "selectedIconPath": "static/icons/customer-fill.png"
+		//           };
+		//           // 更新 tabBar 的配置
+		//           uni.setTabBarStyle({
+		//             color: "#8a8a8a",
+		//             selectedColor: "#00b331",
+		//             backgroundColor: "#ffffff",
+		//             borderStyle: "black"
+		//           });
+		//           uni.setTabBarItem({
+		//             index: tabBarList.length - 1,
+		//             text: getApp().globalData.isUserLoggedIn ? "我的" : "登录",
+		//             iconPath: "static/icons/customer.png",
+		//             selectedIconPath: "static/icons/customer-fill.png",
+		//             pagePath: getApp().globalData.isUserLoggedIn ? "pages/personalCenter/index" : "pages/login/index"
+		//           });
+		//         }
+		//   },
 		methods: {
 			getAllInfo() {
 				this.$myRequest({
@@ -266,7 +299,26 @@
 						method: "POST",
 					})
 					.then(response => {
-						uni.switchTab({
+						getApp().globalData.isUserLoggedIn = false; //改全局变量
+						// uni.switchTab({
+						// 	url: '/pages/login/index',
+						// 	success: () => {
+						// 		uni.showToast({
+						// 			title: '登出成功',
+						// 			icon: 'success',
+						// 			duration: 1000,
+						// 		})
+						// 	},
+						// 	fail: (res) => {
+						// 		uni.showToast({
+						// 			title: '登出失败',
+						// 			icon: 'fail',
+						// 			duration: 1000,
+						// 		})
+						// 	}
+						// })
+						// //login从tabbar取出后用
+						uni.navigateTo({
 							url: '/pages/login/index',
 							success: () => {
 								uni.showToast({
@@ -282,21 +334,11 @@
 									duration: 1000,
 								})
 							}
-						})
-						// //login从tabbar取出后用
-						// // uni.navigateTo({
-						// // 	url: '/pages/login/index',
-						// // 	success: () => {
-						// // 		uni.$u.toast('请登录后操作');
-						// // 	},
-						// // 	fail: (res) => {
-						// // 		console.log('navigate failed', res);
-						// // 	}
-						// // });
+						});
 
 					})
 					.catch(error => {
-						if (error.data.code == 500) {
+						if (error.data.statusCode == 500) {
 							uni.$u.toast(error.data.message);
 							return;
 						}

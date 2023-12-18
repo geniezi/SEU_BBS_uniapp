@@ -358,17 +358,7 @@
 				uni.$u.toast('跳转帖子详情' + postId);
 			},
 			goToLogin() {
-				uni.switchTab({
-					url: '/pages/login/index',
-					success: () => {
-						uni.$u.toast('请登录后操作');
-					},
-					fail: (res) => {
-						console.log('navigate failed', res);
-					}
-				})
-				//login从tabbar取出后用
-				// uni.navigateTo({
+				// uni.switchTab({
 				// 	url: '/pages/login/index',
 				// 	success: () => {
 				// 		uni.$u.toast('请登录后操作');
@@ -376,7 +366,17 @@
 				// 	fail: (res) => {
 				// 		console.log('navigate failed', res);
 				// 	}
-				// });
+				// })
+				//login从tabbar取出后用
+				uni.navigateTo({
+					url: '/pages/login/index',
+					success: () => {
+						uni.$u.toast('请登录后操作');
+					},
+					fail: (res) => {
+						console.log('navigate failed', res);
+					}
+				});
 			},
 			goToUserHomePage(userId) {
 				uni.navigateTo({

@@ -4,6 +4,9 @@
 </style>
 <script>
 	export default {
+		globalData: {
+		    isUserLoggedIn: false,
+		  },
 		onLaunch: function() {
 			console.log('App Launch')
 		},

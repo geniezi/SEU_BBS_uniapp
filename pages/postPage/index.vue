@@ -195,22 +195,69 @@
 				content:'',
 				tags:[],
 				images:[],
-				commentList:[
-					{
-						"id": "",
-						"userId": "",
-						"postId": "",
-						"commentId": "",    //该评论是否是直接评论帖子的
-						"content": "",
-						"likes": 0,
-						"dislikes": 0,
-						"commentNum": "",    //该评论被评论数
-						"commentTime": ""
-					}
-				]
+				commentList:[],
+				page: 1,
+				currentTime: '',
+				size: 25,
+				status: "loading", // 初始状态为loading
+				scrollTop: 0,
 			};
 		},
+		mounted() {
+			this.getCurrentTime();
+			this.getComments();
+		},
 		methods: {
+			onReachBottom() {
+				this.getPosts();
+			},
+			onPageScroll(e) {
+				this.scrollTop = e.scrollTop;
+			},
+			onScrollToUpper() {
+				this.page = 1; // 重置页码
+				this.posts = []; // 清空原有数据
+				this.status = "loading"; // 初始状态为loading
+				this.getCurrentTime();
+				this.getPosts(); // 重新获取数据
+			},
+			getCurrentTime() {
+				var date = new Date();
+				this.currentTime = date.getFullYear() +
+					"-" + (date.getMonth() + 1).toString().padStart(2, '0') +
+					"-" + date.getDate().toString().padStart(2, '0') +
+					"T" + date.getHours().toString().padStart(2, '0') +
+					":" + date.getMinutes().toString().padStart(2, '0') +
+					":" + date.getSeconds().toString().padStart(2, '0');
+			},
+			getComments() {
+				this.$myRequest({
+						header: {
+							'Authentication': uni.getStorageSync('Authentication')
+						},
+						url: '/post/pagePost?page=' + this.page + '&size=' + this.size + '&section=0&queryTime=' + this
+							.currentTime,
+						method: "GET",
+					})
+					.then(response => {
+						this.page = this.page + 1;
+						const newPosts = response.data.data.records;
+						this.posts = this.posts.concat(newPosts); // 将新数据接在原有数据后面
+						if (newPosts.length > 0 && newPosts.length == this.size) {
+							this.status = "loadmore"; // 如果有新数据，状态设为loading
+						} else {
+							this.status = "nomore";
+						}
+					})
+					.catch(error => {
+						this.status = "nomore";
+						if (error.data.code == 500) {
+							//uni.$u.toast(error.data.message);
+							console.log(error.data.message);
+							return;
+						}
+					});
+			},
 			preview(i){
 				// 预览图片
 				uni.previewImage({

@@ -321,6 +321,7 @@
 			},
 			sendComment() {
 				// 完成评论的逻辑
+				if(this.commentContent.length!=0){
 				this.$myRequest({
 						header: {
 							'Authentication': uni.getStorageSync('Authentication')
@@ -350,6 +351,12 @@
 							return;
 						}
 					});
+					}
+					else
+					{
+						uni.$u.toast('评论内容不能为空');
+						return;
+					}
 			},
 			goToDetail(postId) {
 				uni.navigateTo({

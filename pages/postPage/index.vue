@@ -25,11 +25,37 @@
 			<view class="post-content">{{ content }}</view> <!--{{ content }}-->
 
 			<!-- 帖子配图 -->
-			<view class="post-images" v-if="image !== '' && image !== null" @click.stop>
+<!-- 			<view class="post-images" v-if="image !== '' && image !== null" @click.stop> -->
 				<!-- 多张图 -->
-				<!--<u-image v-for="(image, index) in images" :key="index" :src="image"></u-image>-->
-				<!-- <u-image :src="image" width="160px" height="130px"></u-image> -->
-				<u-album :urls="urls"></u-album>
+<!-- 				<u-image v-for="(image, index) in images" :key="index" :src="image"></u-image>
+					<u-image :src="image" width="160px" height="130px"></u-image> 
+					<u-album :urls="urls"></u-album>
+			</view> -->
+<!-- 			<view class="img_box" v-if="images.length>0">
+					<view class="img_item" v-for="(image, index) in images" :key="index">
+						<u-image bindtap="preview"  class="img_item_i" src="image" mode="aspectFill"></u-image>
+					</view> -->
+					<!-- <view class="img_item" style=" display: flex;justify-content: center;align-items: center;">
+						<image wx:if="{{imgList.length<9}}" class="add_icon" style="width:30%;height:30%;display:flex;justify-content:center;align-item:center" bindtap="upload" mode="aspectFill" src="点击上传的图标地址"></image>
+			
+					</view> -->
+<!-- 			</view> -->
+			<view class="qz_imgs"  v-if="images.length==1"
+			
+			v-for="(image,index) in images" :key="index"  @click="preview(index)">
+			           <image style=" max-height: 320rpx;object-fit: cover;border-radius:3px;float: left;margin: 5px;" :src="image" mode="heightFix"/>
+			</view>
+			
+			<view class="qz_imgs"  >
+				<view   v-if="images.length==2"  v-for="(image,index) in images" :key="index" @click="preview(index)">
+						<image  style="width:220rpx;height:220rpx;object-fit: cover;border-radius:3px;float: left;margin: 5px;" :src="image"  mode="aspectFill"/>
+				</view>
+			</view>
+			<view class="qz_imgs"  v-if="images.length>=3"  >
+			        <!-- <view   v-if="images.length>=3"  v-for="(image,index) in images" :key="index">
+			                <image  style="width:212rpx;height:212rpx;object-fit: cover;border-radius:3px;float: left;margin: 5px;" :src="image"  mode="aspectFill"/>
+			         </view> -->
+					 <u-album :urls="images"></u-album>
 			</view>
 
 			<!-- 标签 -->
@@ -108,6 +134,7 @@
 						this.isCollectedState=this.isCollected
 						this.tags=response.data.data.tagList
 						this.section=response.data.data.section
+						this.images=response.data.data.mediaList
 					})
 					.catch(error => {
 						if (error.data.code == 500) {
@@ -148,10 +175,27 @@
 				commentContent: '',
 				title:'',
 				content:'',
-				tags:[]
+				tags:[],
+				images:[],
 			};
 		},
 		methods: {
+			preview(i){
+				// 预览图片
+				uni.previewImage({
+				    urls: this.images,
+					current:i,
+				    longPressActions: {
+				        itemList: [ '保存图片'],
+				        success: function(data) {
+				            console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+				        },
+				        fail: function(err) {
+				            console.log(err.errMsg);
+				        }
+				    }
+				});
+			},
 			open() 
 			{
 				// console.log('open');
@@ -438,6 +482,34 @@
 </script>
 
 <style>
+	
+	
+.qz_imgs{
+        position: relative;
+        display: flex;
+        overflow: hidden;
+
+}
+
+.img_box{
+  display: flex;
+  flex-wrap: wrap;
+  margin: 20rpx;
+  width: 100%;
+}
+.img_item_i{
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+ .closeImv {
+  position: absolute;
+  right: 0rpx;
+  top: 0rpx;
+  width: 50rpx;
+  height: 50rpx;
+}
+
 .brief-post {
 		padding: 10px;
 		background-color: #fff;

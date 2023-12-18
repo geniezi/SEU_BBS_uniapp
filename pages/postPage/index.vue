@@ -101,7 +101,7 @@
 		<!-- 评论区 -->
 		<view style="background-color: azure; "> 
 		
-		<text class="nickname" >评论区</text> <!--{{ nickname }}  xlnx-x+C-->
+		<text class="discuss" >评论区</text>
 		
 		<!-- 举报按钮-->
 		<view class="report-container">
@@ -195,6 +195,19 @@
 				content:'',
 				tags:[],
 				images:[],
+				commentList:[
+					{
+						"id": "",
+						"userId": "",
+						"postId": "",
+						"commentId": "",    //该评论是否是直接评论帖子的
+						"content": "",
+						"likes": 0,
+						"dislikes": 0,
+						"commentNum": "",    //该评论被评论数
+						"commentTime": ""
+					}
+				]
 			};
 		},
 		methods: {
@@ -550,7 +563,13 @@
 		color: #333;
 		width:60%
 	}
-
+	.discuss {
+		margin-left: 0px;
+		font-size: 13px;
+		color: #616161;
+		width:60%;
+		font-weight: bold;
+	}
 	.post-time {
 		margin-left: 0px;
 		margin-top: 3px;

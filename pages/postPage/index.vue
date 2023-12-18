@@ -98,26 +98,23 @@
 		
 		
 		</view>
+		<u-divider>大漠孤烟直</u-divider>
 		<!-- 评论区 -->
 		<view style="background-color: azure; "> 
 		
 		<text class="discuss" >评论区</text>
-		
+<!-- 		<commentTemplate v-for="(item, index) in commentList" :key="index" :nickName="commentUserInfoList.{item.userId}.username"
+			:postTime="item.postTime" :iconUrl="commentUserInfoList.{item.userId}.iconUrl" :content="item.content"
+			:postId="this.postId" :userId="item.userId" :likes="item.likes" :dislikes="item.dislikes" 
+			:comments="item.comments" :isLiked="item.isLiked" :isDisliked="item.isDisliked" :commentId="item.id">
+			</commentTemplate> -->
 		<!-- 举报按钮-->
-		<view class="report-container">
-			<u-popup :show="show" mode="bottom" @close="close" @open="open">
-				<view>
-					<u-button @click="reportPost">举报</u-button>
-				</view>
-			</u-popup>
-			<u-icon size="20" name="more-dot-fill" color="#999" @click="show = true">
-			</u-icon>
-		</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import commentTemplate from '@/pages/postPage/commentTemplate.vue';
 	export default {
 		onLoad(options) {
 			this.postId = decodeURIComponent(options.id);
@@ -196,6 +193,7 @@
 				tags:[],
 				images:[],
 				commentList:[],
+				commentUserInfoList:"",
 				page: 1,
 				currentTime: '',
 				size: 25,
@@ -218,36 +216,67 @@
 				this.page = 1; // 重置页码
 				this.posts = []; // 清空原有数据
 				this.status = "loading"; // 初始状态为loading
-				this.getCurrentTime();
-				this.getPosts(); // 重新获取数据
+				// this.getCurrentTime();
+				this.getComments(); // 重新获取数据
 			},
-			getCurrentTime() {
-				var date = new Date();
-				this.currentTime = date.getFullYear() +
-					"-" + (date.getMonth() + 1).toString().padStart(2, '0') +
-					"-" + date.getDate().toString().padStart(2, '0') +
-					"T" + date.getHours().toString().padStart(2, '0') +
-					":" + date.getMinutes().toString().padStart(2, '0') +
-					":" + date.getSeconds().toString().padStart(2, '0');
-			},
+			// getCurrentTime() {
+			// 	var date = new Date();
+			// 	this.currentTime = date.getFullYear() +
+			// 		"-" + (date.getMonth() + 1).toString().padStart(2, '0') +
+			// 		"-" + date.getDate().toString().padStart(2, '0') +
+			// 		"T" + date.getHours().toString().padStart(2, '0') +
+			// 		":" + date.getMinutes().toString().padStart(2, '0') +
+			// 		":" + date.getSeconds().toString().padStart(2, '0');
+			// },
 			getComments() {
 				this.$myRequest({
 						header: {
 							'Authentication': uni.getStorageSync('Authentication')
 						},
-						url: '/post/pagePost?page=' + this.page + '&size=' + this.size + '&section=0&queryTime=' + this
-							.currentTime,
+						url: '/comment/pageComment?postId=' + this.postId + "&commentId=0&order=time_desc&page="+this.page+"&size="+this.size,
 						method: "GET",
 					})
 					.then(response => {
 						this.page = this.page + 1;
-						const newPosts = response.data.data.records;
-						this.posts = this.posts.concat(newPosts); // 将新数据接在原有数据后面
-						if (newPosts.length > 0 && newPosts.length == this.size) {
+						const newComments = response.data.data.records;
+						this.commentList = this.commentList.concat(newComments); // 将新数据接在原有数据后面
+						if (newComments.length > 0 && newComments.length == this.size) {
 							this.status = "loadmore"; // 如果有新数据，状态设为loading
 						} else {
 							this.status = "nomore";
 						}
+						let arr = [];
+						newComments.forEach(e => { 
+						    arr.push(e.userId)
+						})
+						let request="/user/listNIByIds?"
+						for(let i=0;i<arr.length;i++)
+						{
+							request=request+"id="+arr[i]
+							if(i!=arr.length-1)
+							{
+								request=request+"&"
+							}
+						}
+						this.$myRequest({
+								header: {
+									'Authentication': uni.getStorageSync('Authentication')
+								},
+								url: request,
+								method: "GET",
+							})
+							.then(res=> {
+								this.commentUserInfoList=Object.assign(this.commentUserInfoList,res.data.data)
+								
+								})
+							.catch(error => {
+								if (error.data.code == 500) {
+									//uni.$u.toast(error.data.message);
+									console.log(error.data.message);
+									return;
+								}
+							});
+							
 					})
 					.catch(error => {
 						this.status = "nomore";

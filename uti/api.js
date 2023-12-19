@@ -21,19 +21,29 @@ export const myRequest = (options) => {
 			// 请求成功
 			success: (res) => {
 				console.log(res)
+				// if (res.data.status == 401) {
+				// 	uni.navigateTo({
+				// 		url: '/pages/login/index',
+				// 	});
+				// 	return;
+				// }
 
 				// 此判断可根据自己需要更改
 				if (res.data.code !== 200) {
 					reject(res)
+				} else {
+					resolve(res)
+
 				}
 
-				resolve(res)
 			},
 			// 请求失败
 			fail: (err) => {
 				uni.showToast({
 					title: '请求接口失败！'
 				})
+
+				console.log(err)
 				reject(err)
 			},
 			//请求结束之后，执行的回调函数（成功或失败都会执行）

@@ -102,44 +102,22 @@
 				scrollTop: 0,
 			}
 		},
+		// onShow() {
+		// 	this.getAllInfo();
+		// 	// const isLoggedIn = getApp().globalData.isUserLoggedIn;
+		// 	// if (isLoggedIn) {
+		// 	// 	this.getAllInfo();
+		// 	// 	//this.getPosts();
+		// 	// 	}
+		// 	// } else {
+		// 	// 	uni.navigateTo({
+		// 	// 		url: '/pages/login/index',
+		// 	// 	});
+		// 	// }
+		// },
 		onShow() {
-			const isLoggedIn = getApp().globalData.isUserLoggedIn;
-			if (isLoggedIn) {
-				this.getAllInfo();
-				this.getPosts();
-			} else {
-				uni.navigateTo({
-					url: '/pages/login/index',
-				});
-			}
+			this.getAllInfo();
 		},
-		// onLoad() {
-		//     // 确保 this.$page 存在并且 this.$page.meta 不为 undefined
-		//         if (this.$page && this.$page.meta && this.$page.meta.tabBar) {
-		//           // 根据用户登录状态动态修改 tabBar 的配置
-		//           const tabBarList = this.$page.meta.tabBar.list;
-		//           tabBarList[tabBarList.length - 1] = {
-		//             "pagePath": getApp().globalData.isUserLoggedIn ? "pages/personalCenter/index" : "pages/login/index",
-		//             "text": getApp().globalData.isUserLoggedIn ? "我的" : "登录",
-		//             "iconPath": "static/icons/customer.png",
-		//             "selectedIconPath": "static/icons/customer-fill.png"
-		//           };
-		//           // 更新 tabBar 的配置
-		//           uni.setTabBarStyle({
-		//             color: "#8a8a8a",
-		//             selectedColor: "#00b331",
-		//             backgroundColor: "#ffffff",
-		//             borderStyle: "black"
-		//           });
-		//           uni.setTabBarItem({
-		//             index: tabBarList.length - 1,
-		//             text: getApp().globalData.isUserLoggedIn ? "我的" : "登录",
-		//             iconPath: "static/icons/customer.png",
-		//             selectedIconPath: "static/icons/customer-fill.png",
-		//             pagePath: getApp().globalData.isUserLoggedIn ? "pages/personalCenter/index" : "pages/login/index"
-		//           });
-		//         }
-		//   },
 		methods: {
 			getAllInfo() {
 				this.$myRequest({
@@ -155,12 +133,26 @@
 						this.avatarUrl = response.data.data.iconUrl;
 						this.followCount = response.data.data.followings;
 						this.fansCount = response.data.data.followers;
+						console.log("jfdklsfjdklf")
+						
+						this.getPosts();
 					})
 					.catch(error => {
-						if (error.data.code == 500) {
-							uni.$u.toast(error.data.message);
-							return;
-						}
+						// if (error.data.status == 401) {
+						// 	uni.navigateTo({
+						// 		url: '/pages/login/index',
+						// 	});
+						// 	return;
+						// }
+						// else{
+							
+						// }
+							
+							
+						// if (error.data.code == 500) {
+						// 	uni.$u.toast(error.data.message);
+						// 	return;
+						// }
 					});
 			},
 			tabChange(index) {
@@ -300,6 +292,7 @@
 					})
 					.then(response => {
 						getApp().globalData.isUserLoggedIn = false; //改全局变量
+						uni.removeStorageSync('Authentication')
 						// uni.switchTab({
 						// 	url: '/pages/login/index',
 						// 	success: () => {

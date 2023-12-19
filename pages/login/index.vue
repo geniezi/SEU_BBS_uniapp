@@ -122,18 +122,20 @@
 							uni.setStorageSync('Authentication', response.data.data)
 							// //login的token存入本地
 							// console.log(response.data.data)//打印token测试
-							
-							getApp().globalData.isUserLoggedIn = true;//设置全局变量
-							
-							uni.switchTab({
-								url: '/pages/homePage/index',
-								success: () => {
-									console.log(1);
-								},
-								fail: (res) => {
-									console.log('navigate failed', res);
-								}
+
+							getApp().globalData.isUserLoggedIn = true; //设置全局变量
+							uni.navigateBack({
+								delta: 1, //返回层数，2则上上页
 							})
+							// uni.switchTab({
+							// 	url: '/pages/homePage/index',
+							// 	success: () => {
+							// 		console.log(1);
+							// 	},
+							// 	fail: (res) => {
+							// 		console.log('navigate failed', res);
+							// 	}
+							// })
 						})
 						.catch(error => {
 							if (error.data.code == 500) {

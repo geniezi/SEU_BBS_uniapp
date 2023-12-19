@@ -28,11 +28,11 @@
 		<!-- 点赞、点踩、评论-->
 		<view class="post-actions">
 			<view class="action-item" @click="likePost">
-				<u-icon :name="isLikedState ? 'thumb-up-fill' : 'thumb-up'" size="22px" :label="likeCount"></u-icon>
+				<u-icon :name="isLikedState ? 'thumb-up-fill' : 'thumb-up'" size="18px" :label="likeCount"></u-icon>
 			</view>
 
 			<view class="action-item" @click="dislikePost">
-				<u-icon :name="isDislikedState ? 'thumb-down-fill' : 'thumb-down'" size="22px" :label="dislikeCount"></u-icon>
+				<u-icon :name="isDislikedState ? 'thumb-down-fill' : 'thumb-down'" size="18px" :label="dislikeCount"></u-icon>
 			</view>
 
 
@@ -43,7 +43,7 @@
 						<u-button icon="share-square" @click="sendComment">发送</u-button>
 					</view>
 				</u-popup>
-				<u-icon name="chat" size="20px" @click="commentShow = true" :label="commentCount"></u-icon>
+				<u-icon name="chat" size="18px" @click="commentShow = true" :label="commentCount"></u-icon>
 			</view>
 		</view>
 	</view>
@@ -346,7 +346,7 @@ export default {
 	.post-actions {
 		display: flex;
 		align-items: center;
-		margin-left: 125px;
+		margin-left: 135px;
 	}
 
 	.action-item {
@@ -356,7 +356,7 @@ export default {
 	}
 
 	.count {
-		font-size: 14px;
+		font-size: 12px;
 		color: #999;
 		margin-left: 5px;
 	}

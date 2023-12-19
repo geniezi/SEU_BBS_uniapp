@@ -119,7 +119,7 @@
 		<view>
 		<commentTemplate v-for="(item, index) in commentList" :key="index" :nickName="commentUserInfoList[index].username"
 			:commentTime="item.commentTime" :iconUrl="commentUserInfoList[index].iconUrl" :content="item.content"
-			:postId="this.postId" :userId="item.userId" :likes="item.likes" :dislikes="item.dislikes" 
+			:postId="postId" :userId="item.userId" :likes="item.likes" :dislikes="item.dislikes" 
 			:comments="item.commentNum" :isLiked="item.isLiked" :isDisliked="item.isDisliked" :commentId="item.id">
 			</commentTemplate>
 		</view>

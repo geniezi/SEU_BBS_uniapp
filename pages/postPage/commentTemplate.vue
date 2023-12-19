@@ -3,7 +3,7 @@
 		<!--基本信息-->
 		<view class="post-header">
 			<!-- 头像 昵称 时间 -->
-			<u-image :src="iconUrl" width="40px" height="40px" shape="circle"
+			<u-image :src="iconUrl" width="30px" height="30px" shape="circle"
 				@click="goToUserHomePage(userId)"></u-image> 
 			<text class="nickname" @click="goToUserHomePage(userId)">{{ nickName }}</text>
 			<text class="post-time">{{ commentTime }}</text> 
@@ -303,27 +303,27 @@ export default {
 
 	.report-container {
 		position: absolute;
-		right: 30px;
+		right: 10px;
 		display: flex;
 		align-items: center;
 	}
 
 	.photo {
-		width: 40px;
-		height: 40px;
+		width: 30px;
+		height: 30px;
 		border-radius: 50%;
 	}
 
 	.nickname {
 		margin-left: 15px;
-		font-size: 14px;
+		font-size: 13px;
 		color: #333;
 	}
 
 	.post-time {
 		margin-left: 10px;
 		margin-top: 3px;
-		margin-right: 70px;
+		margin-right: 0px;
 		font-size: 12px;
 		color: #999;
 	}
@@ -332,26 +332,10 @@ export default {
 		margin-bottom: 10px;
 		margin-left: 55px;
 		margin-right: 25px;
-		font-size: 14px;
+		font-size: 12px;
 		color: #333;
 	}
 
-	.post-images {
-		display: flex;
-		flex-wrap: wrap;
-		margin-left: 55px;
-		margin-right: 10px;
-		margin-bottom: 10px;
-	}
-
-	.post-tags {
-		margin-bottom: 10px;
-		margin-left: 55px;
-		width: 80px;
-		font-size: 12px;
-		display: flex;
-		flex-wrap: wrap;
-	}
 
 	.tag-row {
 		display: flex;
@@ -362,7 +346,7 @@ export default {
 	.post-actions {
 		display: flex;
 		align-items: center;
-		margin-left: 55px;
+		margin-left: 125px;
 	}
 
 	.action-item {

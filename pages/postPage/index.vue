@@ -70,8 +70,13 @@
 				<u-tag v-if="this.section>0" :text="this.sectionArray[this.section]" bgColor="#f1f1f1" color="red" size="mini" icon="tags" plain
 					borderColor="white"></u-tag>
 				<!-- <u-tag text="一丘之貉" mode="dark" /> -->
-				<u-tag v-for="tag in tags" :key="tag" :text="tag" bgColor="#f1f1f1" size="mini" icon="tags" plain
-					borderColor="white"></u-tag>
+				
+					<view v-for="(row, rowIndex) in processedTags" :key="rowIndex" class="tag-row">
+						<u-tag v-for="tag in row" :key="tag" :text="tag" bgColor="#f1f1f1" size="mini" icon="tags" plain
+							borderColor="white">
+						</u-tag>
+					</view>
+				
 			</view>
 		</view>
 
@@ -113,9 +118,9 @@
 		<view class="space"></view>
 		<view>
 		<commentTemplate v-for="(item, index) in commentList" :key="index" :nickName="commentUserInfoList[index].username"
-			:commentTime="item.postTime" :iconUrl="commentUserInfoList[index].iconUrl" :content="item.content"
+			:commentTime="item.commentTime" :iconUrl="commentUserInfoList[index].iconUrl" :content="item.content"
 			:postId="this.postId" :userId="item.userId" :likes="item.likes" :dislikes="item.dislikes" 
-			:comments="item.comments" :isLiked="item.isLiked" :isDisliked="item.isDisliked" :commentId="item.id">
+			:comments="item.commentNum" :isLiked="item.isLiked" :isDisliked="item.isDisliked" :commentId="item.id">
 			</commentTemplate>
 		</view>
 		<u-loadmore :status="status" nomoreText="我也是有底线的"/>
@@ -129,6 +134,9 @@
 <script>
 	import commentTemplate from '@/pages/postPage/commentTemplate.vue';
 	export default {
+		components: {
+			commentTemplate
+		},
 		onLoad(options) {
 			this.postId = decodeURIComponent(options.id);
 		    // console.log(this.postId);
@@ -174,6 +182,20 @@
 							// }
 						}
 					});
+		},
+		computed: {
+			processedTags() {//切分tag,一行最多3个
+				if (!this.tags) {
+					return [];
+				}
+				const processed = [];
+				const rowSize = 3;
+		
+				for (let i = 0; i < this.tags.length; i += rowSize) {
+					processed.push(this.tags.slice(i, i + rowSize));
+				}
+				return processed;
+			}
 		},
 		data() {
 			return {
@@ -541,25 +563,25 @@
 				});
 			},
 			goToLogin() {
-				uni.switchTab({
-					url: '/pages/login/index', 
-					success: () => {
-						uni.$u.toast('请登录后操作');
-					},
-					fail: (res) => {
-						console.log('navigate failed', res);
-					}
-				})
-				//login从tabbar取出后用
-				// uni.navigateTo({
-				// 	url: '/pages/login/index',
+				// uni.switchTab({
+				// 	url: '/pages/login/index', 
 				// 	success: () => {
 				// 		uni.$u.toast('请登录后操作');
 				// 	},
 				// 	fail: (res) => {
 				// 		console.log('navigate failed', res);
 				// 	}
-				// });
+				// })
+				//login从tabbar取出后用
+				uni.navigateTo({
+					url: '/pages/login/index',
+					success: () => {
+						uni.$u.toast('请登录后操作');
+					},
+					fail: (res) => {
+						console.log('navigate failed', res);
+					}
+				});
 			},
 			sendComment() {
 				// 完成评论的逻辑
@@ -582,6 +604,7 @@
 						uni.$u.toast('回帖已发送');
 						this.commentContent = '';
 						//this.commentShow = false;
+						this.onScrollToUpper()
 					})
 					.catch(error => {
 						if (error.data.code == 500) {

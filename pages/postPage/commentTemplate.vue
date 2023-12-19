@@ -6,7 +6,7 @@
 			<u-image :src="iconUrl" width="40px" height="40px" shape="circle"
 				@click="goToUserHomePage(userId)"></u-image> 
 			<text class="nickname" @click="goToUserHomePage(userId)">{{ nickName }}</text>
-			<text class="post-time">{{ postTime }}</text> 
+			<text class="post-time">{{ commentTime }}</text> 
 
 			<!-- 举报按钮-->
 			<view class="report-container">
@@ -85,7 +85,7 @@ export default {
 			reportPost() {
 				// 处理举报帖子
 				//this.isPopupVisible = false;
-				console.log(this.sectionArray[this.section])
+				// console.log(this.sectionArray[this.section])
 				this.close();
 				uni.$u.toast('举报成功');
 			},

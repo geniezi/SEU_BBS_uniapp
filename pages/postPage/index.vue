@@ -1,6 +1,13 @@
 <template>
+<view>
+<view class="refreshBotton">
+			<u-button class="refreshButton" text="123" @click="onScrollToUpper" size="mini">上次刷新时间 {{currentTime}}</u-button>
+</view>
 <view class="brief-post">
+		
+
 		<!--基本信息-->
+		
 		<view class="post-header">
 			<!-- 头像 昵称 时间 -->
 			<u-image :src="iconUrl" width="40px" height="40px" shape="circle" @click="goToUserHomePage(userId)"></u-image> <!--:src="avatarUrl"-->
@@ -98,19 +105,25 @@
 		
 		
 		</view>
-		<u-divider>大漠孤烟直</u-divider>
+		<view class="divider"/>
 		<!-- 评论区 -->
 		<view style="background-color: azure; "> 
 		
 		<text class="discuss" >评论区</text>
-<!-- 		<commentTemplate v-for="(item, index) in commentList" :key="index" :nickName="commentUserInfoList.{item.userId}.username"
-			:postTime="item.postTime" :iconUrl="commentUserInfoList.{item.userId}.iconUrl" :content="item.content"
+		<view class="space"></view>
+		<view>
+		<commentTemplate v-for="(item, index) in commentList" :key="index" :nickName="commentUserInfoList[index].username"
+			:commentTime="item.postTime" :iconUrl="commentUserInfoList[index].iconUrl" :content="item.content"
 			:postId="this.postId" :userId="item.userId" :likes="item.likes" :dislikes="item.dislikes" 
 			:comments="item.comments" :isLiked="item.isLiked" :isDisliked="item.isDisliked" :commentId="item.id">
-			</commentTemplate> -->
+			</commentTemplate>
+		</view>
+		<u-loadmore :status="status" nomoreText="我也是有底线的"/>
+		<u-back-top :scroll-top="scrollTop"></u-back-top>
 		<!-- 举报按钮-->
 		</view>
 	</view>
+</view>
 </template>
 
 <script>
@@ -118,7 +131,7 @@
 	export default {
 		onLoad(options) {
 			this.postId = decodeURIComponent(options.id);
-		    console.log(this.postId);
+		    // console.log(this.postId);
 			this.$myRequest({
 					header: {
 						'Authentication': uni.getStorageSync('Authentication')
@@ -193,7 +206,7 @@
 				tags:[],
 				images:[],
 				commentList:[],
-				commentUserInfoList:"",
+				commentUserInfoList:[],
 				page: 1,
 				currentTime: '',
 				size: 25,
@@ -207,27 +220,28 @@
 		},
 		methods: {
 			onReachBottom() {
-				this.getPosts();
+				this.getComments();
 			},
 			onPageScroll(e) {
 				this.scrollTop = e.scrollTop;
 			},
 			onScrollToUpper() {
 				this.page = 1; // 重置页码
-				this.posts = []; // 清空原有数据
+				this.commentList = []; // 清空原有数据
+				this.commentUserInfoList=[];
 				this.status = "loading"; // 初始状态为loading
 				// this.getCurrentTime();
 				this.getComments(); // 重新获取数据
 			},
-			// getCurrentTime() {
-			// 	var date = new Date();
-			// 	this.currentTime = date.getFullYear() +
-			// 		"-" + (date.getMonth() + 1).toString().padStart(2, '0') +
-			// 		"-" + date.getDate().toString().padStart(2, '0') +
-			// 		"T" + date.getHours().toString().padStart(2, '0') +
-			// 		":" + date.getMinutes().toString().padStart(2, '0') +
-			// 		":" + date.getSeconds().toString().padStart(2, '0');
-			// },
+			getCurrentTime() {
+				var date = new Date();
+				this.currentTime = date.getFullYear() +
+					"-" + (date.getMonth() + 1).toString().padStart(2, '0') +
+					"-" + date.getDate().toString().padStart(2, '0') +
+					" " + date.getHours().toString().padStart(2, '0') +
+					":" + date.getMinutes().toString().padStart(2, '0') +
+					":" + date.getSeconds().toString().padStart(2, '0');
+			},
 			getComments() {
 				this.$myRequest({
 						header: {
@@ -237,6 +251,7 @@
 						method: "GET",
 					})
 					.then(response => {
+						console.log("开始获取评论区")
 						this.page = this.page + 1;
 						const newComments = response.data.data.records;
 						this.commentList = this.commentList.concat(newComments); // 将新数据接在原有数据后面
@@ -258,6 +273,7 @@
 								request=request+"&"
 							}
 						}
+						console.log(request)
 						this.$myRequest({
 								header: {
 									'Authentication': uni.getStorageSync('Authentication')
@@ -266,8 +282,10 @@
 								method: "GET",
 							})
 							.then(res=> {
-								this.commentUserInfoList=Object.assign(this.commentUserInfoList,res.data.data)
-								
+								console.log("已经获取到用户信息")
+								this.commentUserInfoList=this.commentUserInfoList.concat(res.data.data)
+								console.log(this.commentList)
+								console.log(this.commentUserInfoList)
 								})
 							.catch(error => {
 								if (error.data.code == 500) {
@@ -589,7 +607,18 @@
 </script>
 
 <style>
-	
+.divider{
+	margin-top: 50rpx;
+	margin-bottom: 30rpx;
+	 background: #8a8a8a;
+	 width: 100%;
+	 height: 5rpx;
+	}
+/deep/.refreshButton {
+		width: 100%;
+		height: 1%;
+		border: none;
+	}
 	
 .qz_imgs{
         position: relative;
@@ -656,8 +685,10 @@
 	}
 
 	.report-container {
-		padding-right: 10px;
-		position: relative;
+		position: absolute;
+		right: 10px;
+		display: flex;
+		align-items: center;
 	}
 
 	.post-content {

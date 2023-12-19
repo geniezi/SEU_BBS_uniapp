@@ -71,6 +71,11 @@
 				isForbidden: false, // 是否禁言
 				verifiedState: '',
 				mutedState: '',
+
+				imgarr: [],
+				uploadimg: [],
+				resarr: [],
+				tempUrl: '',
 			};
 		},
 		created() {
@@ -107,38 +112,35 @@
 
 			},
 			changeAvatar() {
-				// 向后端发请求换头      
+				var _this = this;
+				// 换头      
 				uni.chooseImage({
 					count: 1,
 					sizeType: ['original', 'compressed'],
 					sourceType: ['album'],
 					success: (res) => {
-						// 选择成功，获取临时文件路径
-						const tempFilePaths = res.tempFilePaths;
-						// 将临时文件路径赋值给头像地址
-						const tempUrl = tempFilePaths[0];
-
-						this.$myRequest({
-								header: {
-									'Authentication': uni.getStorageSync('Authentication')
-								},
-								url: '/user/update',
-								method: "PUT",
-								data: {
-									"iconUrl": tempUrl,
+						this.resarr = res.tempFilePaths;
+						let data = this.resarr[0];
+						uni.uploadFile({
+							url: 'http://8.130.39.186:30088/seu/bbs/upload/icon',
+							filePath: data,
+							name: 'file',
+							header: {
+								'Authentication': uni.getStorageSync('Authentication')
+							},
+							success: (res) => {
+								let result = JSON.parse(res.data);
+								console.log(result)
+								if (result.code == 200) {
+									this.tempUrl = this.avatarUrl;
+									this.avatarUrl = result.data;
+									this.saveChanges();
+								} else {
+									console.log('文件上传不成功')
 								}
-							})
-							.then(response => {
-								uni.$u.toast('更换成功');
-								this.avatarUrl = tempFilePaths[0];
-							})
-							.catch(error => {
-								if (error.data.code == 500) {
-									uni.$u.toast(error.data.message);
-									return;
-								}
-							});
-					}
+							},
+						});
+					},
 				});
 			},
 			getVerifiedState() {
@@ -157,12 +159,14 @@
 						data: {
 							"username": this.username,
 							"studentNumber": this.studentNumber,
+							"iconUrl": this.avatarUrl,
 						}
 					})
 					.then(response => {
 						uni.$u.toast('保存成功');
 					})
 					.catch(error => {
+						this.avatarUrl = this.tempUrl;
 						if (error.data.code == 500) {
 							uni.$u.toast(error.data.message);
 							return;

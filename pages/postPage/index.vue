@@ -118,8 +118,13 @@
 		<view class="divider"/>
 		<!-- 评论区 -->
 		<view style="background-color: azure; "> 
-		
-		<text class="discuss" >评论区</text>
+		<view class="comment-header">
+		<text class="discuss" >评论区</text> 
+		<view class="select-area">
+		<select-lay class="seclectpaytype"  :zindex="1211" :value="order" slabel="type" svalue="typeid" :options="orderList" @selectitem="selectitem" showplaceholder=false>
+		</select-lay>
+		</view>
+		</view>
 		<view class="space"></view>
 		<view>
 		<commentTemplate v-for="(item, index) in commentList" :key="index" :nickName="commentUserInfoList[index].username"
@@ -241,6 +246,14 @@
 				size: 25,
 				status: "loading", // 初始状态为loading
 				scrollTop: 0,
+				order:"time_asc",
+				orderList:[{type: '时间正序',
+					typeid: "time_asc",
+					}, 
+					{type: '时间倒序',
+					typeid:"time_desc"
+					}
+				]
 			};
 		},
 		mounted() {
@@ -248,6 +261,21 @@
 			this.getComments();
 		},
 		methods: {
+			selectitem(index, item) {
+			        this.payChannelid = item.typeid;
+			        console.log(this.payChannelid);
+			        if (index >= 0) {
+			            this.order = this.orderList[index].typeid;
+			        } else {
+			            this.order = "time_desc"
+			        }
+					this.page = 1; // 重置页码
+					this.commentList = []; // 清空原有数据
+					this.commentUserInfoList=[];
+					this.status = "loading"; // 初始状态为loading
+					// this.getCurrentTime();
+					this.getComments(); // 重新获取数据
+			    },
 			deletePost(){
 				if(this.isOwnPost)
 				{
@@ -308,7 +336,7 @@
 						header: {
 							'Authentication': uni.getStorageSync('Authentication')
 						},
-						url: '/comment/pageComment?postId=' + this.postId + "&commentId=0&order=time_desc&page="+this.page+"&size="+this.size,
+						url: '/comment/pageComment?postId=' + this.postId + "&commentId=0&order="+this.order+"&page="+this.page+"&size="+this.size,
 						method: "GET",
 					})
 					.then(response => {
@@ -669,6 +697,23 @@
 </script>
 
 <style>
+.discuss {
+		margin-top: 5rpx;
+		margin-left: 0px;
+		font-size: 15px;
+		color: #616161;
+		width:100%;
+		font-weight: bold;
+	}
+.comment-header{
+display: flex;
+}
+.select-area{
+font-size: 8rpx;
+color: #616161;
+/* font-weight: bold; */
+height: ;
+}
 .divider{
 	margin-top: 50rpx;
 	margin-bottom: 30rpx;
@@ -730,13 +775,7 @@
 		color: #333;
 		width:60%
 	}
-	.discuss {
-		margin-left: 0px;
-		font-size: 13px;
-		color: #616161;
-		width:60%;
-		font-weight: bold;
-	}
+	
 	.post-time {
 		margin-left: 0px;
 		margin-top: 3px;

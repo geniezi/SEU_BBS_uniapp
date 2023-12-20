@@ -241,15 +241,15 @@
 			user-select: none;
 			position: relative;
 			z-index: 3;
-			height: 36px;
+			height: 25px;
 			padding: 0 30px 0 10px;
 			box-sizing: border-box;
 			border-radius: 4px;
 			border: 1px solid rgb(229, 229, 229);
 			display: flex;
 			align-items: center;
-			font-size: 14px;
-			color: #999;
+			font-size: 12px;
+			color: #616161;
 
 			.uni-disabled {
 				position: absolute;

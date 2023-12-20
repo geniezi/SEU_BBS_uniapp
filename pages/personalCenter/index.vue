@@ -1,64 +1,107 @@
 <template>
 	<view>
-		<view class="container">
-			<!-- 头像、用户名、用户id -->
-			<view class="rowLayout">
-				<u-image :src="avatarUrl" width="60px" height="60px" shape="circle"></u-image>
-				<view class="topBottomLayout">
-					<text class="username">{{username}}</text>
-					<text class="userid">id:{{userId}}</text>
+		<view v-if="isLoggedIn">
+			<view class="container">
+				<!-- 头像、用户名、用户id -->
+				<view class="rowLayout">
+					<u-image :src="avatarUrl" width="60px" height="60px" shape="circle"></u-image>
+					<view class="topBottomLayout">
+						<text class="username">{{username}}</text>
+						<text class="userid">id:{{userId}}</text>
+					</view>
+				</view>
+
+				<!-- 关注、粉丝、编辑个人资料、退出登录按钮 -->
+				<view class="rowLayout">
+					<view class="itemLayout" @click="goToFollowingPage(userId)">
+						<text class="count">{{followCount}}</text>
+						<text class="label">关注</text>
+					</view>
+					<view class="itemLayout" @click="goToFansPage(userId)">
+						<text class="count">{{fansCount}}</text>
+						<text class="label">粉丝</text>
+					</view>
+
+					<view class="buttonContainer">
+						<view class="itemButtonLayout_1">
+							<u-button type="info" shape="circle" text="编辑资料" @click="goToEditPage(userId)"></u-button>
+						</view>
+						<view class="itemButtonLayout_2">
+							<u-button type="info" shape="circle" icon="arrow-leftward" @click="logout"></u-button>
+						</view>
+					</view>
 				</view>
 			</view>
 
-			<!-- 关注、粉丝、编辑个人资料、退出登录按钮 -->
-			<view class="rowLayout">
-				<view class="itemLayout" @click="goToFollowingPage(userId)">
-					<text class="count">{{followCount}}</text>
-					<text class="label">关注</text>
-				</view>
-				<view class="itemLayout" @click="goToFansPage(userId)">
-					<text class="count">{{fansCount}}</text>
-					<text class="label">粉丝</text>
-				</view>
+			<u-divider></u-divider>
 
-				<view class="buttonContainer">
-					<view class="itemButtonLayout_1">
-						<u-button type="info" shape="circle" text="编辑资料" @click="goToEditPage(userId)"></u-button>
-					</view>
-					<view class="itemButtonLayout_2">
-						<u-button type="info" shape="circle" icon="arrow-leftward" @click="logout"></u-button>
-					</view>
+			<!-- 发帖、回帖、点赞、收藏、足迹 -->
+			<u-sticky bgColor="#fff">
+				<view class="tabContainer">
+					<u-tabs :list="list1" lineColor="#2D983A" @change="tabChange"></u-tabs>
 				</view>
-			</view>
+			</u-sticky>
+
+			<!-- 帖子展示 -->
+			<briefPost
+				v-if="selectedTabIndex === 0 || selectedTabIndex === 2 || selectedTabIndex === 3 || selectedTabIndex === 4 || selectedTabIndex === 5"
+				v-for="(post, index) in posts" :key="index" :nickName="post.userInfoVO.username"
+				:postTime="post.postTime" :iconUrl="post.userInfoVO.iconUrl" :content="post.content"
+				:image="post.mediaList[0]" :tags="post.tagList" :postId="post.id" :userId="post.userId"
+				:title="post.title" :section="post.section" :likes="post.likes" :dislikes="post.dislikes"
+				:collections="post.collections" :comments="post.comments" :isLiked="post.isLiked"
+				:isDisliked="post.isDisliked" :isCollected="post.isCollected" :urls="post.mediaList"></briefPost>
+
+			<reply v-if="selectedTabIndex === 1" v-for="(reply, i) in replys" :key="i" @commentDeleted="refreshPage"
+				:myAvatar="avatarUrl" :myUserName="username" :content="reply.content" :commentTime="reply.commentTime"
+				:replyTo="reply.replyTo" :postId="reply.postId" :myCommentId="reply.id" :userId="reply.userId"
+				:commentId="reply.commentId" :likes="reply.likes" :dislikes="reply.dislikes"></reply>
+
+			<u-loadmore :status="status" />
+
+			<u-back-top :scroll-top="scrollTop"></u-back-top>
 		</view>
 
-		<u-divider></u-divider>
+		<view v-else>
+			<view class="container">
+				<!-- 头像、用户名、用户id -->
+				<view class="rowLayout">
+					<u-image width="60px" height="60px" shape="circle"></u-image>
+					<view class="topBottomLayout">
+						<text class="username">欢迎~</text>
+						<text class="userid">id:{{}}</text>
+					</view>
+				</view>
 
-		<!-- 发帖、回帖、点赞、收藏、足迹 -->
-		<u-sticky bgColor="#fff">
-			<view class="tabContainer">
-				<u-tabs :list="list1" lineColor="#2D983A" @change="tabChange"></u-tabs>
+				<!-- 关注、粉丝、编辑个人资料、退出登录按钮 -->
+				<view class="rowLayout">
+					<view class="itemLayout">
+						<text class="count">0</text>
+						<text class="label">关注</text>
+					</view>
+					<view class="itemLayout">
+						<text class="count">0</text>
+						<text class="label">粉丝</text>
+					</view>
+					<view class="login-button">
+						<u-button type="info" shape="circle" text="登录/注册" @click="goToLogin"></u-button>
+					</view>
+				</view>
 			</view>
-		</u-sticky>
 
-		<!-- 帖子展示 -->
-		<briefPost
-			v-if="selectedTabIndex === 0 || selectedTabIndex === 2 || selectedTabIndex === 3 || selectedTabIndex === 4 || selectedTabIndex === 5"
-			v-for="(post, index) in posts" :key="index" :nickName="post.userInfoVO.username" :postTime="post.postTime"
-			:iconUrl="post.userInfoVO.iconUrl" :content="post.content" :image="post.mediaList[0]" :tags="post.tagList"
-			:postId="post.id" :userId="post.userId" :title="post.title" :section="post.section" :likes="post.likes"
-			:dislikes="post.dislikes" :collections="post.collections" :comments="post.comments" :isLiked="post.isLiked"
-			:isDisliked="post.isDisliked" :isCollected="post.isCollected" :urls="post.mediaList"></briefPost>
+			<u-divider></u-divider>
 
-		<reply v-if="selectedTabIndex === 1" v-for="(reply, i) in replys" :key="i" @commentDeleted="refreshPage"
-			:myAvatar="avatarUrl" :myUserName="username" :content="reply.content" :commentTime="reply.commentTime"
-			:replyTo="reply.replyTo" :postId="reply.postId" :myCommentId="reply.id" :userId="reply.userId"
-			:commentId="reply.commentId" :likes="reply.likes" :dislikes="reply.dislikes"></reply>
+			<view class="tabContainer">
+				<u-tabs :list="list1" lineColor="#2D983A"></u-tabs>
+			</view>
 
-		<u-loadmore :status="status" />
+			<u-empty mode="search" icon="http://cdn.uviewui.com/uview/empty/search.png">
+			</u-empty>
 
-		<u-back-top :scroll-top="scrollTop"></u-back-top>
 
+
+
+		</view>
 	</view>
 </template>
 
@@ -100,6 +143,7 @@
 				size: 5,
 				status: "loading", // 初始状态为loading
 				scrollTop: 0,
+				isLoggedIn: true,
 			}
 		},
 		// onShow() {
@@ -116,6 +160,10 @@
 		// 	// }
 		// },
 		onShow() {
+            this.page = 1;
+            this.posts = [];
+            this.replys = [];
+            this.status = "loading";
 			this.getAllInfo();
 		},
 		methods: {
@@ -134,10 +182,19 @@
 						this.followCount = response.data.data.followings;
 						this.fansCount = response.data.data.followers;
 						console.log("jfdklsfjdklf")
+						this.isLoggedIn = true;
 						
-						this.getPosts();
+						if(this.selectedTabIndex ==1)//个人信息获取成功再查帖子
+						{
+							this.getReplyPosts();
+						}
+						else{
+							this.getPosts(); //位置？
+						}
+						
 					})
 					.catch(error => {
+						this.isLoggedIn = false;
 						// if (error.data.status == 401) {
 						// 	uni.navigateTo({
 						// 		url: '/pages/login/index',
@@ -145,10 +202,10 @@
 						// 	return;
 						// }
 						// else{
-							
+
 						// }
-							
-							
+
+
 						// if (error.data.code == 500) {
 						// 	uni.$u.toast(error.data.message);
 						// 	return;
@@ -337,6 +394,27 @@
 						}
 					});
 			},
+			goToLogin() {
+				// uni.switchTab({
+				// 	url: '/pages/login/index',
+				// 	success: () => {
+				// 		uni.$u.toast('请登录后操作');
+				// 	},
+				// 	fail: (res) => {
+				// 		console.log('navigate failed', res);
+				// 	}
+				// })
+				//login从tabbar取出后用
+				uni.navigateTo({
+					url: '/pages/login/index',
+					success: () => {
+						uni.$u.toast('请登录后操作');
+					},
+					fail: (res) => {
+						console.log('navigate failed', res);
+					}
+				});
+			},
 		}
 	}
 </script>
@@ -407,5 +485,13 @@
 		margin-top: 20px;
 		font-size: 16px;
 		color: #333;
+	}
+
+	.login-button {
+		position: absolute;
+		right: 20px;
+		display: flex;
+		align-items: center;
+		margin-top: 17px;
 	}
 </style>

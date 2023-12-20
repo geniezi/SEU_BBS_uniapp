@@ -102,6 +102,7 @@
 						this.studentNumber = response.data.data.studentNumber;
 						this.isCredit = response.data.data.isCredit;
 						this.isForbidden = response.data.data.isForbidden;
+						this.tempUrl = response.data.data.iconUrl;
 					})
 					.catch(error => {
 						if (error.data.code == 500) {

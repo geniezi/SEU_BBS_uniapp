@@ -121,6 +121,15 @@
 		    
 		}
 		
+        ,{
+            "path" : "pages/homePage/searchResult",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "搜索",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "#F8F8FF",

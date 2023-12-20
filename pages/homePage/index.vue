@@ -1,8 +1,17 @@
 <template>
 	<view>
-		<u-button class="refreshButton" text="123" @click="onScrollToUpper" size="mini">轻触重置</u-button>
+		<!-- <u-button class="refreshButton" text="123" @click="onScrollToUpper" size="mini">轻触重置</u-button> -->
+		<!-- <u-search placeholder="请输入关键词" v-model="keyword"></u-search> -->
+		<view class="searchContainer">
+			<u-search placeholder="请输入关键词" shape="square" disabled="true"
+			v-model="keyword" :showAction="false" @click="goToSearch"></u-search>
+		</view>
 
-		<view class="space"></view>
+		<u-sticky bgColor="#fff">
+			<view class="tabContainer">
+				<u-tabs :list="list1" lineColor="#2D983A" @change="tabChange" :scrollable="false"></u-tabs>
+			</view>
+		</u-sticky>
 
 		<briefPost v-for="(post, index) in posts" :key="index" :nickName="post.userInfoVO.username"
 			:postTime="post.postTime" :iconUrl="post.userInfoVO.iconUrl" :content="post.content"
@@ -32,13 +41,66 @@
 				size: 5,
 				status: "loading", // 初始状态为loading
 				scrollTop: 0,
+
+				needRefresh: false,
+				section: 0,
+				list1: [{
+					name: '首页推荐',
+				}, {
+					name: '身边趣事'
+				}, {
+					name: '时事新闻'
+				}],
+				keyword: '',//带#搜的是tag
+				selectedTabIndex: 0, // 保存当前选中的选项卡索引
 			};
 		},
-		mounted() {
+		onShow() {
+			this.page = 1; // 重置页码
+			this.posts = []; // 清空原有数据
+			this.status = "loading"; // 初始状态为loading
 			this.getCurrentTime();
 			this.getPosts();
 		},
+		onTabItemTap(e) {
+			if (this.needRefresh) {
+				this.page = 1; // 重置页码
+				this.posts = []; // 清空原有数据
+				this.status = "loading"; // 初始状态为loading
+				this.getCurrentTime();
+				this.getPosts(); // 重新获取数据
+			} else {
+				this.needRefresh = true
+			}
+		},
+		onHide() {
+			this.needRefresh = false
+		},
 		methods: {
+			tabChange(index) {
+				this.selectedTabIndex = index.index;
+			
+				this.page = 1; // 重置页码
+				this.posts = []; // 清空原有数据
+				this.status = "loading"; // 初始状态为loading
+				this.getCurrentTime();
+			
+				switch (this.selectedTabIndex) {
+					case 0: //首页推荐
+						this.section = 0;
+						break;
+					case 1: //身边趣事
+						this.section = 3;
+						break;
+					case 2: //时事新闻
+						this.section = 4;
+						break;
+					default:
+						this.section = 0;
+						break;
+				}
+				this.getPosts();
+			},
 			getCurrentTime() {
 				var date = new Date();
 				this.currentTime = date.getFullYear() +
@@ -53,8 +115,8 @@
 						header: {
 							'Authentication': uni.getStorageSync('Authentication')
 						},
-						url: '/post/pagePost?page=' + this.page + '&size=' + this.size + '&section=0&queryTime=' + this
-							.currentTime,
+						url: '/post/pagePost?page=' + this.page + '&size=' + this.size +
+							'&section=' + this.section + '&queryTime=' + this.currentTime,
 						method: "GET",
 					})
 					.then(response => {
@@ -89,18 +151,21 @@
 				this.getCurrentTime();
 				this.getPosts(); // 重新获取数据
 			},
+			goToSearch() {
+				uni.navigateTo({
+					url: '/pages/homePage/searchResult'
+				});
+			}
 		}
 	};
 </script>
 
 <style lang="scss" scoped>
-	/deep/.refreshButton {
-		width: 100%;
-		height: 1%;
-		border: none;
+	.searchContainer {
+		margin: 5px 5px 0 5px;
 	}
 
-	.space {
-		margin-top: 20px;
+	.tabContainer {
+		margin: 0 0 15px 0;
 	}
 </style>

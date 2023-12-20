@@ -97,10 +97,6 @@
 
 			<u-empty mode="search" icon="http://cdn.uviewui.com/uview/empty/search.png">
 			</u-empty>
-
-
-
-
 		</view>
 	</view>
 </template>
@@ -183,8 +179,8 @@
 						this.fansCount = response.data.data.followers;
 						console.log("jfdklsfjdklf")
 						this.isLoggedIn = true;
-						
-						if(this.selectedTabIndex ==1)//个人信息获取成功再查帖子
+						//个人信息获取成功再查帖子
+						if(this.selectedTabIndex ==1)
 						{
 							this.getReplyPosts();
 						}
@@ -195,21 +191,10 @@
 					})
 					.catch(error => {
 						this.isLoggedIn = false;
-						// if (error.data.status == 401) {
-						// 	uni.navigateTo({
-						// 		url: '/pages/login/index',
-						// 	});
-						// 	return;
-						// }
-						// else{
-
-						// }
-
-
-						// if (error.data.code == 500) {
-						// 	uni.$u.toast(error.data.message);
-						// 	return;
-						// }
+						if (error.data.code == 500) {
+							console.log(error.data.message);
+							return;
+						}
 					});
 			},
 			tabChange(index) {
@@ -307,7 +292,8 @@
 			},
 			onReachBottom() {
 				if (this.selectedTabIndex === 0 || this.selectedTabIndex === 2 ||
-					this.selectedTabIndex === 3 || this.selectedTabIndex === 4 || this.selectedTabIndex === 5) {
+					this.selectedTabIndex === 3 || this.selectedTabIndex === 4 || 
+					this.selectedTabIndex === 5) {
 					this.getPosts(); // 使用 getPosts 函数更新内容
 				} else if (this.selectedTabIndex === 1) {
 					this.getReplyPosts(); // 使用 getReplies 函数更新内容

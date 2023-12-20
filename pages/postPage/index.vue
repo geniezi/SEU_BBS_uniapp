@@ -15,10 +15,15 @@
 			<text class="post-time">{{ postTime }}</text> <!---->
 			
 			<!-- 举报按钮-->
+
 			<view class="report-container">
+				<!-- <view class="deleteIcon">
+					<u-icon @click="deleteComment" name="trash" size="20px" color="#999"></u-icon>
+				</view> -->
 				<u-popup :show="show" mode="bottom" @close="close" @open="open">
 					<view>
 						<u-button @click="reportPost">举报</u-button>
+						<u-button v-if="isOwnPost" @click="deletePost">删除</u-button>
 					</view>
 				</u-popup>
 				<u-icon size="20" name="more-dot-fill" color="#999" @click="show = true">
@@ -171,6 +176,7 @@
 						this.tags=response.data.data.tagList
 						this.section=response.data.data.section
 						this.images=response.data.data.mediaList
+						this.isOwnPost=response.data.data.isOwnPost
 					})
 					.catch(error => {
 						if (error.data.code == 500) {
@@ -208,6 +214,7 @@
 				collections:'',
 				comments:'',
 				postId:"",
+				isOwnPost:false,
 				isLikedState: false,
 				isDislikedState: false,
 				isCollectedState: false,
@@ -241,6 +248,38 @@
 			this.getComments();
 		},
 		methods: {
+			deletePost(){
+				if(this.isOwnPost)
+				{
+					this.$myRequest({
+					header: {
+						'Authentication': uni.getStorageSync('Authentication')
+					},
+					url: '/post/deletePost/' + this.postId.toString(),
+					method: "DELETE",
+				})
+			.then(response => {
+					uni.$u.toast("帖子删除成功");
+					uni.navigateBack({
+					    delta: 1
+					});
+				})
+			.catch(error => {
+				if (error.data.code == 500) {
+					uni.$u.toast("帖子删除失败");
+					return;
+					// if (error.data.message == ' ') {
+					// 	uni.$u.toast(' ');
+					// 	return;
+					// }
+				}
+			});
+				}
+				else{
+				uni.$u.toast("是你把鬼子引到这儿来的?");
+				return;
+				}
+			},
 			onReachBottom() {
 				this.getComments();
 			},

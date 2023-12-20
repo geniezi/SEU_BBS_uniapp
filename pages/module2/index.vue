@@ -130,7 +130,7 @@
 				SectionIndex: 0,
 				bottomHeight: '',
 				message: '',
-				result:'',
+				// result:'',
 				imgarr: [],
 				uploadimg:[],
 				resarr: [],
@@ -265,7 +265,31 @@
 							duration: 2000,
 						})
 						// console.log(response.data.data) //打印token测试
-							
+							this.title=""
+							this.message=""
+							this.tag=[]
+							this.allTags=[{
+						name: '开心',
+						checked: false
+					},
+					{
+						name: '玉玉了',
+						checked: false
+					},
+					{
+						name: '愉悦',
+						checked: false
+					},
+					{
+						name: 'I ♥ SEU',
+						checked: false
+					},
+					],
+							this.SectionIndex=0,
+							this.imgarr=[],
+							this.uploadimg=[],
+							this.resarr=[],
+							console.log("发帖成功")
 							uni.switchTab({
 								url: '/pages/homePage/index',
 								success: () => {

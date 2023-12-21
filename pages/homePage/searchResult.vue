@@ -50,15 +50,18 @@
 		methods: {
 			searchKeyword(){
 				this.page=1;
+				this.posts = []; 
+				this.status = "loading"; 
 				this.getSearchResult();
 			},
 			getSearchResult() {
+				console.log(this.keyword+'函数里');
 				this.$myRequest({
 						header: {
 							'Authentication': uni.getStorageSync('Authentication')
 						},
 						url: '/post/pageSearchPost?page=' + this.page + '&size=' + this.size +
-							'&keyword=' + this.keyword,
+							'&keyword=' +encodeURIComponent(this.keyword),
 						method: "GET",
 					})
 					.then(response => {
@@ -70,12 +73,17 @@
 						} else {
 							this.status = "nomore";
 						}
-						this.showSearchResults = this.posts.length > 0;//?
+						this.showSearchResults = this.posts.length > 0;
 					})
 					.catch(error => {
 						this.status = "nomore";
-						this.showSearchResults = false;//?
-						if (error.data.code == 500) {
+						console.log(this.posts.length);
+						if (error.data.code == 500 ) {
+							if(error.statusCode==200 && this.posts.length == 0)
+							{
+								this.showSearchResults = false;
+							}
+							
 							console.log(error.data.message);
 							return;
 						}

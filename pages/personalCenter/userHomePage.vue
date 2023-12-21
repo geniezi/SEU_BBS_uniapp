@@ -37,7 +37,9 @@
 			<u-tabs :list="list1" lineColor="#2D983A"></u-tabs>
 		</view>
 
+        
 		<!-- 发帖 -->
+		<view v-if="posts.length!=0">
 		<briefPost v-for="(post, index) in posts" :key="index" :nickName="post.userInfoVO.username"
 			:postTime="post.postTime" :iconUrl="post.userInfoVO.iconUrl" :content="post.content"
 			:image="post.mediaList[0]" :tags="post.tagList" :postId="post.id" :userId="post.userId" :title="post.title"
@@ -48,6 +50,12 @@
 		<u-loadmore :status="status" />
 
 		<u-back-top :scroll-top="scrollTop"></u-back-top>
+		</view>
+		
+		<view v-else>
+			<u-empty mode="search" icon="http://cdn.uviewui.com/uview/empty/search.png" text="暂无发帖">
+			</u-empty>
+		</view>
 
 	</view>
 </template>

@@ -56,10 +56,8 @@
 	export default {
 		onLoad(router) {
 			this.userId = router.userId;
-
 			this.getAllInfo();
 		},
-
 		data() {
 			return {
 				userId: '', // 路由传入

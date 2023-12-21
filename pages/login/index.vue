@@ -75,9 +75,6 @@
 								}
 							})
 							.then(response => {
-								// setTimeout(() => {
-								// 	// 通知验证码组件内部开始倒计时
-								// }, 0);
 								uni.hideLoading();
 								this.$refs.uCode.start();
 								uni.$u.toast('验证码已发送');
@@ -91,8 +88,6 @@
 									}
 								}
 							});
-
-
 					} else {
 						uni.$u.toast('倒计时结束后再发送');
 					}
@@ -119,11 +114,11 @@
 								//显示持续时间为 2秒
 								duration: 1000,
 							})
-							uni.setStorageSync('Authentication', response.data.data)
-							// //login的token存入本地
-							// console.log(response.data.data)//打印token测试
+							uni.setStorageSync('Authentication', response.data.data.Authentication)
 
-							getApp().globalData.isUserLoggedIn = true; //设置全局变量
+							getApp().globalData.myUserId = response.data.data.id; //设置全局变量
+							console.log(getApp().globalData.myUserId);
+							
 							uni.navigateBack({
 								delta: 1, //返回层数，2则上上页
 							})

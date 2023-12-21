@@ -1,7 +1,6 @@
 <template>
 	<view>
 		<!-- <u-button class="refreshButton" text="123" @click="onScrollToUpper" size="mini">轻触重置</u-button> -->
-		<!-- <u-search placeholder="请输入关键词" v-model="keyword"></u-search> -->
 		<view class="searchContainer">
 			<u-search placeholder="请输入关键词" shape="square" disabled="true"
 			v-model="keyword" :showAction="false" @click="goToSearch"></u-search>
@@ -55,7 +54,7 @@
 				selectedTabIndex: 0, // 保存当前选中的选项卡索引
 			};
 		},
-		onShow() {
+		onLoad() {
 			this.page = 1; // 重置页码
 			this.posts = []; // 清空原有数据
 			this.status = "loading"; // 初始状态为loading

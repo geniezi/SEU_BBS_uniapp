@@ -5,7 +5,7 @@
 <script>
 	export default {
 		globalData: {
-		    isUserLoggedIn: false,
+		    myUserId: '',
 		  },
 		onLaunch: function() {
 			console.log('App Launch')

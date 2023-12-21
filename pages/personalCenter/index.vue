@@ -142,19 +142,6 @@
 				isLoggedIn: true,
 			}
 		},
-		// onShow() {
-		// 	this.getAllInfo();
-		// 	// const isLoggedIn = getApp().globalData.isUserLoggedIn;
-		// 	// if (isLoggedIn) {
-		// 	// 	this.getAllInfo();
-		// 	// 	//this.getPosts();
-		// 	// 	}
-		// 	// } else {
-		// 	// 	uni.navigateTo({
-		// 	// 		url: '/pages/login/index',
-		// 	// 	});
-		// 	// }
-		// },
 		onShow() {
             this.page = 1;
             this.posts = [];
@@ -334,7 +321,7 @@
 						method: "POST",
 					})
 					.then(response => {
-						getApp().globalData.isUserLoggedIn = false; //改全局变量
+						getApp().globalData.myUserId = ''; //改全局变量
 						uni.removeStorageSync('Authentication')
 						// uni.switchTab({
 						// 	url: '/pages/login/index',

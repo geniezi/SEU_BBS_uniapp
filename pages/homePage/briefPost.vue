@@ -4,9 +4,9 @@
 		<view class="post-header">
 			<!-- 头像 昵称 时间 -->
 			<u-image :src="iconUrl" width="40px" height="40px" shape="circle"
-				@click="goToUserHomePage(userId)"></u-image> 
+				@click="goToUserHomePage(userId)"></u-image>
 			<text class="nickname" @click="goToUserHomePage(userId)">{{ nickName }}</text>
-			<text class="post-time">{{ postTime }}</text> 
+			<text class="post-time">{{ postTime }}</text>
 
 			<!-- 举报按钮-->
 			<view class="report-container">
@@ -22,7 +22,7 @@
 
 		<view @click="goToDetail(postId)">
 			<!-- 帖子内容 -->
-			<view class="post-content">{{ content }}</view> 
+			<view class="post-content">{{ content }}</view>
 
 			<!-- 帖子配图 -->
 			<view class="post-images" v-if="image !== '' && image !== null" @click.stop>
@@ -48,7 +48,8 @@
 			</view>
 
 			<view class="action-item" @click="dislikePost">
-				<u-icon :name="isDislikedState ? 'thumb-down-fill' : 'thumb-down'" size="22px" :label="dislikeCount"></u-icon>
+				<u-icon :name="isDislikedState ? 'thumb-down-fill' : 'thumb-down'" size="22px"
+					:label="dislikeCount"></u-icon>
 			</view>
 
 			<view class="action-item" @click="collectPost">
@@ -93,7 +94,7 @@
 			};
 		},
 		computed: {
-			processedTags() {//切分tag,一行最多3个
+			processedTags() { //切分tag,一行最多3个
 				if (!this.tags) {
 					return [];
 				}
@@ -321,42 +322,40 @@
 			},
 			sendComment() {
 				// 完成评论的逻辑
-				if(this.commentContent.length!=0){
-				this.$myRequest({
-						header: {
-							'Authentication': uni.getStorageSync('Authentication')
-						},
-						url: '/comment/add',
-						method: "POST",
-						data: {
-							"postId": this.postId,
-							"commentId": 0,
-							"content": this.commentContent
-						}
-					})
-					.then(response => {
-						this.commentCount++;
-						this.closeComment();
-						uni.$u.toast('回帖已发送');
-						this.commentContent = '';
-					})
-					.catch(error => {
-						if (error.data.code == 500) {
-							uni.$u.toast(error.data.message);
-							return;
-						}
+				if (this.commentContent.length != 0) {
+					this.$myRequest({
+							header: {
+								'Authentication': uni.getStorageSync('Authentication')
+							},
+							url: '/comment/add',
+							method: "POST",
+							data: {
+								"postId": this.postId,
+								"commentId": 0,
+								"content": this.commentContent
+							}
+						})
+						.then(response => {
+							this.commentCount++;
+							this.closeComment();
+							uni.$u.toast('回帖已发送');
+							this.commentContent = '';
+						})
+						.catch(error => {
+							if (error.data.code == 500) {
+								uni.$u.toast(error.data.message);
+								return;
+							}
 
-						if (error.data.status == 401) {
-							this.goToLogin();
-							return;
-						}
-					});
-					}
-					else
-					{
-						uni.$u.toast('评论内容不能为空');
-						return;
-					}
+							if (error.data.status == 401) {
+								this.goToLogin();
+								return;
+							}
+						});
+				} else {
+					uni.$u.toast('评论内容不能为空');
+					return;
+				}
 			},
 			goToDetail(postId) {
 				uni.navigateTo({
@@ -386,9 +385,17 @@
 				});
 			},
 			goToUserHomePage(userId) {
-				uni.navigateTo({
-					url: '/pages/personalCenter/userHomePage?id=' + encodeURIComponent(userId)
-				});
+				const myId = getApp().globalData.myUserId;//为空就是没登录状态，就当看别人的
+				
+				if (userId == myId) {//看自己的主页，跳转个人中心
+					uni.switchTab({
+						url: '/pages/personalCenter/index',
+					})
+				} else {
+					uni.navigateTo({
+						url: '/pages/personalCenter/userHomePage?id=' + encodeURIComponent(userId)
+					});
+				}
 			}
 
 		}

@@ -7,6 +7,7 @@
 			<textarea value="editorCtx" v-model="message" maxlength="1000" placeholder="输入内容（最多1000字）" class="w100"
 				style="height: 430rpx;" />
 		</view>
+		<u-divider></u-divider>
 		<view class="item-box flex flex-wrap u-m-l-36 u-m-r-10">
 			<!-- <view class="item upload u-m-t-20 relative" > -->
 			<view class="item upload u-m-t-20 relative"  v-for="(item,i) in imgarr" :key="i" v-show="imgarr.length!=0">
@@ -53,6 +54,7 @@
 		 
 						<view class="bottom_item" @click="handeleRedu"> 恢复 </view>
 					</view> -->
+		<u-divider></u-divider>
 		<view class="existing_label">
 			<view class="u-page__tag-item" v-for="(item, index) in allTags" :key="index">
 				<u-tag shape="circle" :text="item.name" :bgColor="item.checked ? '#00ff7f':'#FFFFFF'"
@@ -79,8 +81,23 @@
 			<view style="padding: 20rpx;background-color: #F8F8F8;color: #2D983A;">
 				发布板块：&#32;&#32;&#32;&#32;{{ Sectionarray[SectionIndex].name }}</view>
 		</picker>
-
-
+		<view v-if="SectionIndex==1" style="display: flex;font-style:bold;color: #2D983A;">
+		<!-- <u-text text="价格"  style="width: 50%;" margin="0 30px 0 0" type="tips"></u-text> -->
+		￥金额：
+		<input  type="digit" style="margin-left: 20rpx;" placeholder="请输入交易物品价格" border="bottom" @input="priceCheck" v-model="price">
+		</input>
+		</view>
+		<view v-if="SectionIndex==2" style="display: flex;font-style:bold;color: #2D983A;font-size: 14px;">
+		<!-- <u-text text="价格"  style="width: 50%;" margin="0 30px 0 0" type="tips"></u-text> -->
+		已有人数：
+		<input  type="digit" style="margin-right: 10px; font-size: 14px;" placeholder="请输入" border="bottom" @input="click_e" v-model="exist">
+		</input>
+		/最大人数：
+		<input  type="digit" style="margin-left: font-size: 14px;" placeholder="请输入" border="bottom" @input="click_l" v-model="limit">
+		</input>
+		
+		</view>
+		<u-divider></u-divider>
 		<button size="default" type="default"
 			style="margin-top: 20px;width: 283px;height: 40px;background-color: #2D983A;color: #FFFFFF;border: none;border-radius: 5px;font-size: 16px;text-align: center;line-height: 40px;cursor: pointer;"
 			hover-class="is-hover" @click="post">发布帖子</button>
@@ -116,6 +133,11 @@
 				currentId: '',
 				editorCtx: '',
 				fontshow: false,
+				// teamUp: false,
+				// trade:false,
+				price:"",
+				exist:"",
+				limit:"",
 				Sectionarray: [{
 					name: '所有帖子'
 				}, {
@@ -201,6 +223,93 @@
 			}
 		},
 		methods: {
+			click_e(e){
+			                const v = e.detail.value
+			                this.exist = '1'
+			        
+			                const zero = /^(0{2,})|[^0-9]/g
+			                let final = 0
+			                if (!v) {
+			                  final = 0
+			                } else {
+			                  final = v.toString().replace(zero, (v) => {
+			                    return 0
+			                  })
+			        
+			                  if (final.split('')[0] * 1 === 0) {
+			                    final = final.slice(1) - 0 || 0
+			                  }
+			                }
+			                this.$nextTick(() => {
+			                  this.exist = final.toString() || '0'
+			                })
+							// console.log(this.exist)
+			            },
+			click_l(e){
+			                const v = e.detail.value
+			                this.limit = '1'
+			        
+			                const zero = /^(0{2,})|[^0-9]/g
+			                let final = 0
+			                if (!v) {
+			                  final = 0
+			                } else {
+			                  final = v.toString().replace(zero, (v) => {
+			                    return 0
+			                  })
+			        
+			                  if (final.split('')[0] * 1 === 0) {
+			                    final = final.slice(1) - 0 || 0
+			                  }
+			                }
+			                this.$nextTick(() => {
+			                  this.limit = final.toString() || '0'
+			                })
+							// console.log(this.limit)
+			            },
+			goToLogin() {
+				// uni.switchTab({
+				// 	url: '/pages/login/index',
+				// 	success: () => {
+				// 		uni.$u.toast('请登录后操作');
+				// 	},
+				// 	fail: (res) => {
+				// 		console.log('navigate failed', res);
+				// 	}
+				// })
+				//login从tabbar取出后用
+				uni.navigateTo({
+					url: '/pages/login/index',
+					success: () => {
+						uni.$u.toast('请登录后操作');
+					},
+					fail: (res) => {
+						console.log('navigate failed', res);
+					}
+				});
+			},
+			priceCheck(e){
+			               this.$nextTick(() => {
+			               					let val = e.target.value.toString();
+											// console.log(val)
+			               					val = val.replace(/[^\d.]/g, ""); //清除"数字"和"."以外的字符
+			               					val = val.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的
+			               					val = val.replace(/^0+\./g, '0.');
+			               					val = val.match(/^0+[1-9]+/) ? val = val.replace(/^0+/g, '') : val
+			               					val = (val.match(/^\d*(\.?\d{0,2})/g)[0]) || ''
+			               					if (val.includes(".")) {
+			               						let numDian = val.toString().split(".")[1].length;
+			               						if (numDian === 2) {
+			               							this.price= val.length;
+			               						}
+			               					} else {
+			               						// this.moneyMaxLeng = 8;
+			               					}
+			               					this.price = val;
+											// console.log(this.price)
+			               				});
+			 
+			},
 			preview(i){
 				console.log("11111")
 				console.log(i)
@@ -239,6 +348,172 @@
 				// console.log(this.message.length)
 				// console.log(this.title.length)
 			if(this.canPost){
+				if(this.SectionIndex==1){
+					this.$myRequest({
+							url: '/post/add',
+							method: "POST",
+							header: {
+								'Authentication': uni.getStorageSync('Authentication')
+							},
+							data: {
+								"postParam": {
+								        "title": this.title,
+								        "content": this.message,
+								        "section": this.SectionIndex.toString(), //见板块代码对应
+										"price": this.price
+								    },
+								    "mediaList":this.uploadimg,
+								    "tagList":this.tag
+							}
+						})
+						.then(response => {
+							console.log("uploadv "+this.uploadimg)
+							uni.showToast({
+								title: '发帖成功',
+								//将值设置为 success 或者直接不用写icon这个参数
+								icon: 'success',
+								//显示持续时间为 2秒
+								duration: 1000,
+							})
+							// console.log(response.data.data) //打印token测试
+								this.title=""
+								this.message=""
+								this.tag=[]
+								this.allTags=[{
+							name: '开心',
+							checked: false
+						},
+						{
+							name: '玉玉了',
+							checked: false
+						},
+						{
+							name: '愉悦',
+							checked: false
+						},
+						{
+							name: 'I ♥ SEU',
+							checked: false
+						},
+						],
+						this.SectionIndex=0,
+						this.imgarr=[],
+						this.uploadimg=[],
+						this.resarr=[],
+						this.price="",
+						this.exist="",
+						this.limit="",
+						console.log("发帖成功")
+								uni.switchTab({
+									url: '/pages/homePage/index',
+									success: () => {
+										console.log(1);
+									},
+									fail: (res) => {
+										console.log('navigate failed', res);
+									}
+								})
+							})
+							.catch(error => {
+								if (error.data.code == 500) {
+									uni.$u.toast(error.data.message);
+									return;
+								}
+							
+								if (error.data.status == 401) {
+									this.goToLogin();
+									return;
+								}
+							});
+				}
+				else if(this.SectionIndex==2){
+					if(parseInt(this.exist)<parseInt(this.limit))
+					{
+						this.$myRequest({
+								url: '/post/add',
+								method: "POST",
+								header: {
+									'Authentication': uni.getStorageSync('Authentication')
+								},
+								data: {
+									"postParam": {
+									        "title": this.title,
+									        "content": this.message,
+									        "section": this.SectionIndex.toString(), //见板块代码对应
+											"exist": this.exist,
+											"limit":this.limit
+									    },
+									    "mediaList":this.uploadimg,
+									    "tagList":this.tag
+								}
+							})
+							.then(response => {
+								console.log("uploadv "+this.uploadimg)
+								uni.showToast({
+									title: '发帖成功',
+									//将值设置为 success 或者直接不用写icon这个参数
+									icon: 'success',
+									//显示持续时间为 2秒
+									duration: 2000,
+								})
+								// console.log(response.data.data) //打印token测试
+									this.title=""
+									this.message=""
+									this.tag=[]
+									this.allTags=[{
+								name: '开心',
+								checked: false
+							},
+							{
+								name: '玉玉了',
+								checked: false
+							},
+							{
+								name: '愉悦',
+								checked: false
+							},
+							{
+								name: 'I ♥ SEU',
+								checked: false
+							},
+							],
+									this.SectionIndex=0,
+									this.imgarr=[],
+									this.uploadimg=[],
+									this.resarr=[],
+									this.price="",
+									this.exist="",
+									this.limit="",
+									console.log("发帖成功")
+									uni.switchTab({
+										url: '/pages/homePage/index',
+										success: () => {
+											console.log(1);
+										},
+										fail: (res) => {
+											console.log('navigate failed', res);
+										}
+									})
+							})
+								.catch(error => {
+									if (error.data.code == 500) {
+										uni.$u.toast(error.data.message);
+										return;
+									}
+								
+									if (error.data.status == 401) {
+										this.goToLogin();
+										return;
+									}
+								});
+					}
+					else{
+						uni.$u.toast('已有人数应当小于最大人数');
+						return;
+						
+					}
+				}
+				else{
 				this.$myRequest({
 						url: '/post/add',
 						method: "POST",
@@ -289,6 +564,9 @@
 							this.imgarr=[],
 							this.uploadimg=[],
 							this.resarr=[],
+							this.price="",
+							this.exist="",
+							this.limit="",
 							console.log("发帖成功")
 							uni.switchTab({
 								url: '/pages/homePage/index',
@@ -300,6 +578,18 @@
 								}
 							})
 						})
+					.catch(error => {
+						if (error.data.code == 500) {
+							uni.$u.toast(error.data.message);
+							return;
+						}
+					
+						if (error.data.status == 401) {
+							this.goToLogin();
+							return;
+						}
+					});
+					}
 				}
 			else{
 					if (this.title.length == 0) {

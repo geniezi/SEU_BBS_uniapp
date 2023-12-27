@@ -33,9 +33,14 @@
 
 		<view>
 			<!-- 帖子内容 -->
-			<view class="post-title">{{ title }}</view> 
+			<view class="post-title"><view v-if="section==1">二手交易|</view><view v-else-if="section==2">组队|</view>{{ title }}</view> 
 			<view class="post-content">{{ content }}</view> <!--{{ content }}-->
-
+			<view v-if="section==1" style="font-size: 13px;margin-left: 5px;color:#00b331;margin-bottom: 3px;font-weight: bold">
+			物品价格：{{price}}￥
+			</view>
+			<view v-else-if="section==2" style="font-size: 13px;margin-left: 5px;color:#00b331;margin-bottom: 3px;font-weight: bold">
+			队伍已有人数/最大人数：{{exist}}/{{limit}}	
+			</view>
 			<!-- 帖子配图 -->
 <!-- 			<view class="post-images" v-if="image !== '' && image !== null" @click.stop> -->
 				<!-- 多张图 -->
@@ -72,10 +77,9 @@
 
 			<!-- 标签 -->
 			<view class="post-tags">
-				<u-tag v-if="this.section>0" :text="this.sectionArray[this.section]" bgColor="#f1f1f1" color="red" size="mini" icon="tags" plain
-					borderColor="white"></u-tag>
+<!-- 				<u-tag v-if="this.section>0" :text="this.sectionArray[this.section]" bgColor="#f1f1f1" color="red" size="mini" icon="tags" plain
+					borderColor="white"></u-tag> -->
 				<!-- <u-tag text="一丘之貉" mode="dark" /> -->
-				
 					<view v-for="(row, rowIndex) in processedTags" :key="rowIndex" class="tag-row">
 						<u-tag v-for="tag in row" :key="tag" :text="tag" bgColor="#f1f1f1" size="mini" icon="tags" plain
 							borderColor="white">
@@ -182,6 +186,16 @@
 						this.section=response.data.data.section
 						this.images=response.data.data.mediaList
 						this.isOwnPost=response.data.data.isOwnPost
+						if(this.section==1)
+						{
+							this.price=response.data.data.price
+						}
+						else if(this.section==2){
+							this.exist=response.data.data.exist
+							this.limit=response.data.data.limitNum
+							// console.log(response.data.data.limit)
+							// console.log(response.data.data.exist)
+						}
 					})
 					.catch(error => {
 						if (error.data.code == 500) {
@@ -195,13 +209,13 @@
 					});
 		},
 		computed: {
-			processedTags() {//切分tag,一行最多3个
+			processedTags() { //切分tag,一行最多3个
 				if (!this.tags) {
 					return [];
 				}
 				const processed = [];
-				const rowSize = 3;
-		
+				const rowSize = 5;
+			
 				for (let i = 0; i < this.tags.length; i += rowSize) {
 					processed.push(this.tags.slice(i, i + rowSize));
 				}
@@ -214,6 +228,9 @@
 				isLiked: false,
 				isDisliked:false,
 				isCollected:false,
+				price:"",
+				exist:"",
+				limit:"",
 				likes:"",
 				dislikes:'',
 				collections:'',
@@ -773,7 +790,7 @@ height: ;
 		margin-left: 15px;
 		font-size: 14px;
 		color: #333;
-		width:60%
+		width:100%
 	}
 	
 	.post-time {
@@ -781,7 +798,7 @@ height: ;
 		margin-top: 3px;
 		margin-right: 0px;
 		font-size: 12px;
-		width: 20%;
+		width: 40%;
 		color: #999;
 	}
 
@@ -801,6 +818,7 @@ height: ;
 	}
 	.post-title {
 		margin-bottom: 10px;
+		display: flex;
 		margin-left: 5px;
 		margin-right: 5px;
 		font-size: 18px;
@@ -840,5 +858,10 @@ height: ;
 		font-size: 14px;
 		color: #999;
 		margin-left: 5px;
+	}
+	.tag-row {
+		display: flex;
+		justify-content: space-between;
+		flex-basis: 100%;
 	}
 </style>

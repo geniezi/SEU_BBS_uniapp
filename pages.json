@@ -5,6 +5,16 @@
 	},
 	
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		// {
+		//     "path" :"pages/IdleTradePage/IdleTradePage",
+		//     "style" :                                                                                    
+		//     {
+		//         "navigationBarTitleText": "二手交易",
+		//         "enablePullDownRefresh": false
+		//     }
+		    
+		// }
+		// ,
 		{
 		    "path" :"pages/homePage/index",
 		    "style" :                                                                                    
@@ -130,6 +140,9 @@
             }
             
         }
+		
+
+		
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "#F8F8FF",

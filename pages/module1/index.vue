@@ -116,20 +116,14 @@
 			
 			// 根据 ID 查找 username
 			getUsernameById(id) {
-			  if (this.ListInfo && this.ListInfo[id]) {
-			    return this.ListInfo[id].username;
-			  } else {
-			    return null; // 或者返回一个默认值
-			  }
+			  const foundData = this.ListInfo.find(item => item.id === id);
+			    return foundData ? foundData.username : null; // 如果找到匹配的ID则返回对应的username，否则返回null或默认值
 			},
 			
 			// 根据 ID 查找 iconUrl
 			getIconUrlById(id) {
-			  if (this.ListInfo && this.ListInfo[id]) {
-			    return this.ListInfo[id].iconUrl;
-			  } else {
-			    return null; // 或者返回一个默认值
-			  }
+			   const foundData = this.ListInfo.find(item => item.id === id);
+			    return foundData ? foundData.iconUrl : null; // 如果找到匹配的ID则返回对应的iconUrl，否则返回null或默认值
 			},
 			
 			searchListInfo() {

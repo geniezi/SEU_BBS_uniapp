@@ -4,8 +4,8 @@
 		<view class="top-bar">
 			<p class="chat-partner-name">{{ chatPartnerName }}</p>
 		</view>
-		<view class="message-container" ref="chatConnntainer">
-<uni-scroll-view ref="chatContainer" :scroll-top="scrollTop" >
+		<view class="message-container" ref="chatContainer">
+<uni-scroll-view :scroll-top="scrollTop" >
 			<view v-for="message in messages" :key="message.id" class="message">
 				<p class="message-time">{{ message.sendTime }}</p>
 				<view v-if=isMyMessage(message.senderId) class="my-message">
@@ -39,67 +39,71 @@
 		
 		//新页面接收后：
 		onLoad(option) {
-		    this.chatPartnerID = option.id  ; // 字符串转对象
-			console.log(option.id)
-		    console.log(this.chatPartnerID)
-			console.log(typeof(this.chatPartnerID))
-			
-			console.log("test created")
-			console.log(this.chatPartnerID)
-			this.$myRequest({
-					header: {
-						'Authentication': uni.getStorageSync('Authentication')
-					},
-					url: '/user/getNI/' + this.chatPartnerID,
-					method: 'GET',
-				})
-				.then(response => {
-					console.log("chatParter search succ")
-					this.chatPartnerName = response.data.data.username;
-					this.chatPartnerAvatar = response.data.data.iconUrl;
-				});
-			
-			
-			this.$myRequest({
-					header: {
-						'Authentication': uni.getStorageSync('Authentication')
-					},
-					url: '/user/getNI/' + 0,
-					method: 'GET',
-				})
-				.then(res => {
-					console.log("myinfo search succ")
-					this.myAvatar = res.data.data.iconUrl;
-				});
-			
-			this.$myRequest({
-					header: {
-						'Authentication': uni.getStorageSync('Authentication')
-					},
-					url: '/chat/pageMessage',
-					method: 'GET',
-					data: {
-						"page": 0,
-						"size": 10,
-						"id": this.chatPartnerID
-					},
-				})
-				.then(res => {
-					console.log("chat record search succ")
-					this.messages = res.data.data.records.reverse();
-					console.log("接受record成功")
-				});
+		    this.chatPartnerID = option.id;
+		    
+		      // 发起三个异步请求
+		      const request1 = this.$myRequest({
+		        header: {
+		          'Authentication': uni.getStorageSync('Authentication')
+		        },
+		        url: '/user/getNI/' + this.chatPartnerID,
+		        method: 'GET',
+		      });
+		    
+		      const request2 = this.$myRequest({
+		        header: {
+		          'Authentication': uni.getStorageSync('Authentication')
+		        },
+		        url: '/user/getNI/' + 0,
+		        method: 'GET',
+		      });
+		    
+		      const request3 = this.$myRequest({
+		        header: {
+		          'Authentication': uni.getStorageSync('Authentication')
+		        },
+		        url: '/chat/pageMessage',
+		        method: 'GET',
+		        data: {
+		          "page": 0,
+		          "size": 10,
+		          "id": this.chatPartnerID
+		        },
+		      });
+		    
+		      // 等待三个异步请求完成后再执行后续逻辑
+		      Promise.all([request1, request2, request3])
+		        .then(([response1, response2, response3]) => {
+		          console.log("chatParter search succ");
+		          this.chatPartnerName = response1.data.data.username;
+		          this.chatPartnerAvatar = response1.data.data.iconUrl;
+		          this.myAvatar = response2.data.data.iconUrl;
+		          this.messages = response3.data.data.records.reverse();
+		          console.log("接受record成功");
+		    
+		          this.scrollToBottom(); // 在所有请求完成后滚动到底部
+		        })
+		        .catch(error => {
+		          console.error("Error fetching data:", error);
+		        });
 				
-				
-				this.scrollToBottom();
-				console.log("onload succ")
+				Promise.all([request1, request2, request3])
+        .then(([response1, response2, response3]) => {
+          // 处理请求返回的数据
+
+          this.scrollToBottom(); // 在所有请求完成后滚动到底部
+        })
+        .catch(error => {
+          console.error("Error fetching data:", error);
+        });
 		},
 
 		mounted() {
-			this.$nextTick(() => {
-			      this.scrollToBottom();
+			    this.$nextTick(() => {
+			      setTimeout(() => {
+			        this.scrollToBottom();
+			      }, 100);
 			    });
-			console.log("mounted succ")
 		},
 
 		data() {
@@ -182,25 +186,36 @@
 
 		methods: {
 			
+			attachScrollListener() {
+			    const chatContainer = this.$refs.chatContainer;
+			    chatContainer.$on('scrolltoupper', () => {
+			      // 当滚动到顶部时触发加载更多的消息
+			      console.log('Reached to the top, load more messages...');
+			      // 在这里写触发加载更多消息的逻辑
+			      // 调用加载更多消息的方法
+			      this.loadMoreMessages();
+			    });
+			  },
+			
 			scrollToBottom() {
-			      const duration = 300; // 滚动持续时间，以毫秒为单位
-			            const selector = '.message-container'; // 替换为你的聊天容器的选择器
-			            
-			            uni.createSelectorQuery()
-			              .select(selector)
-			              .boundingClientRect(rect => {
-			                if (rect) {
-			                  const scrollTop = rect.height; // 容器的高度
-							  console.log("ScrollBottom Succ121"+scrollTop)
-			                  uni.pageScrollTo({
-			                    scrollTop,
-			                    duration
-			                  });
-			                }
-			              })
-			              .exec();
-						  setTimeout(() => {
-				  console.log("ScrollBottom Succ11") }, 100);
+			    const selector = '.message-container';
+			    
+			          uni.createSelectorQuery()
+			            .select(selector)
+			            .boundingClientRect(rect => {
+			              if (rect) {
+			                const scrollTop = rect.height+500;
+			                console.log("Container Height:", scrollTop); // Add this line to check the container height
+			                uni.pageScrollTo({
+			                  selector,
+			                  scrollTop,
+			                  duration: 300
+			                });
+			              }
+			            })
+			            .exec();
+				  
+					  
 			    },
 
 			sendMessage() {

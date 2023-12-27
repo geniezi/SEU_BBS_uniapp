@@ -1,4 +1,5 @@
 <template>
+<view style="background-color: rgb(229,228,228);">
 <view class="brief-post">
 		<!--基本信息-->
 		<view class="post-header">
@@ -46,7 +47,62 @@
 				<u-icon name="chat" size="18px" @click="commentShow = true" :label="commentCount"></u-icon>
 			</view>
 		</view>
+		<view v-if="parseInt(commentCount)>0" style="font-size: 12px;color: #00b331;" @click="replytoComment">
+		点击展开{{commentCount}}条评论
+		</view>
+		<u-popup :show="replyShow" mode="bottom" @close="closeReply" @open="openReply" style="display: flex;">
+			<view class="brief-reply">
+				<view class="reply-header">
+					<!-- 头像 昵称 时间 -->
+					<u-image :src="iconUrl" width="30px" height="30px" shape="circle"
+						@click="goToUserHomePage(userId)"></u-image> 
+					<text class="reply_nickname" @click="goToUserHomePage(userId)">{{ nickName }}</text>
+					<text class="reply_post-time">{{ commentTime }}</text> 
+				
+					<!-- 举报按钮-->
+					<view class="reply-container">
+						<u-popup :show="show" mode="bottom" @close="close" @open="open">
+							<view>
+								<u-button @click="reportPost">举报</u-button>
+							</view>
+						</u-popup>
+						<u-icon size="18" name="more-dot-fill" color="#999" @click="show = true">
+						</u-icon>
+					</view>
+				</view>
+					<view>
+						<!-- 帖子内容 -->
+						<view class="reply_post-content">{{ content }}</view> 
+					</view>
+					
+					<!-- 点赞、点踩、评论-->
+					<view class="reply_post-actions">
+						<view class="reply_action-item" @click="likePost">
+							<u-icon :name="isLikedState ? 'thumb-up-fill' : 'thumb-up'" size="18px" :label="likeCount"></u-icon>
+						</view>
+					
+						<view class="reply_action-item" @click="dislikePost">
+							<u-icon :name="isDislikedState ? 'thumb-down-fill' : 'thumb-down'" size="18px" :label="dislikeCount"></u-icon>
+						</view>
+					
+					
+						<view class="reply_action-item">
+							<u-popup :show="commentShow" mode="bottom" @close="closeComment" @open="openComment">
+								<view>
+									<u-textarea v-model="commentContent" placeholder="请输入内容"></u-textarea>
+									<u-button icon="share-square" @click="sendComment">发送</u-button>
+								</view>
+							</u-popup>
+							<u-icon name="chat" size="18px" @click="commentShow = true" :label="commentCount"></u-icon>
+						</view>
+					
+				</view>
+				<view class="divider"/>
+			</view>
+		</u-popup>
+		<u-divider>大漠孤烟直</u-divider>
 	</view>
+</view>
 </template>
 
 <script>
@@ -64,10 +120,22 @@ export default {
 				commentCount: this.comments,
 				commentShow: false,
 				commentContent: '',
+				replyShow:false,
 
 			};
 		},
 		methods: {
+			replytoComment(){
+				this.replyShow=true
+			},
+			openReply()
+			{
+				// console.log('open');
+			},
+			closeReply() {
+				this.replyShow = false;
+				// console.log('close');
+			},
 			open() 
 			{
 				// console.log('open');
@@ -291,9 +359,76 @@ export default {
 </script>
 
 <style>
+	.divider{
+		margin-top: 50rpx;
+		margin-bottom: 30rpx;
+		 background: #8a8a8a;
+		 width: 100%;
+		 height: 5rpx;
+		}
+	.brief-reply {
+			padding: 0 10px 20px 10px;
+			background-color: #fff;
+			height: 100%;
+		}
+	
+	.reply-header {
+			display: flex;
+			align-items: center;
+		}
+	
+	.reply-container {
+			position: absolute;
+			right: 10px;
+			display: flex;
+			align-items: center;
+		}
+	.reply_nickname {
+		margin-left: 15px;
+		font-size: 13px;
+		color: #333;
+	}
+	
+	.reply_post-time {
+		margin-left: 10px;
+		margin-top: 3px;
+		margin-right: 0px;
+		font-size: 12px;
+		color: #999;
+	}
+	
+	.reply_post-content {
+		margin-bottom: 10px;
+		margin-left: 55px;
+		margin-right: 25px;
+		font-size: 14px;
+		color: #333;
+	}
+	
+	
+	.reply_tag-row {
+		display: flex;
+		justify-content: space-between;
+		flex-basis: 100%;
+	}
+	
+	.reply_post-actions {
+		display: flex;
+		align-items: center;
+		margin-left: 135px;
+	}
+	
+	.reply_action-item {
+		display: flex;
+		align-items: center;
+		margin-right: 28px;
+	}
+	
+	
 .brief-post {
 		padding: 0 10px 20px 10px;
 		background-color: #fff;
+		height: 95%;
 	}
 
 	.post-header {
@@ -321,7 +456,7 @@ export default {
 	}
 
 	.post-time {
-		margin-left: 10px;
+		margin-left: 0px;
 		margin-top: 3px;
 		margin-right: 0px;
 		font-size: 12px;

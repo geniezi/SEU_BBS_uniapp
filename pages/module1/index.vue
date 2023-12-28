@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<u-button class="refreshButton" text="123" @click="onScrollToUpper" size="mini">轻触刷新</u-button>
-		<view class="message-list">
+		<view class="message-list" v-if="getStatus()==200">
 			<view v-for="(message, index) in messages" :key="index" class="message-item" @click="goToChat(message.opposeId)"
 			>
 			<!-- <img class="avatar":src='avatar' v-if="searchSenderName(message.opposeId)" alt="Avatar"> -->
@@ -10,7 +10,7 @@
 				<img class="avatar":src='getIconUrlById(message.opposeId)' alt="Avatar">
 				</view>
 				<view class="content">
-					<view class="sender">{{ getUsernameById(message.opposeId)}}</view>
+					<view clsass="sender">{{ getUsernameById(message.opposeId)}}</view>
 					<view class="text">{{ message.content }}</view>
 					<view class="time">{{ message.sendTime }}</view>
 				</view>
@@ -39,8 +39,8 @@
 		  .then(res => {
 		    console.log("chat people search succ");
 		    this.messages = res.data.data.records;
-		    console.log("received data is");
-		    console.log(this.messages);
+			this.status=res.data.code;
+			console.log(this.status)
 		
 		    // 在这里进行第二个请求，确保在第一个请求完成后执行
 		    const opposeIds = this.messages.map(message => message.opposeId);
@@ -64,13 +64,17 @@
 		  .catch(error => {
 		    console.error("Error occurred:", error);
 		  });
+		  
+	
 		},
+
 
 
 		data() {
 			return {
 				avatar:'',
 				username:'',
+				status:0,
 				
 				ListInfo:[],
 				messages: [{
@@ -110,6 +114,10 @@
 			test(ccc){
 				console.log(123)
 				console.log(ccc)
+			},
+			
+			getStatus(){
+				return this.status;
 			},
 			
 			

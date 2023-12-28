@@ -1,10 +1,10 @@
 <template>
 	<view>
 		<!-- <u-button class="refreshButton" text="123" @click="onScrollToUpper" size="mini">轻触重置</u-button> -->
-<!-- 		<view class="searchContainer">
+		<view class="searchContainer">
 			<u-search placeholder="请输入关键词" shape="square" disabled="true"
 			v-model="keyword" :showAction="false" @click="goToSearch"></u-search>
-		</view> -->
+		</view>
 		<view class="card-container">
 		<commodityPost v-for="(post, index) in posts" :key="index" :nickName="post.userInfoVO.username"
 			:iconUrl="post.userInfoVO.iconUrl" :userId="post.userId" :title="post.title"
@@ -25,6 +25,7 @@
 		},
 		data() {
 			return {
+				screenWidth:0,
 				posts: [], // 从后端获取的发帖数据
 				page: 1,
 				currentTime: '',
@@ -41,6 +42,7 @@
 			this.status = "loading"; // 初始状态为loading
 			this.getCurrentTime();
 			this.getPosts();
+			
 		},
 		onTabItemTap(e) {
 			if (this.needRefresh) {
@@ -57,6 +59,11 @@
 			this.needRefresh = false
 		},
 		methods: {
+			goToSearch() {
+				uni.navigateTo({
+					url: '/pages/homePage/searchResult'
+				});
+			},
 			getCurrentTime() {
 				var date = new Date();
 				this.currentTime = date.getFullYear() +

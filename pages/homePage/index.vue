@@ -54,7 +54,7 @@
 				selectedTabIndex: 0, // 保存当前选中的选项卡索引
 			};
 		},
-		onLoad() {
+		onShow() {
 			this.page = 1; // 重置页码
 			this.posts = []; // 清空原有数据
 			this.status = "loading"; // 初始状态为loading

@@ -813,6 +813,9 @@ height: ;
 	}
 
 	.post-content {
+		word-wrap: break-word;
+		word-break: break-all;
+		white-space: pre-line;
 		margin-bottom: 10px;
 		margin-left: 5px;
 		margin-right: 5px;

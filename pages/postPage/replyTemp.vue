@@ -6,7 +6,7 @@
 			<u-image :src="iconUrl" width="25px" height="25px" shape="circle"
 				@click="goToUserHomePage(userId)"></u-image> 
 			<text class="nickname" @click="goToUserHomePage(userId)">{{ nickName }}</text>
-			<text class="post-time">{{ commentTime }}</text> 
+			
 
 			<!-- 举报按钮-->
 			<view class="report-container">
@@ -22,17 +22,21 @@
 
 		<view>
 			<!-- 帖子内容 -->
-			<view class="post-content">{{ content }}</view> 
+			<view class="post-content">
+				
+			<view style="display: flex;">回复 <view style="color: #00b331;" @click="goToUserHomePage(replyUserId)">{{replyUserName}}</view>:</view>
+			{{ content }}</view> 
 		</view>
 
 		<!-- 点赞、点踩、评论-->
 		<view class="post-actions">
+			<text class="post-time">{{ commentTime }}</text> 
 			<view class="action-item" @click="likePost">
-				<u-icon :name="isLikedState ? 'thumb-up-fill' : 'thumb-up'" size="18px" :label="likeCount"></u-icon>
+				<u-icon :name="isLikedState ? 'thumb-up-fill' : 'thumb-up'" size="16px" :label="likeCount"></u-icon>
 			</view>
 
 			<view class="action-item" @click="dislikePost">
-				<u-icon :name="isDislikedState ? 'thumb-down-fill' : 'thumb-down'" size="18px" :label="dislikeCount"></u-icon>
+				<u-icon :name="isDislikedState ? 'thumb-down-fill' : 'thumb-down'" size="16px" :label="dislikeCount"></u-icon>
 			</view>
 
 
@@ -43,7 +47,7 @@
 						<u-button icon="share-square" @click="sendComment">发送</u-button>
 					</view>
 				</u-popup>
-				<u-icon name="chat" size="18px" @click="commentShow = true" ></u-icon>
+				<u-icon name="chat" size="16px" @click="commentShow = true"  ></u-icon>
 				<!-- <u-text style="font-size: 12px;" @click="commentShow = true"> 回复</u-text> -->
 			</view>
 		</view>
@@ -325,18 +329,22 @@ export default {
 
 	.post-time {
 		margin-left: 0px;
-		margin-top: 3px;
+		margin-bottom: 3px;
 		margin-right: 0px;
-		font-size: 12px;
+		font-size: 13px;
 		color: #999;
 	}
 
 	.post-content {
+		word-wrap: break-word;
+		word-break: break-all;
+		white-space: pre-line;
 		margin-bottom: 10px;
-		margin-left: 55px;
+		margin-left: 40px;
 		margin-right: 25px;
-		font-size: 12px;
+		font-size: 13px;
 		color: #333;
+
 	}
 
 
@@ -349,7 +357,7 @@ export default {
 	.post-actions {
 		display: flex;
 		align-items: center;
-		margin-left: 135px;
+		margin-left: 70px;
 	}
 
 	.action-item {

@@ -50,9 +50,13 @@
 		<view v-if="parseInt(commentCount)>0" style="font-size: 12px;color: #00b331;" @click="replytoComment">
 		点击展开{{commentCount}}条评论
 		</view>
-		<u-popup  :show="replyShow" mode="bottom" @close="closeReply" @open="openReply" border-radius="50">
+		<u-popup  :show="replyShow" mode="bottom" @close="closeReply" @open="openReply" border-radius="50" closeable="true">
+			<view class="fixed-header" >
+			<text class="discuss" >评论详情</text> 
+			</view>
 			<!-- <view style="scrool"> -->
 			<scroll-view   :scroll-into-view="toView" scroll-y="true" style="height: 800rpx;" scroll-with-animation="true" @scrolltolower="getReply()" @scrolltoupper="reload()">
+			
 			<view class="brief-reply">
 				<view class="reply-header" >
 					<!-- 头像 昵称 时间 -->
@@ -251,6 +255,11 @@ export default {
 			closeReply() {
 				this.replyShow = false;
 				// console.log('close');
+				this.page = 1; // 重置页码
+				this.replyList = []; // 清空原有数据
+				this.replyUserInfoList=[];
+				this.status = "loading"; // 初始状态为loading
+				
 			},
 			open() 
 			{
@@ -475,6 +484,12 @@ export default {
 </script>
 
 <style>
+	.fixed-header{
+		display: flex;
+		align-items: center;
+		margin-top: 10px;
+		padding-bottom: 5px;
+	},
 	.replyShow{
 		overflow: hidden;
 		position: fixed;
@@ -542,6 +557,9 @@ export default {
 	}
 	
 	.reply_post-content {
+		word-wrap: break-word;
+		word-break: break-all;
+		white-space: pre-line;
 		margin-bottom: 10px;
 		margin-left: 55px;
 		margin-right: 25px;
@@ -609,8 +627,11 @@ export default {
 	}
 
 	.post-content {
+		word-wrap: break-word;
+		word-break: break-all;
+		white-space: pre-line;
 		margin-bottom: 10px;
-		margin-left: 55px;
+		margin-left: 45px;
 		margin-right: 25px;
 		font-size: 12px;
 		color: #333;

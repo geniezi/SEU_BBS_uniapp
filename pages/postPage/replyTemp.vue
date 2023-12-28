@@ -3,7 +3,7 @@
 		<!--基本信息-->
 		<view class="post-header">
 			<!-- 头像 昵称 时间 -->
-			<u-image :src="iconUrl" width="30px" height="30px" shape="circle"
+			<u-image :src="iconUrl" width="25px" height="25px" shape="circle"
 				@click="goToUserHomePage(userId)"></u-image> 
 			<text class="nickname" @click="goToUserHomePage(userId)">{{ nickName }}</text>
 			<text class="post-time">{{ commentTime }}</text> 
@@ -43,7 +43,8 @@
 						<u-button icon="share-square" @click="sendComment">发送</u-button>
 					</view>
 				</u-popup>
-				<u-icon name="chat" size="18px" @click="commentShow = true" :label="commentCount"></u-icon>
+				<u-icon name="chat" size="18px" @click="commentShow = true" ></u-icon>
+				<!-- <u-text style="font-size: 12px;" @click="commentShow = true"> 回复</u-text> -->
 			</view>
 		</view>
 		<u-divider>大漠孤烟直</u-divider>
@@ -53,11 +54,8 @@
 
 <script>
 export default {
-		props: ['nickName', 'iconUrl', 'userId','commentId','postId', 'commentTime', 'content', 'likes', 'dislikes', 'comments', 'isLiked', "isDisliked"
+		props: ['nickName', 'iconUrl', 'userId','commentId','postId', 'commentTime', 'content', 'likes', 'dislikes', 'comments', 'isLiked', "isDisliked","replyUserName","replyUserId"
 		],
-		components: {
-			commentTemplate
-		},
 		data() {
 			return {
 				show: false,

@@ -147,9 +147,12 @@
 
 <script>
 	import commentTemplate from '@/pages/postPage/commentTemplate.vue';
+	// import replyTemp from '@/pages/postPage/replyTemp.vue';
 	export default {
 		components: {
-			commentTemplate
+			commentTemplate,
+			// replyTemp
+			
 		},
 		onLoad(options) {
 			this.postId = decodeURIComponent(options.id);

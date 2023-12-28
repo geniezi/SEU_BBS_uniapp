@@ -1,6 +1,6 @@
 <template>
 <view style="background-color: rgb(229,228,228);">
-<view class="brief-post">
+<view class="brief-post" >
 		<!--基本信息-->
 		<view class="post-header">
 			<!-- 头像 昵称 时间 -->
@@ -50,9 +50,11 @@
 		<view v-if="parseInt(commentCount)>0" style="font-size: 12px;color: #00b331;" @click="replytoComment">
 		点击展开{{commentCount}}条评论
 		</view>
-		<u-popup :show="replyShow" mode="bottom" @close="closeReply" @open="openReply" style="display: flex;">
+		<u-popup  :show="replyShow" mode="bottom" @close="closeReply" @open="openReply" border-radius="50">
+			<!-- <view style="scrool"> -->
+			<scroll-view   :scroll-into-view="toView" scroll-y="true" style="height: 800rpx;" scroll-with-animation="true" @scrolltolower="getReply()" @scrolltoupper="reload()">
 			<view class="brief-reply">
-				<view class="reply-header">
+				<view class="reply-header" >
 					<!-- 头像 昵称 时间 -->
 					<u-image :src="iconUrl" width="30px" height="30px" shape="circle"
 						@click="goToUserHomePage(userId)"></u-image> 
@@ -70,13 +72,13 @@
 						</u-icon>
 					</view>
 				</view>
-					<view>
+					<view >
 						<!-- 帖子内容 -->
 						<view class="reply_post-content">{{ content }}</view> 
 					</view>
 					
 					<!-- 点赞、点踩、评论-->
-					<view class="reply_post-actions">
+					<view class="reply_post-actions" >
 						<view class="reply_action-item" @click="likePost">
 							<u-icon :name="isLikedState ? 'thumb-up-fill' : 'thumb-up'" size="18px" :label="likeCount"></u-icon>
 						</view>
@@ -98,23 +100,21 @@
 					
 				</view>
 				<view class="divider"/>
-				<view class="comment-header">
+				<view class="comment-header" >
 				<text class="discuss" >评论区</text> 
-				<view class="select-area">
-				<select-lay class="seclectpaytype"  :zindex="1211" :value="order" slabel="type" svalue="typeid" :options="orderList" @selectitem="selectitem" showplaceholder=false>
-				</select-lay>
 				</view>
-				</view>
-				<view>
-				<replyTemplate v-for="(item, index) in commentList" :key="index" :nickName="commentUserInfoList[index].username"
-					:commentTime="item.commentTime" :iconUrl="commentUserInfoList[index].iconUrl" :content="item.content"
+				<view >
+				<replyTemp v-for="(item, index) in replyList" :key="index" :nickName="replyUserInfoList[index].username"
+					:commentTime="item.commentTime" :iconUrl="replyUserInfoList[index].iconUrl" :content="item.content"
 					:postId="postId" :userId="item.userId" :likes="item.likes" :dislikes="item.dislikes" 
-					:comments="item.commentNum" :isLiked="item.isLiked" :isDisliked="item.isDisliked" :commentId="item.id" :replyUserName="" :replyUserId="">
-					</replyTemplate>
+					:comments="item.commentNum" :isLiked="item.isLiked" :isDisliked="item.isDisliked" :commentId="item.id" :replyUserName="item.replyTo.mainUserName" :replyUserId="item.replyTo.mainCommentUserId">
+					</replyTemp>
 				</view>
 				<u-loadmore :status="status" nomoreText="我也是有底线的"/>
-				<u-back-top :scroll-top="scrollTop"></u-back-top>
+				<!-- <u-back-top :scroll-top="scrollTop"></u-back-top> -->
 			</view>
+			</scroll-view>
+			<!-- </view> -->
 		</u-popup>
 		<u-divider>大漠孤烟直</u-divider>
 	</view>
@@ -122,17 +122,18 @@
 </template>
 
 <script>
-		import replyTemplate from '@/pages/postPage/replyTemplate.vue';
+import replyTemp from '@/pages/postPage/replyTemp.vue';
 export default {
 		props: ['nickName', 'iconUrl', 'userId','commentId','postId', 'commentTime', 'content', 'likes', 'dislikes', 'comments', 'isLiked', "isDisliked"
 		],
 		components: {
-			commentTemplate
+			replyTemp,
+			// "replyTemplate": () => import('@/pages/postPage/replyTemplate.vue'),
 		},
 		data() {
 			return {
 				show: false,
-
+				toView: '',
 				isLikedState: this.isLiked,
 				isDislikedState: this.isDisliked,
 				likeCount: this.likes,
@@ -146,9 +147,30 @@ export default {
 				size: 25,
 				status: "loading", // 初始状态为loading
 				scrollTop: 0,
+				replyList:[],
+				replyUserInfoList:[],
 			};
 		},
 		methods: {
+			reload(){
+			this.page = 1; // 重置页码
+			this.replyList = []; // 清空原有数据
+			this.replyUserInfoList=[];
+			this.status = "loading"; // 初始状态为loading
+			// this.getCurrentTime();
+			this.getReply(); // 重新获取数据	
+			},
+			listTouch(e) {
+			    if (!(this.$refs.contentScroll.scrollHeight > this.$refs.contentScroll.clientHeight)) e.preventDefault();
+			},
+			handleTouch(e) {
+			    if (e.target.className == 'dialog-content' || e.target.className == 'title-content') e.preventDefault();
+			},
+			disabledScroll(){
+				if(this.replyShow){
+					return 
+				}
+			},
 			onReachBottom() {
 				this.getReply();
 			},
@@ -196,9 +218,9 @@ export default {
 							})
 							.then(res=> {
 								console.log("已经获取到用户信息")
-								this.replyUserInfoList=this.commentUserInfoList.concat(res.data.data)
-								console.log(this.commentList)
-								console.log(this.commentUserInfoList)
+								this.replyUserInfoList=this.replyUserInfoList.concat(res.data.data)
+								console.log(this.replyList)
+								console.log(this.replyUserInfoList)
 								})
 							.catch(error => {
 								if (error.data.code == 500) {
@@ -224,7 +246,7 @@ export default {
 			openReply()
 			{
 				// console.log('open');
-				getReply();
+				this.getReply();
 			},
 			closeReply() {
 				this.replyShow = false;
@@ -453,6 +475,17 @@ export default {
 </script>
 
 <style>
+	.replyShow{
+		overflow: hidden;
+		position: fixed;
+
+	}
+	.scrool{
+				height: 800rpx; // 固定高度
+				overflow-y: scroll; // 超出滚动
+				 overscroll-behavior-y: contain; // 禁止滚动溢出
+			
+			}
 	.discuss {
 			margin-top: 5rpx;
 			margin-left: 0px;
@@ -537,6 +570,7 @@ export default {
 	
 	
 .brief-post {
+		/* overflow：hidden; */
 		padding: 0 10px 20px 10px;
 		background-color: #fff;
 		height: 95%;

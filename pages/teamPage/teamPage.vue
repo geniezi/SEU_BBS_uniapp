@@ -6,10 +6,10 @@
 			v-model="keyword" :showAction="false" @click="goToSearch"></u-search>
 		</view>
 		<view class="card-container">
-		<commodityPost v-for="(post, index) in posts" :key="index" :nickName="post.userInfoVO.username"
+		<teamPost v-for="(post, index) in posts" :key="index" :nickName="post.userInfoVO.username"
 			:iconUrl="post.userInfoVO.iconUrl" :userId="post.userId" :title="post.title"
-			:url="post.url" :price="post.price" :postId="post.id"></commodityPost>
-
+			:url="post.url" :limitNum="post.limitNum" :exist="post.exist" :postId="post.id" ></teamPost>
+ 
 		<u-loadmore :status="status" />
 		<u-back-top :scroll-top="scrollTop"></u-back-top>
 		</view>
@@ -17,11 +17,11 @@
 </template>
 
 <script>
-	import commodityPost from '@/pages/IdleTradePage/commodityPost.vue';
+	import teamPost from '@/pages/teamPage/teamPost.vue';
 
 	export default {
 		components: {
-			commodityPost
+			teamPost
 		},
 		data() {
 			return {
@@ -33,7 +33,7 @@
 				status: "loading", // 初始状态为loading
 				scrollTop: 0,
 				needRefresh: false,
-				section: 1,
+				section: 2,
 			};
 		},
 		onLoad() {

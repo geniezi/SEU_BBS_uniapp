@@ -6,15 +6,25 @@
 	
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		// {
-		//     "path" :"pages/IdleTradePage/IdleTradePage",
+		//     "path" :"pages/teamPage/teamPage",
 		//     "style" :                                                                                    
 		//     {
-		//         "navigationBarTitleText": "二手交易",
+		//         "navigationBarTitleText": "组队",
 		//         "enablePullDownRefresh": false
 		//     }
 		    
-		// }
-		// ,
+		// },
+		 
+		{
+		    "path" :"pages/IdleTradePage/IdleTradePage",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "二手交易",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		
 		{
 		    "path" :"pages/homePage/index",
 		    "style" :                                                                                    

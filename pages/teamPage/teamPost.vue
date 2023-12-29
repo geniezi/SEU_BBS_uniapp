@@ -1,17 +1,18 @@
 <template>
-	<view class="commodity-post">
+	<view class="team-post">
 
-		<view class="commodity-photo" @click="goToDetail(postId)" ><!--商品图-->
+		<view class="team-photo" @click="goToDetail(postId)"><!--组队图-->
 			<u-image class="image" :src="url" :width="screenWidth/2-10" height="225px"></u-image>
 		</view>
 
-		<text class="commodity-description" @click="goToDetail(postId)">{{title}}</text>
+		<text class="team-description" >{{title}}</text>
 
-		<view class="commodity-info">
+		<view class="team-info" @click="goToDetail(postId)">
 			<u-image :src="iconUrl" width="20px" height="20px" shape="circle"
 				@click="goToUserHomePage(userId)"></u-image>
 			<text class="nickname" @click="goToUserHomePage(userId)">{{ nickName }}</text>
-			<text class="price">{{ price }}{{"元"}}</text>
+			<text class="numberOfPeople" v-if="limitNum-exist!=0" >{{"差"}}{{limitNum-exist}}{{"人"}}</text>
+			<text class="numberOfPeople" v-if="limitNum-exist==0" >{{"已满员"}}</text>
 		</view>
 
 	</view>
@@ -20,7 +21,7 @@
 <script>
 	export default {
 		props: [
-			'nickName', 'iconUrl', 'userId', 'url', 'title', "price",'postId'
+			'nickName', 'iconUrl', 'userId', 'url', 'title', 'limitNum','exist','postId'
 		],
 
 		created() {
@@ -42,6 +43,10 @@
 
 
 		methods: {
+			
+			getNumPeo(x,y){
+				return x-y;
+			},
 			getWidth() {
 				return this.screenWidth
 			},
@@ -95,14 +100,14 @@
 
 
 <style lang="scss" scoped>
-	.commodity-post {
+	.team-post {
 		padding: 2px 2px 10px 2px;
 		background-color: #fff;
 		border: 1px solid black;
 		border-radius: 5px;
 	}
 
-	.commodity-photo {
+	.team-photo {
 		display: flex;
 		flex-wrap: wrap;
 		height: 225px;
@@ -121,7 +126,7 @@
 
 	}
 
-	.commodity-description {
+	.team-description {
 		font-size: 15px;
 		font-weight: bold;
 		color: #333;
@@ -129,14 +134,14 @@
 
 	}
 
-	.commodity-info {
+	.team-info {
 		margin-top: 5px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 	}
 
-	.price {
+	.numberOfPeople {
 		font-size: 11px;
 		color: black;
 		font-weight: bold;

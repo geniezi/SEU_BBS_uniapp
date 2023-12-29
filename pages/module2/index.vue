@@ -431,9 +431,10 @@
 					else
 					{
 						uni.showToast({
-							title: '必须有一张交易物品图片',
+							title: '必须包含图片',
 							//将值设置为 success 或者直接不用写icon这个参数
 							//显示持续时间为 2秒
+							icon:"error",
 							duration: 1000,
 						})
 					}
@@ -524,9 +525,10 @@
 							else
 							{
 								uni.showToast({
-																title: '组队帖必须包含图片',
+																title: '必须包含图片',
 																//将值设置为 success 或者直接不用写icon这个参数
 																//显示持续时间为 2秒
+																icon:"error",
 																duration: 1000,
 															})
 							}

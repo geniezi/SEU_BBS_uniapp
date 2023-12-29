@@ -12,7 +12,7 @@
 		<commodityPost v-for="(post, index) in posts" :key="index" :nickName="post.userInfoVO.username"
 			:iconUrl="post.userInfoVO.iconUrl" :userId="post.userId" :title="post.title"
 			:url="post.url" :price="post.price" :postId="post.id"></commodityPost>
-				</view>
+		</view>
 		<u-loadmore :status="status" />
 		<u-back-top :scroll-top="scrollTop"></u-back-top>
 

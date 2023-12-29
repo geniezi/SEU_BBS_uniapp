@@ -9,10 +9,10 @@
 		<teamPost v-for="(post, index) in posts" :key="index" :nickName="post.userInfoVO.username"
 			:iconUrl="post.userInfoVO.iconUrl" :userId="post.userId" :title="post.title"
 			:url="post.url" :limitNum="post.limitNum" :exist="post.exist" :postId="post.id" ></teamPost>
- 
+		</view>
 		<u-loadmore :status="status" />
 		<u-back-top :scroll-top="scrollTop"></u-back-top>
-		</view>
+		
 	</view>
 </template>
 

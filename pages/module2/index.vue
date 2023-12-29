@@ -349,6 +349,8 @@
 				// console.log(this.title.length)
 			if(this.canPost){
 				if(this.SectionIndex==1){
+					if(this.uploadimg.length!=0)
+					{
 					this.$myRequest({
 							url: '/post/add',
 							method: "POST",
@@ -425,10 +427,22 @@
 									return;
 								}
 							});
+					}
+					else
+					{
+						uni.showToast({
+							title: '必须有一张交易物品图片',
+							//将值设置为 success 或者直接不用写icon这个参数
+							//显示持续时间为 2秒
+							duration: 1000,
+						})
+					}
 				}
 				else if(this.SectionIndex==2){
 					if(parseInt(this.exist)<parseInt(this.limit))
 					{
+						if(this.uploadimg.length!=0)
+						{
 						this.$myRequest({
 								url: '/post/add',
 								method: "POST",
@@ -506,6 +520,16 @@
 										return;
 									}
 								});
+							}
+							else
+							{
+								uni.showToast({
+																title: '组队帖必须包含图片',
+																//将值设置为 success 或者直接不用写icon这个参数
+																//显示持续时间为 2秒
+																duration: 1000,
+															})
+							}
 					}
 					else{
 						uni.$u.toast('已有人数应当小于最大人数');

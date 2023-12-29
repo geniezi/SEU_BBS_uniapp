@@ -98,7 +98,7 @@
 	.commodity-post {
 		padding: 2px 2px 10px 2px;
 		background-color: #fff;
-		border: 1px solid black;
+		border: 1px solid lightgray;
 		border-radius: 5px;
 	}
 

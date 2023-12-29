@@ -5,25 +5,6 @@
 	},
 	
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		// {
-		//     "path" :"pages/teamPage/teamPage",
-		//     "style" :                                                                                    
-		//     {
-		//         "navigationBarTitleText": "组队",
-		//         "enablePullDownRefresh": false
-		//     }
-		    
-		// },
-		 
-		// {
-		//     "path" :"pages/IdleTradePage/IdleTradePage",
-		//     "style" :                                                                                    
-		//     {
-		//         "navigationBarTitleText": "二手交易",
-		//         "enablePullDownRefresh": false
-		//     }
-		    
-		// },
 		
 		{
 		    "path" :"pages/homePage/index",
@@ -67,7 +48,45 @@
 		    }
 		    
 		}
-		,{
+		,
+		
+		{
+		    "path" :"pages/teamPage/teamPage",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "组队",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" :"pages/teamPage/searchResult",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "组队",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" :"pages/IdleTradePage/IdleTradePage",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "二手交易",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" :"pages/IdleTradePage/searchResult",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "二手交易",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
             "path" : "pages/module2/index",
             "style" :                                                                                    
             {
@@ -86,6 +105,7 @@
             
         }
         ,
+		
 		{
             "path" : "pages/module4/index",
             "style" :                                                                                    
@@ -195,11 +215,12 @@
 					"selectedIconPath": "static/icons/add-btn-fill.png"
 				},
 				{
-					"pagePath": "pages/module4/index",
-					"text": "组队",
+					"pagePath": "pages/teamPage/teamPage",
+					"text": "组队/交易",
 					"iconPath": "static/icons/customer-group.png",
 					"selectedIconPath": "static/icons/customer-group-fill.png"
 				},
+			
 				{
 					"pagePath": "pages/personalCenter/index",
 					"text": "我的",

@@ -1,6 +1,6 @@
 <template>
-	<view>
-		<!-- <u-button class="refreshButton" text="123" @click="onScrollToUpper" size="mini">轻触重置</u-button> -->
+	<view class="background">
+		<u-button text="切换至二手交易板块" @click="gotoIdleTrade()">进入二手交易板块</u-button>
 		<view class="searchContainer">
 			<u-search placeholder="请输入关键词" shape="square" disabled="true"
 			v-model="keyword" :showAction="false" @click="goToSearch"></u-search>
@@ -116,7 +116,12 @@
 			},
 			goToSearch() {
 				uni.navigateTo({
-					url: '/pages/homePage/searchResult'
+					url: '/pages/teamPage/searchResult'
+				});
+			},
+			gotoIdleTrade() {
+				uni.navigateTo({
+					url: '/pages/IdleTradePage/IdleTradePage'
 				});
 			},
 		}
@@ -124,6 +129,9 @@
 </script>
 
 <style lang="scss" scoped>
+	.background{
+		background-color:rgb(247,247,247)
+	}
 	.searchContainer {
 		margin: 5px 5px 5px 5px;
 	}

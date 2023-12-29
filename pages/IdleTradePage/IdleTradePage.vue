@@ -1,6 +1,6 @@
 <template>
-	<view>
-		<!-- <u-button class="refreshButton" text="123" @click="onScrollToUpper" size="mini">轻触重置</u-button> -->
+	<view class="background">
+		<u-button text="返回" @click="gotoTeam()">返回组队模块</u-button>
 		<view class="searchContainer">
 			<u-search placeholder="请输入关键词" shape="square" disabled="true"
 			v-model="keyword" :showAction="false" @click="goToSearch"></u-search>
@@ -116,9 +116,16 @@
 			},
 			goToSearch() {
 				uni.navigateTo({
-					url: '/pages/homePage/searchResult'
+					url: '/pages/IdleTradePage/searchResult'
 				});
-			},
+				},
+				gotoTeam(){
+					uni.switchTab({
+						url: '/pages/teamPage/teamPage'
+					});
+				},
+				
+			
 		}
 	};
 </script>
@@ -127,7 +134,9 @@
 	.searchContainer {
 		margin: 5px 5px 5px 5px;
 	}
-
+	.background{
+		background-color:rgb(247,247,247)
+	}
 	.card-container{
 		width: 100%;
 		display: flex;

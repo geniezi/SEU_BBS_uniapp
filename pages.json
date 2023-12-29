@@ -15,15 +15,15 @@
 		    
 		// },
 		 
-		{
-		    "path" :"pages/IdleTradePage/IdleTradePage",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "二手交易",
-		        "enablePullDownRefresh": false
-		    }
+		// {
+		//     "path" :"pages/IdleTradePage/IdleTradePage",
+		//     "style" :                                                                                    
+		//     {
+		//         "navigationBarTitleText": "二手交易",
+		//         "enablePullDownRefresh": false
+		//     }
 		    
-		},
+		// },
 		
 		{
 		    "path" :"pages/homePage/index",

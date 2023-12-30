@@ -24,7 +24,7 @@
 
 <script>
 	export default {
-		created() {
+		onShow() {
 		  this.$myRequest({
 		    header: {
 		      'Authentication': uni.getStorageSync('Authentication')

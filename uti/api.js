@@ -3,9 +3,9 @@ const baseURL = 'http://8.130.39.186:30088/seu/bbs'
 // 向外暴露一个方法 myRequest
 export const myRequest = (options) => {
 	//加载loading
-	uni.showLoading({
-		title: '加载中'
-	})
+	// uni.showLoading({
+	// 	title: '加载中'
+	// })
 	return new Promise((resolve, reject) => {
 		uni.request({
 			// 开发者服务器接口地址（请求服务器地址 + 具体接口名）

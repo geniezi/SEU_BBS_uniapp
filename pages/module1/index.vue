@@ -10,7 +10,7 @@
 					<img class="avatar" :src='getIconUrlById(message.opposeId)' alt="Avatar">
 				</view>
 				<view class="content">
-					<view clsass="sender">{{ getUsernameById(message.opposeId)}}</view>
+					<view class="sender">{{ getUsernameById(message.opposeId)}}</view>
 					<view class="text">{{ message.content }}</view>
 					<view class="time">{{ message.sendTime }}</view>
 				</view>
@@ -216,12 +216,13 @@
 </script>
 
 <style>
-	.content {
+/* 	.content {
+		
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-	}
+	} */
 
 	.logo {
 		height: 200rpx;
@@ -254,28 +255,30 @@
 	}
 
 	.avatar img {
-		width: 50px;
-		height: 50px;
+		width: 70px;
+		height: 70px;
 		border-radius: 50%;
 		/* Add your styles here */
 	}
 
 	.content {
-		margin-left: 10px;
+		margin-left: 10%;
 		/* Add your styles here */
 	}
 
 	.sender {
 		font-weight: bold;
+		font-size: 20px;
 		/* Add your styles here */
 	}
 
 	.text {
+		font-size: 19px;
 		/* Add your styles here */
 	}
 
 	.time {
-		font-size: 12px;
+		font-size: 14px;
 		color: gray;
 		/* Add your styles here */
 	}

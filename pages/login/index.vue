@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<image class="logo" src="/static/logo.png"></image>
+		<image class="logo" src="https://seu-bbs.obs.cn-east-3.myhuaweicloud.com/bbs/static/89ef0b59-1945-4888-bbd8-ae1068065d33.png"></image>
 		<view class="greeting">你好~</view>
 
 		<view class="layout">

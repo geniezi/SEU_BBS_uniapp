@@ -11,7 +11,8 @@
 				</view>
 				<view class="content">
 					<view class="sender">{{ getUsernameById(message.opposeId)}}</view>
-					<view class="text">{{ message.content }}</view>
+					<view class="text" v-if="message.picId==0" >{{ message.content }}</view>
+					<view class="text" v-if="message.picId!=0" >{{ "[图片]" }}</view>
 					<view class="time">{{ message.sendTime }}</view>
 				</view>
 
@@ -255,14 +256,14 @@
 	}
 
 	.avatar img {
-		width: 70px;
-		height: 70px;
+		width: 65px;
+		height: 65px;
 		border-radius: 50%;
 		/* Add your styles here */
 	}
 
 	.content {
-		margin-left: 10%;
+		margin-left: 8%;
 		/* Add your styles here */
 	}
 

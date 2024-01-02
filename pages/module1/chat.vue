@@ -14,8 +14,12 @@
 				<view v-for="message in messages" :key="message.id" class="message">
 					<p class="message-time">{{ message.sendTime }}</p>
 					<view v-if=isMyMessage(message.senderId) class="my-message">
-						<view class="message-bubble green-background">
+						<view class="message-bubble green-background" v-if="message.picId==0">
 							{{ message.content }}
+						</view>
+						<view v-else>
+							 <image style=" max-height: 320rpx;object-fit: cover;border-radius:3px;float: left;margin: 5px;" 
+							 @click="preview(message.content)"  :src="message.content" mode="heightFix"/>
 						</view>
 						<img class="avatar-right" :src="myAvatar" @click="goToUserHomePage(getmyid())"
 							alt="My Avatar" />
@@ -23,8 +27,11 @@
 					<view v-else class="other-message">
 						<img class="avatar-left" :src="chatPartnerAvatar" @click="goToUserHomePage(getyourid())"
 							alt="Partner Avatar" />
-						<view class="message-bubble grey-background">
+						<view class="message-bubble grey-background" v-if="message.picId==0">
 							{{ message.content }}
+						</view>
+						<view class="message-bubble grey-background" v-else>
+						    <img :src="message.content" alt="Image" />
 						</view>
 					</view>
 				</view>
@@ -37,11 +44,12 @@
 		<view class="chat-bottom" :style="{height: `${inputHeight}rpx`}">
 			<view class="send-msg" :style="{bottom:`${keyboardHeight}rpx`}">
 				<view class="uni-textarea">
-					<textarea v-model="chatMsg" maxlength="300" confirm-type="send" @confirm="handleSend"
+					<textarea v-model="chatMsg" maxlength="200" confirm-type="send" @confirm="handleSend"
 						:show-confirm-bar="false" :adjust-position="false" @linechange="sendHeight" @focus="focus"
 						@blur="blur" auto-height></textarea>
 				</view>
 				<button @click="handleSend" class="send-btn">发送</button>
+				<button @click="sendPic" class="send-btn">图片</button>
 			</view>
 		</view>
 	</view>
@@ -52,6 +60,8 @@
 	export default {
 		data() {
 			return {
+				images:[],
+				PicUrl: '',
 				page: 1,
 				status: "loading", // 初始状态为loading
 				timer: null,
@@ -73,6 +83,7 @@
 				myAvatar: '',
 				messages: [{
 						id: '',
+						picId:'',
 						senderId: '',
 						text: '',
 						sendTime: ''
@@ -94,14 +105,9 @@
 				return this.bottomHeight + this.keyboardHeight
 			}
 		},
-		onShow() {
-			this.page = 1; // 重置页码
-			this.messages = []; // 清空原有数据
-			this.status = "loading"; // 初始状态为loading
-			this.timer = setInterval(() => {
-				uni.hideLoading()
+		onShow() {	
+			this.timer = setInterval(() => {		
 				this.getChatRecord();
-				uni.hideLoading()
 			}, 5000);
 		},
 		//onshow自动刷新
@@ -127,6 +133,76 @@
 			this.timer = null;
 		},
 		methods: {
+			preview(url){
+				this.images[0]=url
+				// 预览图片
+				uni.previewImage({
+				    urls: this.images,
+					current:0,
+				    longPressActions: {
+				        itemList: [ '保存图片'],
+				        success: function(data) {
+				            console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data.index + 1) + '张图片');
+				        },
+				        fail: function(err) {
+				            console.log(err.errMsg);
+				        }
+				    }
+				});
+			},
+			sendPic() {
+				var _this = this;
+				//上传图片
+				uni.chooseImage({
+					count: 1,
+					sizeType: ['original', 'compressed'],
+					sourceType: ['album'],
+					success: (res) => {
+						this.resarr = res.tempFilePaths;
+						let data = this.resarr[0];
+						uni.uploadFile({
+							url: 'http://116.63.36.72:30088/seu/bbs/upload/icon',
+							filePath: data,
+							name: 'file',
+							header: {
+								'Authentication': uni.getStorageSync('Authentication')
+							},
+							success: (res) => {
+								let result = JSON.parse(res.data);
+								console.log(result)
+								if (result.code == 200) {
+									this.PicUrl = result.data;
+									//发送图片
+									this.$myRequest({
+											header: {
+												'Authentication': uni.getStorageSync('Authentication')
+											},
+											url: '/chat/send',
+											method: 'POST',
+											data: {
+												"receiverId": this.chatPartnerID,
+												"content": '',
+												"picUrl": this.PicUrl
+											}
+										})
+										.then(res => {
+											this.getChatRecord()
+											this.chatMsg = '';
+											this.scrollToBottom()
+									
+										});
+									
+								} else {
+									console.log('文件上传不成功')
+								}
+							},
+						});
+					},
+				});
+				
+
+			},
+
 			onPageScroll() {
 				this.getChatRecord()
 			},
@@ -185,7 +261,7 @@
 						this.scrollToBottom(); // 在所有请求完成后滚动到底部
 					})
 					.catch(error => {
-							console.log("error.data.message");
+						console.log("error.data.message");
 					});
 
 			},
@@ -397,6 +473,12 @@
 		text-align: left;
 		/* 文本左对齐 */
 	}
+	
+	.message-bubble img {
+	    max-width: 100%; /* 图片宽度最大为消息泡的宽度 */
+	    height: auto; /* 根据宽度等比例调整高度 */
+	    border-radius: 10px; /* 可根据需要设置圆角 */
+	}
 
 	.grey-background {
 		background-color: #f0f0f0;
@@ -560,8 +642,8 @@
 				align-items: center;
 				justify-content: center;
 				margin-bottom: 70rpx;
-				margin-left: 25rpx;
-				width: 128rpx;
+				margin-left: 10rpx;
+				width: 220rpx;
 				height: 75rpx;
 				background: $sendBtnbgc;
 				border-radius: 8rpx;

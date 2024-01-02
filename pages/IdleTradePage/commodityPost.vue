@@ -50,7 +50,7 @@
 				uni.navigateTo({
 					url: '/pages/postPage/index?id=' + encodeURIComponent(postId), //路径要改
 				});
-				uni.$u.toast('跳转帖子详情' + postId);
+				// uni.$u.toast('跳转帖子详情' + postId);
 			},
 			goToLogin() {
 				// uni.switchTab({

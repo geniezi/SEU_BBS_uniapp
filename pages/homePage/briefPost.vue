@@ -22,7 +22,7 @@
 
 		<view @click="goToDetail(postId)">
 			<!-- 帖子内容 -->
-			<view class="post-content">{{ content }}</view>
+			<view class="post-content">{{ title }}</view>
 
 			<!-- 帖子配图 -->
 			<view class="post-images" v-if="image !== '' && image !== null" @click.stop>
@@ -446,6 +446,9 @@
 		margin-right: 25px;
 		font-size: 14px;
 		color: #333;
+		word-wrap: break-word;
+		word-break: break-all;
+		white-space: pre-line;
 	}
 
 	.post-images {

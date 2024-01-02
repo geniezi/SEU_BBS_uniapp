@@ -121,7 +121,7 @@
 		</view>
 		<view class="divider"/>
 		<!-- 评论区 -->
-		<view style="background-color: azure; "> 
+		<view style=""> 
 		<view class="comment-header">
 		<text class="discuss" >评论区</text> 
 		<view class="select-area">

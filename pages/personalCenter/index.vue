@@ -38,7 +38,7 @@
 			<!-- 发帖、回帖、点赞、收藏、足迹 -->
 			<u-sticky bgColor="#fff">
 				<view class="tabContainer">
-					<u-tabs :list="list1" lineColor="#2D983A" @change="tabChange"></u-tabs>
+					<u-tabs :list="list1" lineColor="#2D983A" @change="tabChange" :scrollable="false"></u-tabs>
 				</view>
 			</u-sticky>
 
@@ -92,7 +92,7 @@
 			<u-divider></u-divider>
 
 			<view class="tabContainer">
-				<u-tabs :list="list1" lineColor="#2D983A"></u-tabs>
+				<u-tabs :list="list1" lineColor="#2D983A" :scrollable="false"></u-tabs>
 			</view>
 
 			<u-empty mode="search" icon="http://cdn.uviewui.com/uview/empty/search.png">
@@ -437,19 +437,31 @@
 	}
 
 	.buttonContainer {
-		display: flex;
-		justify-content: flex-end;
-		align-items: flex-start;
+		// display: flex;
+		// justify-content: flex-end;
+		// align-items: flex-start;
 	}
 
 	.itemButtonLayout_1 {
+		position: absolute;
+		right: 80px;
+		display: flex;
+		align-items: center;
+		//margin-top: 0;
 		width: 80px;
-		margin: 17px 16px 0 0;
+		top:97px;
+		//margin: 17px 16px 0 0;
 	}
 
 	.itemButtonLayout_2 {
-		margin-right: 0;
-		margin-top: 17px;
+		position: absolute;
+		right: 20px;
+		display: flex;
+		align-items: center;
+		top:97px;
+		//margin-top: 17px;
+		// margin-right: 0;
+		// margin-top: 17px;
 	}
 
 	.label {

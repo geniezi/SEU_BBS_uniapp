@@ -13,12 +13,12 @@
 			<view class="item upload u-m-t-20 relative"  v-for="(item,i) in imgarr" :key="i" v-show="imgarr.length!=0">
 			
 				<image :src="item" v-if="" mode="widthFix"  @click="preview(i)"></image>
-				<image @click="del(i)" src="../../static/del_image.png" class="absolute"
+				<image @click="del(i)" src="https://seu-bbs.obs.cn-east-3.myhuaweicloud.com/bbs/static/84b9309c-ac20-401a-9f2d-7aeb6ae78dc8.png" class="absolute"
 					style="width: 32rpx;height: 32rpx;top: 5rpx;right: 5rpx;" v-if=""></image>
 			</view>
 			<!-- </view> -->
 			<view class="item upload u-m-t-20" @click="getimg" v-show="imgarr.length < 9">
-				<image src="../../static/upload_image.png" v-if=""></image>
+				<image src="https://seu-bbs.obs.cn-east-3.myhuaweicloud.com/bbs/static/4f56bfb5-4c6c-4cbf-a5c2-af3bde9568ad.png" v-if=""></image>
 			</view>
 
 		</view>
@@ -200,7 +200,8 @@
 			} else if (this.imgarr.length == 0) {
 				uni.showToast({
 					title: '请上传图片',
-					icon: 'none'
+					icon: 'none',
+					
 				})
 			} else {
 				let img = []
@@ -792,7 +793,6 @@
 						for ( let i=0;i<this.resarr.length;i++) {
 							let data = this.resarr[i]
 							console.log(data)
-							this.imgarr.push(data)
 							uni.uploadFile({
 								url: 'http://8.130.39.186:30088/seu/bbs/upload/post', //仅为示例，非真实的接口地址
 								filePath: data,
@@ -810,7 +810,13 @@
 										console.log('文件上传成功')
 										console.log("1111"+result.data)
 										this.uploadimg.push(result.data)
+										this.imgarr.push(result.data)
 										// console.log("upload "+this.uploadimg)
+									}
+									else if(result.status === 401){
+										this.goToLogin();
+										console.log('未登录')
+										return;
 									}
 									else{
 										console.log('文件上传不成功')
@@ -828,9 +834,35 @@
 			},
 			del(i) {
 				console.log(i)
-				this.imgarr.splice(i, 1)
-				this.uploadimg.splice(i,1)
-				// console.log(this.imgarr.length)
+				let imgurl=this.uploadimg[i]
+				console.log(imgurl)
+				this.$myRequest({
+						header: {
+							'Authentication': uni.getStorageSync('Authentication')
+						},
+						url: '/upload',
+						method: "DELETE",
+						data: {
+							"url": imgurl, 
+						}
+					})
+				.then(response => {
+							this.imgarr.splice(i, 1)
+							this.uploadimg.splice(i,1)
+							// console.log(this.imgarr.length)
+				})
+				.catch(error => {
+					if (error.data.code == 500) {
+						uni.$u.toast(error.data.message);
+						return;
+					}
+					
+					if(error.data.code == 401){
+						this.goToLogin();
+						return;
+					}
+				});
+				
 			},
 			getAddress() {
 				var _this = this;

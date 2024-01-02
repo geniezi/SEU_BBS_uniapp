@@ -54,13 +54,23 @@
 				selectedTabIndex: 0, // 保存当前选中的选项卡索引
 			};
 		},
-		onShow() {
+		onLoad() {
 			this.page = 1; // 重置页码
 			this.posts = []; // 清空原有数据
 			this.status = "loading"; // 初始状态为loading
 			this.getCurrentTime();
 			this.getPosts();
 		},
+		// onShow() {
+		// 	//接收参数，判断
+		// 	//if(){
+		// 	this.page = 1; // 重置页码
+		// 	this.posts = []; // 清空原有数据
+		// 	this.status = "loading"; // 初始状态为loading
+		// 	this.getCurrentTime();
+		// 	this.getPosts();
+		// 	//}
+		// },
 		onTabItemTap(e) {
 			if (this.needRefresh) {
 				this.page = 1; // 重置页码

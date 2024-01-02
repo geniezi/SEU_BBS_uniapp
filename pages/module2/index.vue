@@ -800,6 +800,10 @@
 								// formData: {
 								// 	'user': 'test'
 								// },
+								formData: {
+								// 'file': tempFilePaths[0],
+								'type': 'image',
+								},
 								header: {
 									'Authentication': uni.getStorageSync('Authentication')
 								},

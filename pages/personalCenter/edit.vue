@@ -121,7 +121,7 @@
 						this.resarr = res.tempFilePaths;
 						let data = this.resarr[0];
 						uni.uploadFile({
-							url: 'http://8.130.39.186:30088/seu/bbs/upload/icon',
+							url: 'http://116.63.36.72:30088/seu/bbs/upload/icon',
 							filePath: data,
 							name: 'file',
 							header: {

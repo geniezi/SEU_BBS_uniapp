@@ -794,7 +794,7 @@
 							let data = this.resarr[i]
 							console.log(data)
 							uni.uploadFile({
-								url: 'http://8.130.39.186:30088/seu/bbs/upload/post', //仅为示例，非真实的接口地址
+								url: 'http://116.63.36.72:30088/seu/bbs/upload/post', //仅为示例，非真实的接口地址
 								filePath: data,
 								name: 'file',
 								// formData: {

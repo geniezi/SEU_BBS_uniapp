@@ -792,7 +792,7 @@
 						// console.log(this.resarr.length)
 						for ( let i=0;i<this.resarr.length;i++) {
 							let data = this.resarr[i]
-							console.log(data)
+							console.log(i)
 							uni.uploadFile({
 								url: 'http://116.63.36.72:30088/seu/bbs/upload/post', //仅为示例，非真实的接口地址
 								filePath: data,

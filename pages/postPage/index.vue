@@ -125,7 +125,7 @@
 		<view class="comment-header">
 		<text class="discuss" >评论区</text> 
 		<view class="select-area">
-		<select-lay class="seclectpaytype"  :zindex="1211" :value="order" slabel="type" svalue="typeid" :options="orderList" @selectitem="selectitem" showplaceholder=false>
+		<select-lay class="seclectpaytype"   :zindex="1211" :value="order" slabel="type" svalue="typeid" :options="orderList" @selectitem="selectitem" showplaceholder=false>
 		</select-lay>
 		</view>
 		</view>

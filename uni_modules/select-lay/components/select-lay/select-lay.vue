@@ -11,7 +11,7 @@
 			</view>
 			<!-- 清空 -->
 			<input type="text" class="uni-select-lay-input" :class="{active:changevalue!=''&&changevalue!=placeholder}"
-				v-model="changevalue" :disabled="disabled" :placeholder="placeholder" @focus="unifocus"
+				v-model="changevalue" :disabled="true" :placeholder="placeholder" @focus="unifocus"
 				@input="intchange" @blur="uniblur">
 			<view class="uni-select-lay-icon" :class="{disabled:disabled}" @click.stop="select"><text></text></view>
 		</view>

@@ -38,8 +38,20 @@
 			<view v-if="section==1" style="font-size: 13px;margin-left: 5px;color:#00b331;margin-bottom: 3px;font-weight: bold">
 			物品价格：{{price}}￥
 			</view>
-			<view v-else-if="section==2" style="font-size: 13px;margin-left: 5px;color:#00b331;margin-bottom: 3px;font-weight: bold">
-			队伍已有人数/最大人数：{{exist}}/{{limit}}	
+			<view v-else-if="section==2">
+
+			<view v-if="isOwnPost" style="display: flex;font-size: 13px;margin-left: 5px;color:#00b331;font-weight: bold">
+				队伍已有人数/最大人数: 
+				<view style="width: 30%;display: flex;">
+				<view style="border: 1px solid #2D983A;text-align: center;width: 25%;color: #2D983A;" @click="decrease">-</view>
+							<input style="text-align: center;width: 50%;" type="number" v-model="exist" :disabled="true">
+							<view style="border: 1px solid #2D983A;text-align: center;width: 25%;color: #2D983A;" @click="increase">+</view>
+				</view>
+				</text>/{{limit}}			
+			</view>
+			<view  v-else style="display: flex;font-size: 13px;margin-left: 5px;color:#00b331;margin-bottom: 3px;font-weight: bold">
+			队伍已有人数/最大人数：{{exist}}/{{limit}}
+			</view>
 			</view>
 			<!-- 帖子配图 -->
 <!-- 			<view class="post-images" v-if="image !== '' && image !== null" @click.stop> -->
@@ -281,6 +293,70 @@
 			this.getComments();
 		},
 		methods: {
+			decrease()
+			{
+				if (this.exist > 1) 
+				{
+					console.log(this.exist)
+					this.exist--;
+					this.$myRequest({
+							header: {
+								'Authentication': uni.getStorageSync('Authentication')
+							},
+							url: '/postAttribute/teamUp',
+							method: "POST",
+							data: {
+								"id": this.postId, //0点赞；1取消点赞；2点踩；3取消点踩；4收藏；5取消收藏
+								"exist": this.exist //互动帖子时传0，互动帖子时传值
+							}
+						})
+						.then(response => {
+							// this.isLikedState = false;
+							// this.likeCount--;
+						})
+						.catch(error => {
+							if (error.data.code == 500) {
+								uni.$u.toast(error.data.message);
+								return;
+							}
+							});
+				}
+				else{
+					uni.$u.toast("已减少至最小人数");
+				}
+			},
+			increase()
+			{
+				if (this.exist < this.limit)
+				{
+					console.log(this.exist)
+					this.exist++;
+					this.$myRequest({
+							header: {
+								'Authentication': uni.getStorageSync('Authentication')
+							},
+							url: '/postAttribute/teamUp',
+							method: "POST",
+							data: {
+								"id": this.postId, //0点赞；1取消点赞；2点踩；3取消点踩；4收藏；5取消收藏
+								"exist": this.exist //互动帖子时传0，互动帖子时传值
+							}
+						})
+						.then(response => {
+							// this.isLikedState = false;
+							// this.likeCount--;
+						})
+						.catch(error => {
+							if (error.data.code == 500) {
+								uni.$u.toast(error.data.message);
+								return;
+							}
+							});
+				}
+				else{
+					uni.$u.toast("队伍人数已达上限");
+				}
+			},
 			selectitem(index, item) {
 			        this.payChannelid = item.typeid;
 			        console.log(this.payChannelid);
@@ -717,6 +793,15 @@
 </script>
 
 <style>
+.botton{
+	width: 30px;
+	height: 15px;
+	background-color: #2D983A;
+	color: #FFFFFF;
+	border: none;
+	border-radius: 5px;
+	font-size: 12px;
+}
 .discuss {
 		margin-top: 5rpx;
 		margin-left: 0px;

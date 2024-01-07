@@ -30,8 +30,9 @@
 						<view class="message-bubble grey-background" v-if="message.picId==0">
 							{{ message.content }}
 						</view>
-						<view class="message-bubble grey-background" v-else>
-						    <img :src="message.content" alt="Image" />
+						<view v-else>
+							 <image style=" max-height: 320rpx;object-fit: cover;border-radius:3px;float: left;margin: 5px;" 
+							 @click="preview(message.content)"  :src="message.content" mode="heightFix"/>
 						</view>
 					</view>
 				</view>

@@ -445,7 +445,9 @@
 						} else {
 							this.status = "nomore";
 						}
-						let arr = [];
+						if (newComments.length > 0)
+						{
+							let arr = [];
 						newComments.forEach(e => { 
 						    arr.push(e.userId)
 						})
@@ -479,6 +481,7 @@
 									return;
 								}
 							});
+					}
 							
 					})
 					.catch(error => {

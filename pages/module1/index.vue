@@ -63,12 +63,15 @@
 					console.log(this.ListInfo);
 				})
 				.catch(error => {
-					console.error("Error occurred:", error);
-
-					setTimeout(() => {
-					    this.goToLogin();
-					}, 1000);
-
+					 if (error.statusCode === 401) {
+					            console.error("Unauthorized Error occurred:", error);
+					            setTimeout(() => {
+					                this.goToLogin();
+					            }, 1000);
+					        } else {
+					            // Handle other errors here
+					            console.error("Error occurred:", error);
+					        }
 				});
 
 

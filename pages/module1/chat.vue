@@ -12,7 +12,7 @@
 
 
 				<view v-for="message in messages" :key="message.id" class="message">
-					<p class="message-time">{{ message.sendTime }}</p>
+					<p class="message-time">{{ replaceTWithSpace(message.sendTime) }}</p>
 					<view v-if=isMyMessage(message.senderId) class="my-message">
 						<view class="message-bubble green-background" v-if="message.picId==0">
 							{{ message.content }}
@@ -134,6 +134,10 @@
 			this.timer = null;
 		},
 		methods: {
+			replaceTWithSpace(dateTimeString) {
+			  return dateTimeString.replace('T', ' ');
+			},
+			
 			preview(url){
 				this.images[0]=url
 				// 预览图片

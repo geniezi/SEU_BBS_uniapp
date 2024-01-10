@@ -11,11 +11,12 @@
 				</view>
 				<view class="content">
 					<view class="sender">{{ getUsernameById(message.opposeId)}}</view>
-					<view class="text" v-if="message.picId==0" >{{ message.content }}</view>
-					<view class="text" v-if="message.picId!=0" >{{ "[图片]" }}</view>
-					<view class="time">{{ message.sendTime }}</view>
+					<view class="text" v-if="message.picId==0">{{ message.content }}</view>
+					<view class="text" v-if="message.picId!=0">{{ "[图片]" }}</view>
+					<view class="time">{{ replaceTWithSpace(message.sendTime) }}</view>
 				</view>
 
+				<view v-if="message.isUnread" class="red-dot"></view>
 
 			</view>
 		</view>
@@ -26,65 +27,23 @@
 <script>
 	export default {
 		onShow() {
-			this.$myRequest({
-					header: {
-						'Authentication': uni.getStorageSync('Authentication')
-					},
-					url: '/chat/pagePeople',
-					method: 'GET',
-					data: {
-						"page": 0,
-						"size": 20,
-					},
-				})
-				.then(res => {
-					console.log("chat people search succ");
-					this.messages = res.data.data.records;
-					this.status = res.data.code;
-					console.log(this.status)
-
-					// 在这里进行第二个请求，确保在第一个请求完成后执行
-					const opposeIds = this.messages.map(message => message.opposeId);
-					console.log(opposeIds);
-					const urlWithIds = '/user/listNIByIds?id=' + opposeIds.join('&id=');
-					console.log("url is" + urlWithIds);
-
-					return this.$myRequest({
-						header: {
-							'Authentication': uni.getStorageSync('Authentication')
-						},
-						url: urlWithIds,
-						method: 'GET'
-					});
-				})
-				.then(response => {
-					this.ListInfo = response.data.data;
-					console.log("list search succ1");
-					console.log(this.ListInfo);
-				})
-				.catch(error => {
-					 if (error.statusCode === 401) {
-					            console.error("Unauthorized Error occurred:", error);
-					            setTimeout(() => {
-					                this.goToLogin();
-					            }, 1000);
-					        } else {
-					            // Handle other errors here
-					            console.error("Error occurred:", error);
-					        }
-				});
-
-
+		this.getChatList();
+		this.startTimer();
 		},
 
-
+		onUnload() {
+			uni.offKeyboardHeightChange()
+			console.log('onHide');
+			clearInterval(this.timer);
+			this.timer = null;
+		},
 
 		data() {
 			return {
 				avatar: '',
 				username: '',
 				status: 0,
-
+				timer: null,
 				ListInfo: [],
 				messages: [{
 					opposeId: "",
@@ -114,6 +73,68 @@
 		},
 
 		methods: {
+			startTimer(){
+				this.timer = setInterval(() => {
+					this.getChatList()
+				}, 5000);
+			},
+			
+			
+			getChatList() {
+				this.$myRequest({
+						header: {
+							'Authentication': uni.getStorageSync('Authentication')
+						},
+						url: '/chat/pagePeople',
+						method: 'GET',
+						data: {
+							"page": 0,
+							"size": 20,
+						},
+					})
+					.then(res => {
+						console.log("chat people search succ");
+						this.messages = res.data.data.records;
+						this.status = res.data.code;
+						console.log(this.status)
+
+						// 在这里进行第二个请求，确保在第一个请求完成后执行
+						const opposeIds = this.messages.map(message => message.opposeId);
+						console.log(opposeIds);
+						const urlWithIds = '/user/listNIByIds?id=' + opposeIds.join('&id=');
+						console.log("url is" + urlWithIds);
+
+						return this.$myRequest({
+							header: {
+								'Authentication': uni.getStorageSync('Authentication')
+							},
+							url: urlWithIds,
+							method: 'GET'
+						});
+					})
+					.then(response => {
+						this.ListInfo = response.data.data;
+						console.log("list search succ1");
+						console.log(this.ListInfo);
+					})
+					.catch(error => {
+						if (error.statusCode === 401) {
+							console.error("Unauthorized Error occurred:", error);
+							setTimeout(() => {
+								this.goToLogin();
+							}, 1000);
+						} else {
+							// Handle other errors here
+							console.error("Error occurred:", error);
+						}
+					});
+
+			},
+
+
+			replaceTWithSpace(dateTimeString) {
+				return dateTimeString.replace('T', ' ');
+			},
 
 			goToLogin() {
 				// uni.switchTab({
@@ -220,13 +241,21 @@
 </script>
 
 <style>
-/* 	.content {
+	/* 	.content {
 		
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 	} */
+	.red-dot {
+		display: inline-block;
+		width: 15px;
+		height: 15px;
+		background-color: red;
+		border-radius: 50%;
+		margin-left: 50px;
+	}
 
 	.logo {
 		height: 200rpx;

@@ -352,7 +352,11 @@
 				if(this.SectionIndex==1){
 					if(this.uploadimg.length!=0)
 					{
-					this.$myRequest({
+					if(this.tag.length<=5)
+					{ 
+						if(this.price.length!=0)
+						{
+						this.$myRequest({
 							url: '/post/add',
 							method: "POST",
 							header: {
@@ -429,6 +433,30 @@
 								}
 							});
 					}
+					else{
+						uni.showToast({
+							title: '价格不能为空',
+							//将值设置为 success 或者直接不用写icon这个参数
+							//显示持续时间为 2秒
+							icon:"error",
+							duration: 1000,
+						})
+						return
+					}
+					}
+					else{
+						uni.showToast({
+							title: '标签数超出上限',
+							//将值设置为 success 或者直接不用写icon这个参数
+							//显示持续时间为 2秒
+							icon:"error",
+							duration: 1000,
+						})
+						return
+					}
+					
+					}
+					
 					else
 					{
 						uni.showToast({
@@ -438,6 +466,7 @@
 							icon:"error",
 							duration: 1000,
 						})
+						return
 					}
 				}
 				else if(this.SectionIndex==2){
@@ -445,6 +474,8 @@
 					{
 						if(this.uploadimg.length!=0)
 						{
+							if(this.tag.length<=5)
+							{
 						this.$myRequest({
 								url: '/post/add',
 								method: "POST",
@@ -523,6 +554,18 @@
 									}
 								});
 							}
+							else{
+								uni.showToast({
+									title: '标签数超出上限',
+									//将值设置为 success 或者直接不用写icon这个参数
+									//显示持续时间为 2秒
+									icon:"error",
+									duration: 1000,
+								})
+								return
+							}
+							
+							}
 							else
 							{
 								uni.showToast({
@@ -541,6 +584,8 @@
 					}
 				}
 				else{
+				if(this.tag.length<=5)
+				{
 				this.$myRequest({
 						url: '/post/add',
 						method: "POST",
@@ -617,7 +662,19 @@
 						}
 					});
 					}
-				}
+					else{
+											uni.showToast({
+												title: '标签数超出上限',
+												//将值设置为 success 或者直接不用写icon这个参数
+												//显示持续时间为 2秒
+												icon:"error",
+												duration: 1000,
+											})
+											return
+				
+						}
+			}
+			}
 			else{
 					if (this.title.length == 0) {
 						uni.$u.toast('标题不能为空');

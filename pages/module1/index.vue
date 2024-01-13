@@ -28,7 +28,9 @@
 	export default {
 		onShow() {
 		this.getChatList();
+		if(this.haveLogin==1){
 		this.startTimer();
+		}
 		},
 
 		onUnload() {
@@ -40,6 +42,7 @@
 
 		data() {
 			return {
+				haveLogin:0,
 				avatar: '',
 				username: '',
 				status: 0,
@@ -116,6 +119,7 @@
 						this.ListInfo = response.data.data;
 						console.log("list search succ1");
 						console.log(this.ListInfo);
+						this.haveLogin=1;
 					})
 					.catch(error => {
 						if (error.statusCode === 401) {

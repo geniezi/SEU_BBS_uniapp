@@ -125,6 +125,7 @@
 						if (error.statusCode === 401) {
 							console.error("Unauthorized Error occurred:", error);
 							setTimeout(() => {
+								this.haveLogin=0;
 								this.goToLogin();
 							}, 1000);
 						} else {
